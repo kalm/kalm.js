@@ -1,6 +1,4 @@
-/**
- * Kalm bootstraper
- */
+/** Server factory */
 
 'use strict';
 
@@ -13,31 +11,27 @@ const profiles = require('./profiles');
 const serials = require('./serials');
 const transports = require('./transports');
 
-const Multiplex = require('./components/multiplex');
 const Server = require('./components/server');
-
-const clientFactory = require('./clientFactory');
-
 
 /* Methods -------------------------------------------------------------------*/
 
 function create(options) {
-	const server = {
-		id: crypto.randomBytes(8).toString('hex'),
-		port: 3000,
-		profile: profiles.dynamic,
-		serial: serials.JSON,
-		secretKey: null,
-		transport: transports.TCP,
-	};
+  const server = {
+    id: crypto.randomBytes(8).toString('hex'),
+    port: 3000,
+    profile: profiles.dynamic,
+    serial: serials.JSON,
+    secretKey: null,
+    transport: transports.TCP,
+  };
 
-	Object.assign(server,
-		options,
-		Server(server),
-		EventEmitter.prototype
-	);
+  Object.assign(server,
+    options,
+    Server(server),
+    EventEmitter.prototype
+  );
 
-	return server;
+  return server;
 }
 
 

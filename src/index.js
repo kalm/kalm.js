@@ -1,6 +1,4 @@
-/**
- * Kalm bootstraper
- */
+/** Kalm root */
 
 'use strict';
 
@@ -15,11 +13,11 @@ const transports = require('./transports');
 /* Methods -------------------------------------------------------------------*/
 
 function listen(options) {
-	return serverFactory.create(options);
+  return serverFactory.create(options);
 }
 
 function connect(options) {
-	return clientFactory.create(options);
+  return clientFactory.create(options);
 }
 
 

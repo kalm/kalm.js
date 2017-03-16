@@ -7,7 +7,7 @@
 function Multiplexed(scope) {
 
   /**
-   * @memberof Multiplexed
+   * @memberof Client
    * @param {string} name The name of the channel.
    * @param {function} handler The handler to add to the channel
    * @returns {Client} The client, for chaining
@@ -18,7 +18,7 @@ function Multiplexed(scope) {
   },
 
   /**
-   * @memberof Multiplexed
+   * @memberof Client
    * @param {string} name The name of the channel.
    * @param {function} handler The handler to remove from the channel
    * @returns {Client} The client, for chaining

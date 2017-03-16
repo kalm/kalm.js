@@ -11,7 +11,7 @@ const reservedBytes = 4;
 function QueueManager(scope) {
 
   /** 
-   * @memberof QueueManager
+   * @memberof Client
    */
   function queue(name, profile) {
     if (scope.queues.hasOwnProperty(name)) return scope.queues[name];

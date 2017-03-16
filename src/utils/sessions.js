@@ -1,3 +1,5 @@
+/** Sessions */
+
 'use strict';
 
 /* Local variables -----------------------------------------------------------*/
@@ -8,15 +10,15 @@ const sessions = {};
 /* Methods -------------------------------------------------------------------*/
 
 function resolve(id) {
-	if (!sessions.hasOwnProperty(id)) {
-		sessions[id] = { data: {} }
-	}
-	sessions[id].lastUpdated = Date.now();
-	return sessions[id].data;
+  if (!sessions.hasOwnProperty(id)) {
+    sessions[id] = { data: {} }
+  }
+  sessions[id].lastUpdated = Date.now();
+  return sessions[id].data;
 }
 
 function cleanup(id) {
-	delete sessions[id];
+  delete sessions[id];
 }
 
 /* Exports -------------------------------------------------------------------*/
