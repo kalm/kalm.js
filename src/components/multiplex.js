@@ -1,44 +1,42 @@
-/**
- * Multiplexed
- */
+/** Multiplexed */
 
 'use strict';
 
 /* Methods -------------------------------------------------------------------*/
 
 function Multiplexed(scope) {
-	return {
-		/**
-		 * Creates a channel for the client
-		 * @param {string} name The name of the channel.
-		 * @param {function} handler The handler to add to the channel
-		 * @returns {Client} The client, for chaining
-		 */
-		subscribe: (name, handler) => {
-			name = '' + name;
-			scope.channels[name] = scope.channels[name] || [];
-			scope.channels[name].push(handler);
-			if (scope.connections) scope.emit('subscribe', name, handler);
-		},
 
-		/**
-		 * Removes a handler from a channel
-		 * @param {string} name The name of the channel.
-		 * @param {function} handler The handler to remove from the channel
-		 * @returns {Client} The client, for chaining
-		 */
-		unsubscribe: (name, handler) => {
-			name = '' + name;
-			scope.channels[name] = (scope.channels[name] || [])
-				.filter((event) => event !== handler && handler !== undefined);
-			if (scope.connections) scope.emit('unsubscribe', name, handler);
-		},
+  /**
+   * @memberof Multiplexed
+   * @param {string} name The name of the channel.
+   * @param {function} handler The handler to add to the channel
+   * @returns {Client} The client, for chaining
+   */
+  function subscribe(name, handler) {
+    (scope.channels['' + name] || []).push(handler);
+    return scope;
+  },
 
-		trigger: (name, params) => {
-			(scope.channels[name] || [])
-				.forEach((handler) => handler(params));
-		}
-	};
+  /**
+   * @memberof Multiplexed
+   * @param {string} name The name of the channel.
+   * @param {function} handler The handler to remove from the channel
+   * @returns {Client} The client, for chaining
+   */
+  function unsubscribe(name, handler) {
+    name = '' + name;
+    scope.channels[name] = (scope.channels[name] || [])
+      .filter((event) => event !== handler && handler !== undefined);
+    return scope;
+  },
+
+  /** @private */
+  function trigger(name, params) {
+    (scope.channels[name] || [])
+      .forEach((handler) => handler(params));
+  }
+
+  return { subscribe, unsubscribe, trigger, channels: {} };
 }
 
 /* Exports -------------------------------------------------------------------*/

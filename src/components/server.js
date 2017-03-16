@@ -1,6 +1,4 @@
-/**
- * Server class
- */
+/** Server class */
 
 'use strict';
 
@@ -8,91 +6,85 @@
 
 const debug = require('debug')('kalm');
 const clientFactory = require('../clientFactory');
-const sessions = require('../utils/sessions');
 const crypto = require('crypto');
 
 /* Methods -------------------------------------------------------------------*/
 
 function Server(scope) {
-	return {
-		/**
-		 * Sends data to all connected clients
-		 * @param {string} channel The name of the channel to send to
-		 * @param {string|object} payload The payload to send
-		 * @returns {Server} Returns itself for chaining
-		 */
-		broadcast: (channel, payload) => {
-			for (let i = scope.connections.length - 1; i >= 0; i--) {
-				scope.connections[i].send(channel, payload);
-			}
 
-			return scope;
-		},
+  /**
+   * @memberof Server
+   * @param {string} channel The name of the channel to send to
+   * @param {string|object} payload The payload to send
+   * @returns {Server} Returns itself for chaining
+   */
+  function broadcast(channel, payload) {
+    scope.connections.forEach(c => c.send(channel, payload));
+    return scope;
+  }
 
-		/**
-		 * Closes the server
-		 * @param {function} callback The callback method for the operation
-		 */
-		stop: (callback) => {
-			callback = callback || function() {};
-			debug('warn: stopping server');
+  /**
+   * @memberof Server
+   * @param {function} callback The callback method for the operation
+   */
+  function stop(callback) {
+    callback = callback || function() {};
+    debug('warn: stopping server');
 
-			if (scope.listener) {
-				Promise.resolve()
-					.then(() => {
-						scope.connections.forEach(scope.transport.disconnect.bind(null));
-						scope.connections.length = 0;
-						scope.transport.stop(scope, callback);
-						scope.listener = null;
-					}).then(null, scope.handleError.bind(scope))
-			}
-			else {
-				scope.listener = null;
-				setTimeout(callback, 0);
-			}
-		},
+    if (scope.listener) {
+      Promise.resolve()
+        .then(() => {
+          scope.connections.forEach(scope.transport.disconnect.bind(null));
+          scope.connections.length = 0;
+          scope.transport.stop(scope, callback);
+          scope.listener = null;
+        })
+        .catch(scope.handleError)
+    }
+    else {
+      scope.listener = null;
+      setTimeout(callback, 0);
+    }
+  }
 
-		/**
-		 * Server error handler
-		 * @param {Error} err The triggered error
-		 */
-		handleError: (err) => {
-			debug('error: ', err);
-			scope.emit('error', err);
-		},
+  /** @private */
+  function handleError(err) {
+    debug('error: ', err);
+    scope.emit('error', err);
+  }
 
-		/**
-		 * Handler for receiving a new connection
-		 * @private
-		 * @param {Socket} socket The received connection socket
-		 */
-		handleConnection: (socket) => {
-			const origin = scope.transport.getOrigin(socket);
-			const hash = crypto.createHash('sha1');
-			hash.update(scope.id);
-			hash.update(origin.host);
-			hash.update('' + origin.port);
+  /** @private */
+  function handleConnection(socket) {
+    const origin = scope.transport.getOrigin(socket);
+    const hash = crypto.createHash('sha1');
+    hash.update(scope.id);
+    hash.update(origin.host);
+    hash.update('' + origin.port);
 
-			socket.__connected = true;
+    const client = clientFactory.create({
+      id: hash.digest('hex'),
+      transport: scope.transport,
+      serial: scope.serial,
+      catch: scope.catch,
+      socket,
+      connected: 2,
+      secretKey: scope.secretKey,
+      isServer: true,
+      hostname: origin.host,
+      port: origin.port
+    });
+      
+    scope.connections.push(client);
+    scope.emit('connection', client);
+    client.on('disconnect', scope.emit.bind('disconnection'));
+    return client;
+  }
 
-			const client = clientFactory.create({
-				id: hash.digest('hex'),
-				transport: scope.transport,
-				serial: scope.serial,
-				catch: scope.catch,
-				socket,
-				secretKey: scope.secretKey,
-				isServer: true,
-				hostname: origin.host,
-				port: origin.port
-			});
-			
-			scope.connections.push(client);
-			scope.emit('connection', client, sessions.resolve(client.id));
-			client.on('disconnect', scope.emit.bind('disconnection'));
-			return client;
-		}
-	};
+  /** Init */
+  scope.transport.listen({ handleConnection, handleError }, scope, clientFactory)
+    .then(listener => scope.listener = listener);
+
+  return { broadcast, stop, connections: [] };
 }
 
 /* Exports -------------------------------------------------------------------*/

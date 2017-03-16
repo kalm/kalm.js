@@ -18,35 +18,28 @@ const _reuseAddr = true;
 
 /* Methods -------------------------------------------------------------------*/
 
-/**
- * Creates a socket + Client on UDP data
- * @private
- * @param {Server} server The server object
- * @param {array} data Payload from an incomming request
- * @param {object} origin The call origin info
- */
+/** @private */
 function _handleNewSocket(server, clientFactory, data, origin) {
-		let key = [origin.address, _keySeparator, origin.port].join();
+	let key = [origin.address, _keySeparator, origin.port].join();
 
-		if (!server.__clients) server.__clients = {};
-		if (!(key in server.__clients)) {
-			// Circular dependency...
-			server.__clients[key] = clientFactory.create({
-				hostname: origin.address,
-				port: origin.port,
-				transport: server.transport,
-				serial: server.serial,
-				secretKey: server.secretKey
-			});
-		}
-
-		server.__clients[key].handleRequest(data);
+	if (!server.__clients) server.__clients = {};
+	if (!(key in server.__clients)) {
+		server.__clients[key] = clientFactory.create({
+			hostname: origin.address,
+			port: origin.port,
+			transport: server.transport,
+			serial: server.serial,
+			secretKey: server.secretKey
+		});
 	}
 
+	server.__clients[key].handleRequest(data);
+}
+
 /**
- * Listens for udp connections, updates the 'listener' property of the server
- * @param {Server} server The server object
- * @param {function} callback The success callback for the operation
+ * @param {object} handlers The server handlers
+ * @param {object} options The options for the listener
+ * @returns {Promise(object)} The new listener
  */
 function listen(server, options, clientFactory) {
 	const listener = dgram.createSocket({ type: _socketType, reuseAddr: _reuseAddr });

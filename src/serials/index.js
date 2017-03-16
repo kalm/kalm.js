@@ -1,6 +1,4 @@
-/**
- * Encoders 
- */
+/** Encoders */
 
 'use strict';
 

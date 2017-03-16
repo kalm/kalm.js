@@ -6,27 +6,27 @@
   Kalm
 </h1>
 <h3 align="center">
-  The Socket Optimizer
+  The Socket Manager
   <br/><br/><br/>
 </h3>
 <br/>
 
 [![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/kalm)
 [![Node](https://img.shields.io/badge/node->%3D4.0-blue.svg)](https://nodejs.org)
-[![Build Status](https://travis-ci.org/fed135/Kalm.svg?branch=master)](https://travis-ci.org/fed135/Kalm)
+[![Build Status](https://travis-ci.org/kalm/kalm-js.svg?branch=master)](https://travis-ci.org/kalm/kalm-js)
 [![Dependencies Status](https://david-dm.org/fed135/Kalm.svg)](https://www.npmjs.com/package/kalm)
-[![Gitter](https://img.shields.io/gitter/room/fed135/kalm.svg)](https://gitter.im/fed135/Kalm)
+[![Gitter](https://img.shields.io/gitter/room/kalm/kalm.svg)](https://gitter.im/kalm/Kalm)
 
 
-## Still under development - check out the current release [here](https://github.com/fed135/Kalm)
+## Version 2 is still under development - check out the current release [here](https://github.com/fed135/Kalm)
 
 ---
 
 - **Easy-to-use syntax** and feature parity for all protocols
 - Flexible and extensible, load your own transports and serializers
-- **Multiplexing, session stores and transactions**
+- **Multiplexing, session stores and packet encryption**
 - Can be used between servers or in the **browser**
-- Lower resource footprint and over **50x better throughtput** than plain sockets
+- Lower resource footprint and over **better throughtput** than plain sockets
 
 
 ## How it works
@@ -129,6 +129,13 @@ manual | `Kalm.profiles.manual()` | Need to process queues by hand `{ step: null
       profile: Kalm.profiles.heartbeat({ step: 5 }) // Triggers every 5ms
     });
 ```
+
+## Encryption
+
+You can optionaly enable payload encryption by simply putting a String/Number value to the
+`secretKey` property of both your client and server. The key has to be the same on both sides.
+This is `null` by default, meaning no encryption.
+
 
 ## Testing
 

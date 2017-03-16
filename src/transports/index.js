@@ -1,6 +1,4 @@
-/**
- * Adapters 
- */
+/** Adapters  */
 
 'use strict';
 

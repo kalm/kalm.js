@@ -25,11 +25,10 @@ function create(options) {
 	const server = {
 		id: crypto.randomBytes(8).toString('hex'),
 		port: 3000,
-		profile: profiles.dynamic(),
+		profile: profiles.dynamic,
 		serial: serials.JSON,
 		secretKey: null,
 		transport: transports.TCP,
-		connections: []
 	};
 
 	Object.assign(server,
@@ -37,9 +36,6 @@ function create(options) {
 		Server(server),
 		EventEmitter.prototype
 	);
-
-	server.transport.listen(server, options, clientFactory)
-		.then(listener => server.listener = listener);
 
 	return server;
 }

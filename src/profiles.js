@@ -6,30 +6,26 @@
 
 /* Methods -------------------------------------------------------------------*/
 
-function dynamic(options) {
-	return Object.assign({
-		tick: 16,
-		maxBytes: 1400
-	}, options || {});
-}
+const dynamic = {
+	tick: 16,
+	maxBytes: 1400
+};
 
-function heartbeat(options) {
-	return Object.assign({
-		tick: 16,
-		maxBytes: null
-	}, options || {});
-}
+const heartbeat = {
+	tick: 16,
+	maxBytes: null
+};
 
-function threshold(options) {
-	return Object.assign({
-		tick: null,
-		maxBytes: 1400
-	}, options || {});
-}
+const threshold = {
+	tick: null,
+	maxBytes: 1400
+};
 
-function manual() {
-	return { tick: null, maxBytes: null };
-}
+const manual = {
+	tick: null, 
+	maxBytes: null 
+};
+
 
 /* Exports -------------------------------------------------------------------*/
 

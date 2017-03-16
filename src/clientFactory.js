@@ -26,9 +26,8 @@ function create(options) {
 		transport: transports.TCP,
 		serial: serials.JSON,
 		secretKey: null,
-		profile: profiles.dynamic(),
-		channels: {},
-		backlog: []
+		connected: 1,
+		profile: profiles.dynamic
 	};
 	
 	Object.assign(client,
@@ -39,8 +38,6 @@ function create(options) {
 		EventEmitter.prototype
 	);
 
-	client.socket = client.socket || client.transport.createSocket(client);
-	client.transport.attachSocket(client.socket, client);
 	return client;
 }
 
