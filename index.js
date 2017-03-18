@@ -1,6 +1,4 @@
-/**
- * Kalm entry point
- */
+/** Entry point */
 
 'use strict';
 

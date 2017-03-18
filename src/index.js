@@ -1,4 +1,4 @@
-/** Kalm root */
+/** Root */
 
 'use strict';
 

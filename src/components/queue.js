@@ -13,7 +13,7 @@ function QueueManager(scope) {
   /** 
    * @memberof Client
    */
-  function queue(name, profile) {
+  function queue(name, wrap) {
     if (scope.queues.hasOwnProperty(name)) return scope.queues[name];
 
     scope.queues[name] = Queue({ 
@@ -22,7 +22,7 @@ function QueueManager(scope) {
       packets: [],
       timer: null,
       bytes: 0
-    }, profile || scope.profile, scope.wrap);
+    }, scope.profile, wrap);
 
     return scope.queues[name];
   }
@@ -48,7 +48,7 @@ function Queue(scope, profile, wrap) {
   
   function step() {
     if (scope.packets.length > 0) {
-      wrap(scope, scope.packets.concat());
+      wrap(scope, scope.packets);
       scope.packets.length = 0;
       scope.bytes = 0;
       scope.frame++;

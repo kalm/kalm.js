@@ -29,11 +29,10 @@ function _handleNewSocket(server, clientFactory, data, origin) {
 			port: origin.port,
 			transport: server.transport,
 			serial: server.serial,
-			secretKey: server.secretKey
+			secretKey: server.secretKey,
+			pending: data
 		});
 	}
-
-	server.__clients[key].handleRequest(data);
 }
 
 /**
@@ -41,24 +40,27 @@ function _handleNewSocket(server, clientFactory, data, origin) {
  * @param {object} options The options for the listener
  * @returns {Promise(object)} The new listener
  */
-function listen(server, options, clientFactory) {
+function listen(handlers, options, clientFactory) {
 	const listener = dgram.createSocket({ type: _socketType, reuseAddr: _reuseAddr });
-	listener.on('message', _handleNewSocket.bind(null, server, clientFactory));
-	listener.on('error', server.handleError.bind(server));
+	listener.on('message', _handleNewSocket.bind(null, options, clientFactory));
+	listener.on('error', handlers.handleError);
 	listener.bind(options.port, _localAddress);
 		
 	return Promise.resolve(listener);
 }
 
+/**
+ * @param {Socket} socket a socket handle
+ * @returns {object} The host and port info for that socket
+ */
 function getOrigin(socket) {
 	return {
-		host: socket.hostname,
-		port: socket.port
+		host: socket._hostname,
+		port: socket._port
 	};
 }
 
 /**
- * Sends a message with a socket client
  * @param {Socket} socket The socket to use
  * @param {Buffer} payload The body of the request
  */
@@ -67,48 +69,47 @@ function send(socket, payload) {
 }
 
 /**
- * Stops the server.
  * @param {Server} server The server object
  * @param {function} callback The success callback for the operation
  */
 function stop(server, callback) {
-	Object.keys(server.__clients).forEach((client) => {
-		disconnect(server.__clients[client])
-	});
 	server.listener.close();
 	setTimeout(callback, 0);
 }
 
 /**
- * Creates a client
  * @param {Client} client The client to create the socket for
- * @param {Socket} soc Optionnal existing socket object. - Not used for UPC
  * @returns {Socket} The created tcp client
  */
 function createSocket(client) {
 	let socket = dgram.createSocket(_socketType);
 	socket._port = client.port;
 	socket._hostname = client.hostname;
-
-	setTimeout(client.handleConnect.bind(client), 0);
 	return socket;
 }
 
-function attachSocket(socket, client) {
-	socket.on('error', client.handleError.bind(client));
-	socket.on('message', client.handleRequest.bind(client));
-
+/**
+ * @param {Socket} socket A socket handle
+ * @param {object} handlers A collection of handlers to attach
+ */
+function attachSocket(socket, handlers) {
+	socket.on('error', handlers.handleError);
+	socket.on('message', handlers.handleRequest);
+	if (socket.pending) {
+		handlers.handleRequest(socket.pending);
+		delete socket.pending;
+	}
+	setTimeout(handlers.handleConnect, 0);
 	// Bind socket to also listen on it's address
 	socket.bind(null, _localAddress);
 }
 
 /**
- * Attempts to disconnect the client's connection
  * @param {Client} client The client to disconnect
+ * @param {function} callback The callback method
  */
-function disconnect(client) {
-	// Nothing to do
-	setTimeout(client.handleDisconnect.bind(client), 0);
+function disconnect(client, callback) {
+	setTimeout(callback, 0); // Nothing to do
 }
 
 

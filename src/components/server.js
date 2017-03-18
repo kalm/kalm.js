@@ -34,7 +34,7 @@ function Server(scope) {
     if (scope.listener) {
       Promise.resolve()
         .then(() => {
-          scope.connections.forEach(scope.transport.disconnect.bind(null));
+          scope.connections.forEach(connection => connection.destroy());
           scope.connections.length = 0;
           scope.transport.stop(scope, callback);
           scope.listener = null;
@@ -80,11 +80,13 @@ function Server(scope) {
     return client;
   }
 
-  /** Init */
-  scope.transport.listen({ handleConnection, handleError }, scope, clientFactory)
-    .then(listener => scope.listener = listener);
+  function init() {
+    scope.transport.listen({ handleConnection, handleError }, scope, clientFactory)
+      .then(listener => scope.listener = listener);
+    return scope;
+  }
 
-  return { broadcast, stop, connections: [] };
+  return { broadcast, stop, connections: [] , init };
 }
 
 /* Exports -------------------------------------------------------------------*/

@@ -13,9 +13,11 @@ function Multiplexed(scope) {
    * @returns {Client} The client, for chaining
    */
   function subscribe(name, handler) {
-    (scope.channels['' + name] || []).push(handler);
+    name = '' + name;
+    scope.channels[name] = (scope.channels[name] || []);
+    scope.channels[name].push(handler);
     return scope;
-  },
+  }
 
   /**
    * @memberof Client
@@ -28,7 +30,7 @@ function Multiplexed(scope) {
     scope.channels[name] = (scope.channels[name] || [])
       .filter((event) => event !== handler && handler !== undefined);
     return scope;
-  },
+  }
 
   /** @private */
   function trigger(name, params) {

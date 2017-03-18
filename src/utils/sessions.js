@@ -9,6 +9,10 @@ const sessions = {};
 
 /* Methods -------------------------------------------------------------------*/
 
+/**
+ * @param {String} id The id of the session to create/fetch
+ * @returns {object} The session bucket
+ */
 function resolve(id) {
   if (!sessions.hasOwnProperty(id)) {
     sessions[id] = { data: {} }
@@ -17,6 +21,9 @@ function resolve(id) {
   return sessions[id].data;
 }
 
+/**
+ * @param {String} id The id of the session to delete
+ */
 function cleanup(id) {
   delete sessions[id];
 }

@@ -24,13 +24,12 @@ function setup(resolve) {
 		port: settings.port,
 		transport: Kalm.transports[settings.transport],
 		profile: settings.profile,
-		secretKey: 'secretkeyshouldbeatleast16chars'
+		secretKey: settings.secretKey
 	});
 
 	server.on('connection', (c) => {
-		c.subscribe(settings.testChannel, () => count++);
+		c.subscribe(settings.testChannel, (res) => count++);
 	});
-	
 
 	handbreak = false;
 	setTimeout(resolve, 0);
@@ -56,7 +55,7 @@ function step(resolve) {
 			port: settings.port, 
 			transport: Kalm.transports[settings.transport], 
 			profile: settings.profile,
-			secretKey: 'secretkeyshouldbeatleast16chars'
+			secretKey: settings.secretKey
 		});
 	}
 

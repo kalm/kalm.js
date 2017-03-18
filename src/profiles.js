@@ -2,28 +2,12 @@
 
 'use strict';
 
-/* Methods -------------------------------------------------------------------*/
+/* Local variables -----------------------------------------------------------*/
 
-const dynamic = {
-  tick: 16,
-  maxBytes: 1400
-};
-
-const heartbeat = {
-  tick: 16,
-  maxBytes: null
-};
-
-const threshold = {
-  tick: null,
-  maxBytes: 1400
-};
-
-const manual = {
-  tick: null, 
-  maxBytes: null
-};
-
+const dynamic = Object.freeze({ tick: 16, maxBytes: 1400 });
+const heartbeat = Object.freeze({ tick: 16, maxBytes: null });
+const threshold = Object.freeze({ tick: null, maxBytes: 1400 });
+const manual = Object.freeze({ tick: null,  maxBytes: null });
 
 /* Exports -------------------------------------------------------------------*/
 

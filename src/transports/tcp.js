@@ -48,12 +48,12 @@ function createSocket(client) {
  * @param {object} handlers A collection of handlers to attach
  */
 function attachSocket(socket, handlers) {
-  socket.on('data', client.handleRequest);
-  socket.on('error', client.handleError);
-  socket.on('connect', client.handleConnect);
-  socket.on('close', client.handleDisconnect);
-  socket.on('timeout', () => disconnect(client, handlers.handleDisconnect));
-  socket.setTimeout(client.socketTimeout);
+  socket.on('data', handlers.handleRequest);
+  socket.on('error', handlers.handleError);
+  socket.on('connect', handlers.handleConnect);
+  socket.on('close', handlers.handleDisconnect);
+  socket.on('timeout', () => disconnect({ socket }, handlers.handleDisconnect));
+  socket.setTimeout(handlers.socketTimeout);
 }
 
 /**

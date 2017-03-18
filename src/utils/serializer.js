@@ -4,6 +4,11 @@
 
 /* Methods -------------------------------------------------------------------*/
 
+/**
+ * @param {Number} frame The frame id
+ * @param {String} channel The channel name
+ * @param {Array} packets The list of packets to serialize
+ */ 
 function serialize(frame, channel, packets) {
   let result = [frame, channel.length];
 
@@ -11,26 +16,36 @@ function serialize(frame, channel, packets) {
     result.push(channel.charCodeAt(letter));
   }
 
-  result = result.concat(uint16Size(packets.length));
+  result.push.apply(result, uint16Size(packets.length));
 
-  packets.forEach((packet) => {
-    result = result.concat(
-      uint16Size(packet.length), 
-      Array.prototype.slice.call(packet)
-    );
+  packets.forEach(packet => {
+    result.push.apply(result, uint16Size(packet.length));
+    result.push.apply(result, packet);
   });
 
   return Buffer.from(result);
 }
 
+/** @private */
+function appendBytes(buffer, bytes) {
+  let index = buffer.length;
+  const byteLength = bytes.length;
+  for (let i = index; i < index + byteLength; i++) {
+    buffer[i] = bytes[i - index];
+  }
+}
+
+/** @private */
 function uint16Size(value) {
   return [value >>> 8, value & 0xff];
 }
 
+/** @private */
 function numericSize(a, b) {
   return (a << 8) | b;
 }
 
+/** @private */
 function parseFrame(frames, payload, startIndex) {
   const result = {
     frame: payload[startIndex],
@@ -67,6 +82,10 @@ function parseFrame(frames, payload, startIndex) {
   return caret;
 }
 
+/**
+ * @param {UInt8Array} payload The bytes to deserialize
+ * @returns {object} The deserialized frames
+ */
 function deserialize(payload) {
   const frames = [];
   const payloadBytes = payload.length;

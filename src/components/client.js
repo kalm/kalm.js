@@ -20,7 +20,7 @@ function Client(scope) {
    * @returns {Client} The client, for chaining
    */
   function write(name, message) {
-    scope.queue(name)
+    scope.queue(name, wrap)
       .add(scope.serial ? scope.serial.encode(message) : message);
     return scope;
   }
@@ -88,16 +88,19 @@ function Client(scope) {
   }
 
   /** @private */
-  function handleDisconnect: () => {
+  function handleDisconnect() {
     scope.connected = 0;
     scope.emit('disconnect', scope);
   }
 
-  /** Init */
-  scope.socket = scope.socket || scope.transport.createSocket(scope);
-  scope.transport.attachSocket(scope.socket, { handleDisconnect, handleRequest, handleError, handleConnect });
+  function init() {
+    if (scope.socket) handleConnect();
+    else scope.socket = scope.transport.createSocket(scope);
+    scope.transport.attachSocket(scope.socket, { handleDisconnect, handleRequest, handleError, handleConnect, socketTimeout: scope.socketTimeout });
+    return scope;
+  }
 
-  return { write, destroy, backlog: [], socketTimeout: 300000 };
+  return { write, destroy, backlog: [], socketTimeout: 300000, connected: 1, init };
 }
 
 /* Exports -------------------------------------------------------------------*/

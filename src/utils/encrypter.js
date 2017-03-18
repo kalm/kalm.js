@@ -4,6 +4,7 @@
 
 /* Methods -------------------------------------------------------------------*/
 
+/** @private */
 function mapKeyIn(key) {
   const seed = Number(toUint8(key).join(''));
   const list = new Array(256);
@@ -21,6 +22,7 @@ function mapKeyIn(key) {
   return dict;
 }
 
+/** @private */
 function mapKeyOut(key) {
   const seed = Number(toUint8(key).join(''));
   const dict = new Array(256);
@@ -35,25 +37,38 @@ function mapKeyOut(key) {
   return dict;
 }
 
+/** @private */
 function toUint8(str) {
   return str.toString()
     .split('')
     .map(char => char.charCodeAt(0));
 }
 
-function byteIn(keyMap, val, index) {
+/** @private */
+function byteIn(keyMap, val) {
   return keyMap[val];
 }
 
-function byteOut(keyMap, val, index) {
+/** @private */
+function byteOut(keyMap, val) {
   return keyMap[val];
 }
 
+/**
+ * @param {UInt8Array} bytes The bytes to encrypt
+ * @param {String} key The password for the encryption (Recommended >16 Characters)
+ * @returns {UInt8Array} The encrypted bytes
+ */
 function encrypt(bytes, key) {
   if (typeof bytes === 'string') bytes = toUint8(bytes);
   return bytes.map(byteIn.bind(null, mapKeyIn(String(key))));
 }
 
+/**
+ * @param {UInt8Array} bytes The bytes to decrypt
+ * @param {String} key The password
+ * @returns {UInt8Array} The decrypted bytes
+ */
 function decrypt(bytes, key) {
   return bytes.map(byteOut.bind(null, mapKeyOut(String(key))));
 }
