@@ -1,7 +1,4 @@
-/**
- * InterProcessCall connector methods
- * @module transports/ipc
- */
+/** InterProcessCall transport tests */
 
 'use strict';
 

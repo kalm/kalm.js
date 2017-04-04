@@ -23,11 +23,9 @@ const _path = '/tmp/app.socket-';
  */
 function listen(handlers, options) {
   const res = Promise.defer();
-  fs.unlink(_path + options.port, (err) => {
-    const listener = net.createServer(handlers.handleConnection);
-    listener.on('error', handlers.handleError);
-    listener.listen(_path + options.port, res.resolve.bind(res, listener));
-  });
+  const listener = net.createServer(handlers.handleConnection);
+  listener.on('error', handlers.handleError);
+  listener.listen(_path + options.port, res.resolve.bind(res, listener));
   return res.promise;
 }
 

@@ -23,7 +23,8 @@
     "light",
     "ipc",
     "messaging",
-    "queue"
+    "queue",
+    "kalm"
   ],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",

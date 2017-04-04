@@ -11,6 +11,7 @@ const transports = require('./transports');
 /* Local variables -----------------------------------------------------------*/
 
 const defaults = {
+  hostname: '0.0.0.0',
   port: 3000,
   transport: transports.TCP,
   serial: serials.JSON,

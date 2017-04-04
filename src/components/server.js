@@ -5,12 +5,10 @@
 /* Requires ------------------------------------------------------------------*/
 
 const debug = require('debug')('kalm');
-const clientFactory = require('../clientFactory');
-const crypto = require('crypto');
 
 /* Methods -------------------------------------------------------------------*/
 
-function Server(scope) {
+function Server(scope, crypto, clientFactory) {
 
   /**
    * @memberof Server
@@ -54,14 +52,14 @@ function Server(scope) {
   }
 
   /** @private */
-  function handleConnection(socket) {
-    const origin = scope.transport.getOrigin(socket);
+  function handleConnection(socket, options) {
+    const origin = scope.transport.getOrigin(options || socket);
     const hash = crypto.createHash('sha1');
     hash.update(scope.id);
     hash.update(origin.host);
     hash.update('' + origin.port);
 
-    const client = clientFactory.create({
+    const client = clientFactory.create(Object.assign({
       id: hash.digest('hex'),
       transport: scope.transport,
       serial: scope.serial,
@@ -72,16 +70,17 @@ function Server(scope) {
       isServer: true,
       hostname: origin.host,
       port: origin.port
-    });
+    }, options));
       
     scope.connections.push(client);
     scope.emit('connection', client);
     client.on('disconnect', scope.emit.bind('disconnection'));
+    debug(`log: connection from ${origin.host}:${origin.port}`);
     return client;
   }
 
   function init() {
-    scope.transport.listen({ handleConnection, handleError }, scope, clientFactory)
+    scope.transport.listen({ handleConnection, handleError }, scope)
       .then(listener => scope.listener = listener);
     return scope;
   }

@@ -9,6 +9,7 @@ const crypto = require('crypto');
 
 const defaults = require('./defaults');
 const Server = require('./components/server');
+const clientFactory = require('./clientFactory');
 
 /* Methods -------------------------------------------------------------------*/
 
@@ -17,9 +18,9 @@ function create(options) {
 
   Object.assign(server,
     defaults,
-    options,
-    Server(server),
-    EventEmitter.prototype
+    Server(server, crypto, clientFactory),
+    EventEmitter.prototype,
+    options
   );
 
   return server.init();

@@ -27,15 +27,6 @@ function serialize(frame, channel, packets) {
 }
 
 /** @private */
-function appendBytes(buffer, bytes) {
-  let index = buffer.length;
-  const byteLength = bytes.length;
-  for (let i = index; i < index + byteLength; i++) {
-    buffer[i] = bytes[i - index];
-  }
-}
-
-/** @private */
 function uint16Size(value) {
   return [value >>> 8, value & 0xff];
 }

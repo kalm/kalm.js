@@ -4,14 +4,11 @@
 
 /* Requires ------------------------------------------------------------------*/
 
-const serializer = require('../utils/serializer');
 const debug = require('debug')('kalm');
-const sessions = require('../utils/sessions');
-const encrypter = require('../utils/encrypter');
 
 /* Methods -------------------------------------------------------------------*/
 
-function Client(scope) {
+function Client(scope, queue, multiplex, serializer, sessions, encrypter) {
   
   /**
    * @memberof Client
@@ -20,17 +17,17 @@ function Client(scope) {
    * @returns {Client} The client, for chaining
    */
   function write(name, message) {
-    scope.queue(name, wrap)
+    queue.queue(name, wrap)
       .add(scope.serial ? scope.serial.encode(message) : message);
     return scope;
   }
 
-  /** @memberof Client */
-  function destroy() {
+  /** 
+   * @memberof Client
+   */
+  function destroy(callback) {
     if (scope.connected) {
-      for (let channel in scope.queues) {
-        scope.queues[channel].step();   // Drain
-      }
+      queue.flush();
       setTimeout(scope.transport.disconnect.bind(null, scope, handleDisconnect), 0);
     }
   }
@@ -48,8 +45,11 @@ function Client(scope) {
     scope.connected = 2;
     scope.backlog.forEach(scope.transport.send.bind(null, scope.socket));
     scope.backlog.length = 0;
+    scope.pending.forEach(handleRequest);
+    scope.pending.length = 0;
     scope.emit('connect', scope);
-    scope.session = sessions.resolve(scope.id)
+    scope.session = sessions.resolve(scope.id);
+    debug(`log: connected to ${scope.hostname}:${scope.port}`);
   }
 
   /** @private */
@@ -65,7 +65,7 @@ function Client(scope) {
         Promise.resolve()
           .then(() => scope.serial ? scope.serial.decode(packet) : packet)
           .catch(err => packet)
-          .then(decodedPacket => scope.trigger(frame.channel, format(frame, decodedPacket, messageIndex)))
+          .then(decodedPacket => multiplex.trigger(frame.channel, format(frame, decodedPacket, messageIndex)))
       });                 
     });
   }
@@ -100,7 +100,7 @@ function Client(scope) {
     return scope;
   }
 
-  return { write, destroy, backlog: [], socketTimeout: 300000, connected: 1, init };
+  return { write, destroy, backlog: [], pending: [], socketTimeout: 300000, connected: 1, init };
 }
 
 /* Exports -------------------------------------------------------------------*/

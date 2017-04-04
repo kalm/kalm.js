@@ -26,15 +26,24 @@ function QueueManager(scope) {
 
     return scope.queues[name];
   }
+  
+  /** 
+   * @memberof Client
+   */
+  function flush() {
+    for (let channel in scope.queues) {
+      scope.queues[channel].step();
+    }
+  }
 
-  return { queues: {}, queue };
+  return { queues: {}, queue, flush };
 }
 
 function Queue(scope, profile, wrap) {
-  if (profile.tick !== null) scope.timer = setInterval(step, profile.tick);
+  if (profile.tick > 0) scope.timer = setInterval(step, profile.tick);
   
   function add(packet) {
-    if (profile.maxBytes !== null) {
+    if (profile.maxBytes !== null && profile.maxBytes !== undefined) {
       if (bytes() + packet.length > profile.maxBytes) step();
       scope.packets.push(packet);
       scope.bytes += packet.length;
@@ -51,7 +60,7 @@ function Queue(scope, profile, wrap) {
       wrap(scope, scope.packets);
       scope.packets.length = 0;
       scope.bytes = 0;
-      scope.frame++;
+      scope.frame = scope.frame + 1;
     }
   }
 

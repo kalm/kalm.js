@@ -36,6 +36,10 @@
 Call buffering can reduce payload sizes at the cost of some initial latency. 
 This makes a huge difference when you need to send a large number of small packets, such as multiplayer games do. See [Nagle's algorithm](https://en.wikipedia.org/wiki/Nagle's_algorithm).
 
+**Hardware pressure**
+
+Giving profiles to your traffic output creates a more predictable load on the system and on the network. Furthermore, instantiating less network calls reduces the resource required exponantially. This means that your application can now run on less expensive machines!
+
 
 ## Usage
 
@@ -108,10 +112,10 @@ Snappy | [kalm-snappy](https://github.com/fed135/kalm-snappy)
 
 Name | Module | Condition
 --- | --- | --- |
-dynamic | `Kalm.profiles.dynamic()` | Triggers based on buffer size and maximum time range (default) `{ step: 16, maxBytes: 1400 }`
-heartbeat | `Kalm.profiles.heartbeat()` | Triggers at a fixed time interval `{ step: 16, maxBytes: null }`
-threshold | `Kalm.profiles.threshold()` | Triggers when buffer reaches a certain size `{ step: null, maxBytes: 1400 }`
-manual | `Kalm.profiles.manual()` | Need to process queues by hand `{ step: null, maxBytes: null }`
+dynamic | `Kalm.profiles.dynamic` | Triggers based on buffer size and maximum time range (default) `{ step: 16, maxBytes: 1400 }`
+heartbeat | `Kalm.profiles.heartbeat` | Triggers at a fixed time interval `{ step: 16, maxBytes: null }`
+threshold | `Kalm.profiles.threshold` | Triggers when buffer reaches a certain size `{ step: null, maxBytes: 1400 }`
+manual | `Kalm.profiles.manual` | Need to process queues by hand `{ step: null, maxBytes: null }`
 
 
 **Loading transports, profiles and serializers**
@@ -126,7 +130,7 @@ manual | `Kalm.profiles.manual()` | Need to process queues by hand `{ step: null
       port: 3000,
       transport: ws,
       serial: msgpack,
-      profile: Kalm.profiles.heartbeat({ step: 5 }) // Triggers every 5ms
+      profile: { tick: 5, maxBytes: null } // Triggers every 5ms
     });
 ```
 

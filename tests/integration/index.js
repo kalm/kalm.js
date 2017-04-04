@@ -36,9 +36,11 @@ describe('Integration tests', () => {
 
 			it('should work with ' + transport, (done) => {
 				let payload = {foo:'bar'};
-				server.subscribe('test', (data) => {
-					expect(data).to.eql(payload);
-					done();
+				server.on('connection', (c) => {
+					c.subscribe('test', (data) => {
+						expect(data.body).to.eql(payload);
+						done();
+					});
 				});
 
 				let client = Kalm.connect({ transport: Kalm.transports[transport] });
@@ -51,13 +53,15 @@ describe('Integration tests', () => {
 					largePayload.push({foo: 'bar'});
 				}
 
-				server.subscribe('test', (data) => {
-					expect(data).to.eql(largePayload);
-					done();
+				server.on('connection', (c) => {
+					c.subscribe('test.large', (data) => {
+						expect(data.body).to.eql(largePayload);
+						done();
+					});
 				});
 
 				let client = Kalm.connect({ transport: Kalm.transports[transport] });
-				client.write('test', largePayload);
+				client.write('test.large', largePayload);
 			});
 		});
 	});
