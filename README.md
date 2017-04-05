@@ -13,12 +13,9 @@
 
 [![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/kalm)
 [![Node](https://img.shields.io/badge/node->%3D4.0-blue.svg)](https://nodejs.org)
-[![Build Status](https://travis-ci.org/kalm/kalm-js.svg?branch=master)](https://travis-ci.org/kalm/kalm-js)
-[![Dependencies Status](https://david-dm.org/fed135/Kalm.svg)](https://www.npmjs.com/package/kalm)
+[![Build Status](https://travis-ci.org/kalm/kalm.js.svg?branch=master)](https://travis-ci.org/kalm/kalm.js)
+[![Dependencies Status](https://david-dm.org/fed135/Kalm.svg)](https://david-dm.org/fed135/Kalm)
 [![Gitter](https://img.shields.io/gitter/room/kalm/kalm.svg)](https://gitter.im/kalm/Kalm)
-
-
-## Version 2 is still under development - check out the current release [here](https://github.com/fed135/Kalm)
 
 ---
 

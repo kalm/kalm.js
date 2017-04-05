@@ -17,7 +17,7 @@ function Server(scope, crypto, clientFactory) {
    * @returns {Server} Returns itself for chaining
    */
   function broadcast(channel, payload) {
-    scope.connections.forEach(c => c.send(channel, payload));
+    scope.connections.forEach(c => c.write(channel, payload));
     return scope;
   }
 
