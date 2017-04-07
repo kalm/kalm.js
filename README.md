@@ -37,6 +37,11 @@ This makes a huge difference when you need to send a large number of small packe
 
 Giving profiles to your traffic output creates a more predictable load on the system and on the network. Furthermore, instantiating less network calls reduces the resource required exponantially. This means that your application can now run on less expensive machines!
 
+## Install
+
+```
+    npm install kalm
+```
 
 ## Usage
 
