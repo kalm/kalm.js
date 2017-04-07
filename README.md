@@ -154,3 +154,15 @@ This is `null` by default, meaning no encryption.
 Kalm uses [debug](https://github.com/visionmedia/debug)
 
 `export DEBUG=kalm`
+
+## Contribute
+
+Please do! This is an open source project - if you see something that you want, [open an issue](//github.com/kalm/kalm.js/issues/new) or file a pull request.
+
+If you have a major change, it would be better to open an issue first so that we can talk about it. 
+
+I am always looking for more maintainers, as well. Get involved. 
+
+## License 
+
+[Apache 2.0](LICENSE) (c) 2017 Frederic Charette
