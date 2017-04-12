@@ -37,6 +37,9 @@ This makes a huge difference when you need to send a large number of small packe
 
 Giving profiles to your traffic output creates a more predictable load on the system and on the network. Furthermore, instantiating less network calls reduces the resource required exponantially. This means that your application can now run on less expensive machines!
 
+[[Read more]](https://github.com/kalm/kalm.js/wiki/How-it-works)
+
+
 ## Install
 
 ```
@@ -91,7 +94,7 @@ Giving profiles to your traffic output creates a more predictable load on the sy
 
 ## Options
 
-**Transports**
+**Transports** [[wiki]](https://github.com/kalm/kalm.js/wiki/Transports)
 
 Name | Module
 --- | ---
@@ -100,7 +103,7 @@ TCP | `Kalm.transports.TCP`
 UDP | `Kalm.transports.UDP`
 WebSockets | [kalm-websocket](https://github.com/fed135/kalm-websocket)
 
-**Serializers**
+**Serializers** [[wiki]](https://github.com/kalm/kalm.js/wiki/Serials)
 
 Name | Module
 --- | ---
@@ -140,7 +143,10 @@ manual | `Kalm.profiles.manual` | Need to process queues by hand `{ step: null, 
 
 You can optionaly enable payload encryption by simply putting a String/Number value to the
 `secretKey` property of both your client and server. The key has to be the same on both sides.
-This is `null` by default, meaning no encryption.
+
+For better security, the key needs to be at least 16 characters long.
+
+A `null` value (default), means no encryption.
 
 
 ## Testing
