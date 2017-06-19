@@ -7,7 +7,7 @@
 const EventEmitter = require('events').EventEmitter;
 
 const defaults = require('./defaults');
-const Queue = require('./components/queue');
+const QueueList = require('./components/queueList');
 const Multiplex = require('./components/multiplex');
 const Client = require('./components/client');
 const serializer = require('./utils/serializer');
@@ -19,13 +19,13 @@ const encrypter = require('./utils/encrypter');
 function create(options) {
   const client = { hostname: '0.0.0.0' };
   const multiplex = Multiplex(client);
-  const queue = Queue(client);
+  const queueList = QueueList(client);
 
   Object.assign(client,
     defaults,
     multiplex,
-    queue,
-    Client(client, queue, multiplex, serializer, sessions, encrypter),
+    queueList,
+    Client(client, queueList, multiplex, serializer, sessions, encrypter),
     EventEmitter.prototype,
     options
   );

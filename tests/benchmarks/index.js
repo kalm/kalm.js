@@ -81,13 +81,13 @@ adpts.forEach(function(i) {
 		_updateSettings(i.settings, resolve);
 	});
 
-	/*tests.push(function(resolve) {
+	tests.push(function(resolve) {
 		console.log('Measuring raw ' + i.transport);
 		_measure(i.raw, function(total) {
 			results['raw_' + i.transport] = total;
 			resolve();
 		});
-	});*/
+	});
 
 	tests.push(function(resolve) {
 		console.log('Measuring Kalm ' + i.transport);
