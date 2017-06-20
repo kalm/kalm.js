@@ -83,10 +83,12 @@ describe('Integration tests', () => {
 
       it('should not trigger until maxbyte is reached', (done) => {
         let payload = new Buffer(JSON.stringify({foo:'bar'}));
+        let received = 0;
         server.on('connection', (c) => {
           c.subscribe('test', (data) => {
             expect(data.frame.payloadBytes > 20).to.be.true;
-            done();
+            if (received === 0) received++;
+            else done();
           });
         });
 

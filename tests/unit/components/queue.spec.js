@@ -7,35 +7,66 @@
 /* Requires ------------------------------------------------------------------*/
 
 const expect = require('chai').expect;
-const sinon = require('sinon');
 const testModule = require('../../../src/components/queue');
 
 /* Tests ---------------------------------------------------------------------*/
 
 describe('Queue', () => {
 
-  describe('#queue()', () => {
-  	const scope = { queues: {}, profile: { tick: 10 } };
-    const queueManager = testModule(scope);
+  describe('#add()', () => {
 
-    it('should create/resolve the queue for name', () => {
-      queueManager.queue('test');
-      expect(scope.queues.test).to.exist;
+    it('should trigger when adding beyond maxBytes', (done) => {
+      const queue = testModule({
+        packets: [],
+        bytes: 0,
+        frame: 0,
+        timer: null,
+        name: 'abc'
+      },
+      { tick: null, maxBytes: 3 },
+      (scope, packets) => {
+        expect(packets.length).to.equal(1);
+        done();
+      });
+
+      queue.add([1,2]);
+    });
+
+    it('should trigger after adding on tick', (done) => {
+      const queue = testModule({
+        packets: [],
+        bytes: 0,
+        frame: 0,
+        timer: null,
+        name: 'abc'
+      },
+      { tick: 16, maxBytes: null },
+      (scope, packets) => {
+        expect(packets.length).to.equal(3);
+        done();
+      });
+
+      queue.add([1,2,3,4,5,6,7,8,9,10]);
+      queue.add([1,2,3,4,5,6,7,8,9,10]);
+      queue.add([1,2,3,4,5,6,7,8,9,10]);
     });
   });
 
-  describe('#flush()', () => {
-  	const scope = { queues: {}, profile: { tick: 10 } };
-    const queueManager = testModule(scope);
-    const wrapSpy = sinon.spy();
-    const wrapSpy2 = sinon.spy();
+  describe('#bytes()', () => {
+  	it('should estimate the correct ammount of bytes in buffer', () => {
+      const queue = testModule({
+        packets: [],
+        bytes: 0,
+        frame: 0,
+        timer: null,
+        name: 'abc'
+      },
+      { tick: null, maxBytes: null });
 
-    it('should trigger the wrapping of all queues', () => {
-      queueManager.queue('test', wrapSpy).add('test');
-      queueManager.queue('test2', wrapSpy2);
-      queueManager.flush();
-      expect(wrapSpy.calledOnce).to.be.true;
-      expect(wrapSpy2.calledOnce).to.be.false;
+      queue.add([1,2,3,4,5,6,7,8,9,10]);
+      queue.add([1,2,3,4,5,6,7,8,9,10]);
+      queue.add([1,2,3,4,5,6,7,8,9,10]);
+      expect(queue.bytes()).to.equal(43);
     });
   });
 });

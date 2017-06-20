@@ -1,4 +1,4 @@
-/** Queue manager */
+/** Queue */
 
 'use strict';
 
@@ -8,65 +8,63 @@ const reservedBytes = 4;
 
 /* Methods -------------------------------------------------------------------*/
 
-function QueueManager(scope) {
+function Queue(scope, profile, wrap) {
 
-  /** 
-   * @memberof Client
-   */
-  function queue(name, wrap) {
-    if (scope.queues.hasOwnProperty(name)) return scope.queues[name];
+  const baseBytes = scope.name.split('').length + reservedBytes;
 
-    scope.queues[name] = Queue({ 
-      name,
-      frame: 0,
-      packets: [],
-      timer: null,
-      bytes: 0
-    }, scope.profile, wrap);
-
-    return scope.queues[name];
-  }
-  
-  /** 
-   * @memberof Client
-   */
-  function flush() {
-    for (let channel in scope.queues) {
-      scope.queues[channel].step();
+  function initTimer() {
+    if ((profile.tick > 0 || profile.tick === 0) && scope.timer === null) {
+      scope.timer = setTimeout(step, profile.tick);
     }
   }
 
-  return { queues: {}, queue, flush };
-}
+  function resetTimer() {
+    if (scope.timer !== null) {
+      clearTimeout(scope.timer);
+      scope.timer = null;
+    }
+  }
 
-function Queue(scope, profile, wrap) {
-  if (profile.tick > 0) scope.timer = setInterval(step, profile.tick);
+  function reset() {
+    resetTimer();
+    scope.packets.length = 0;
+    scope.bytes = 0;
+    scope.frame = scope.frame + 1;
+  }
   
   function add(packet) {
-    if (profile.maxBytes !== null && profile.maxBytes !== undefined) {
-      if (bytes() + packet.length > profile.maxBytes) step();
-      scope.packets.push(packet);
-      scope.bytes += packet.length;
+    scope.packets.push(packet);
+    scope.bytes += packet.length;
+    
+    if (checkSize()) {
+      initTimer();
     }
-    else scope.packets.push(packet);
+  }
+
+  function checkSize() {
+    if (profile.maxBytes !== null && profile.maxBytes !== undefined) {
+      if (bytes() >= profile.maxBytes) {
+        step();
+        return false;
+      }
+    }
+    return true;
   }
 
   function bytes() {
-    return scope.bytes + scope.packets.length * 2 + scope.name.split('').length + reservedBytes;
+    return scope.bytes + scope.packets.length * 2 + baseBytes;
   }
   
   function step() {
     if (scope.packets.length > 0) {
       wrap(scope, scope.packets);
-      scope.packets.length = 0;
-      scope.bytes = 0;
-      scope.frame = scope.frame + 1;
     }
+    reset();
   }
 
-  return { add, step };
+  return { add, step, reset, bytes };
 }
 
 /* Exports -------------------------------------------------------------------*/
 
-module.exports = QueueManager;
+module.exports = Queue;

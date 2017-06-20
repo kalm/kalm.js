@@ -9,7 +9,7 @@ const sinon = require('sinon');
 
 const testModule = require('../../../src/components/client');
 const EventEmitter = require('events').EventEmitter;
-const queue = require('../../../src/components/queue');
+const queueList = require('../../../src/components/queueList');
 const multiplex = require('../../../src/components/multiplex');
 const serializer = require('../../../src/utils/serializer');
 const sessions = require('../../../src/utils/sessions');
@@ -22,7 +22,7 @@ describe('Client', () => {
   function testObject(props, modules) {
     modules = modules || {};
     const client = Object.assign({ backlog: [], socketTimeout: 300000, connected: 1}, EventEmitter.prototype, props);
-    return Object.assign(client, testModule(client, modules.queue, modules.multiplex, modules.serializer, modules.sessions, modules.encrypter));
+    return Object.assign(client, testModule(client, modules.queueList, modules.multiplex, modules.serializer, modules.sessions, modules.encrypter));
   }
 
   function transportMock() {
@@ -88,10 +88,10 @@ describe('Client', () => {
         {foo: 'bar'}
       ];
       const addSpy = sinon.spy();
-      const queueMock = sinon.mock(queue());
-      const client = testObject({}, { queue: queueMock.object });
+      const queueListMock = sinon.mock(queueList());
+      const client = testObject({}, { queueList: queueListMock.object });
 
-      queueMock.expects('queue')
+      queueListMock.expects('queue')
         .withArgs('test-channel')
         .once()
         .returns({ add: addSpy });
@@ -100,7 +100,7 @@ describe('Client', () => {
         client.write('test-channel', payload);
       });
 
-      queueMock.verify();
+      queueListMock.verify();
       expect(addSpy.calledOnce).to.be.true;
     });
   });
@@ -109,14 +109,14 @@ describe('Client', () => {
 
     it('should call the appropriate adapter\'s disconnect', (done) => {
       const tMock = transportMock();
-      const queueMock = sinon.mock(queue());
+      const queueListMock = sinon.mock(queueList());
       const client = testObject({ 
         socket: 'not null', 
         connected: 2,
         transport: tMock.object
-      }, { queue: queueMock.object });
+      }, { queueList: queueListMock.object });
 
-      queueMock.expects('flush')
+      queueListMock.expects('flush')
         .once();
       tMock.expects('disconnect')
         .once()
@@ -126,7 +126,7 @@ describe('Client', () => {
       // Artificial Delay
       setTimeout(() => {
         tMock.verify();
-        queueMock.verify();
+        queueListMock.verify();
         done();
       });
     });

@@ -8,7 +8,7 @@ const debug = require('debug')('kalm');
 
 /* Methods -------------------------------------------------------------------*/
 
-function Client(scope, queue, multiplex, serializer, sessions, encrypter) {
+function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
   
   /**
    * @memberof Client
@@ -17,7 +17,7 @@ function Client(scope, queue, multiplex, serializer, sessions, encrypter) {
    * @returns {Client} The client, for chaining
    */
   function write(name, message) {
-    queue.queue(name, wrap)
+    queueList.queue(name, wrap)
       .add(scope.serial ? scope.serial.encode(message) : message);
     return scope;
   }
@@ -27,14 +27,14 @@ function Client(scope, queue, multiplex, serializer, sessions, encrypter) {
    */
   function destroy(callback) {
     if (scope.connected) {
-      queue.flush();
+      queueList.flush();
       setTimeout(scope.transport.disconnect.bind(null, scope, handleDisconnect), 0);
     }
   }
 
   /** @private */
-  function wrap(queue, packets) {
-    let payload = serializer.serialize(queue.frame, queue.name, packets);
+  function wrap(event, packets) {
+    let payload = serializer.serialize(event.frame, event.name, packets);
     if (scope.secretKey !== null) payload = encrypter.encrypt(payload, scope.secretKey);
     if (scope.connected === 2) scope.transport.send(scope.socket, payload);
     else scope.backlog.push(payload);
