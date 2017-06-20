@@ -13,13 +13,13 @@ function Queue(scope, profile, wrap) {
   const baseBytes = scope.name.split('').length + reservedBytes;
 
   function initTimer() {
-    if (profile.tick > 0 && !scope.timer) {
+    if ((profile.tick > 0 || profile.tick === 0) && scope.timer === null) {
       scope.timer = setTimeout(step, profile.tick);
     }
   }
 
   function resetTimer() {
-    if (profile.tick > 0) {
+    if (scope.timer !== null) {
       clearTimeout(scope.timer);
       scope.timer = null;
     }
@@ -43,7 +43,7 @@ function Queue(scope, profile, wrap) {
 
   function checkSize() {
     if (profile.maxBytes !== null && profile.maxBytes !== undefined) {
-      if (bytes() > profile.maxBytes) {
+      if (bytes() >= profile.maxBytes) {
         step();
         return false;
       }
@@ -62,7 +62,7 @@ function Queue(scope, profile, wrap) {
     reset();
   }
 
-  return { add, step, reset };
+  return { add, step, reset, bytes };
 }
 
 /* Exports -------------------------------------------------------------------*/
