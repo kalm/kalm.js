@@ -22,11 +22,11 @@ const _path = '/tmp/app.socket-';
  * @returns {Promise(object)} The new listener
  */
 function listen(handlers, options) {
-  const res = Promise.defer();
-  const listener = net.createServer(handlers.handleConnection);
-  listener.on('error', handlers.handleError);
-  listener.listen(_path + options.port, res.resolve.bind(res, listener));
-  return res.promise;
+  return new Promise(resolve => {
+    const listener = net.createServer(handlers.handleConnection);
+    listener.on('error', handlers.handleError);
+    listener.listen(_path + options.port, resolve.bind(null, listener));
+  });
 }
 
 /**
