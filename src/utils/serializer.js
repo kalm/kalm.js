@@ -19,7 +19,7 @@ function serialize(frame, channel, packets) {
   result.push.apply(result, uint16Size(packets.length));
 
   packets.forEach(packet => {
-    if (packet.splice === undefined && !(packet instanceof Buffer)) {
+    if (packet.splice === undefined && !(packet instanceof Buffer)) {
       throw new Error(`
         Cannot send unexpected type ${packet.constructor.name} \`${JSON.stringify(packet)}\`.
         Verify Serializer output or send data of type Buffer or UInt8Array
