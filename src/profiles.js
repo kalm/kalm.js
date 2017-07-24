@@ -1,4 +1,14 @@
-/** @module profiles */
+/**
+ * Kalm.profiles
+ * Predicates for executing message queues.
+ * 'tick' represents the maximum allowed wait time (ms) after an item is added before processing the queue.
+ * 'maxBytes' is the maximum bytes that can be contained in a queue. Queues that are about to exceed that value
+ * as the result of pushing a new message to it will be processed before-hand. This value includes Kalm frame overhead.
+ * 
+ * @memberof Kalm
+ * @name profiles
+ * @example ['dynamic', 'heartbeat', 'threshold', 'manual', { tick: number|null, maxBytes: number|null }]
+ */
 
 'use strict';
 

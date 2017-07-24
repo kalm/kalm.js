@@ -1,6 +1,7 @@
 /**
- * JSON Encoder 
- * @module serials.JSON
+ * JSON Encoder
+ * @category serials
+ * @namespace {object} serials/JSON
  */
 
 'use strict';
@@ -8,6 +9,8 @@
 /* Methods -------------------------------------------------------------------*/
 
 /**
+ * Serializes a message
+ * @memberof serials/JSON
  * @param {object} payload The payload to encode
  * @returns {Buffer} The encoded payload
  */
@@ -16,6 +19,8 @@ function encode(payload) {
 }
 
 /**
+ * Deserializes a message
+ * @memberof serials/JSON
  * @param {Buffer} payload The payload to decode
  * @returns {object} The decoded payload
  */

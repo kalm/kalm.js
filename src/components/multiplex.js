@@ -1,4 +1,4 @@
-/** Multiplexed */
+/* Multiplex */
 
 'use strict';
 
@@ -7,6 +7,7 @@
 function Multiplexed(scope) {
 
   /**
+   * Subscribes to a queue
    * @memberof Client
    * @param {string} name The name of the channel.
    * @param {function} handler The handler to add to the channel
@@ -20,6 +21,7 @@ function Multiplexed(scope) {
   }
 
   /**
+   * Unsubscribes from a queue
    * @memberof Client
    * @param {string} name The name of the channel.
    * @param {function} handler The handler to remove from the channel

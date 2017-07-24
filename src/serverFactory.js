@@ -1,4 +1,4 @@
-/** Server factory */
+/* Server factory */
 
 'use strict';
 

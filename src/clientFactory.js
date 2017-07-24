@@ -1,4 +1,4 @@
-/** Client Factory */
+/* Client factory */
 
 'use strict';
 

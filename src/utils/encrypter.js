@@ -1,4 +1,7 @@
-/** Password encryption */
+/** 
+ * Password encryption
+ * @namespace {object} Internal/Encrypter
+ */
 
 'use strict';
 
@@ -55,6 +58,8 @@ function byteOut(keyMap, val) {
 }
 
 /**
+ * Password-encrypts a message via hashmap
+ * @memberof Internal/Encrypter
  * @param {UInt8Array} bytes The bytes to encrypt
  * @param {String} key The password for the encryption (Recommended >16 Characters)
  * @returns {UInt8Array} The encrypted bytes
@@ -65,6 +70,8 @@ function encrypt(bytes, key) {
 }
 
 /**
+ * Password-decrypts a message via hashmap
+ * @memberof Internal/Encrypter
  * @param {UInt8Array} bytes The bytes to decrypt
  * @param {String} key The password
  * @returns {UInt8Array} The decrypted bytes

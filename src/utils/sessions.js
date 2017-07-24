@@ -1,4 +1,7 @@
-/** Sessions */
+/** 
+ * Sessions
+ * @namespace {object} Internal/Sessions
+ */
 
 'use strict';
 
@@ -10,6 +13,8 @@ const sessions = {};
 /* Methods -------------------------------------------------------------------*/
 
 /**
+ * Creates/retreives the session associated with the client uuid in memory
+ * @memberof Internal/Sessions
  * @param {String} id The id of the session to create/fetch
  * @returns {object} The session bucket
  */
@@ -22,6 +27,8 @@ function resolve(id) {
 }
 
 /**
+ * Destroys the selected session from memory
+ * @memberof Internal/Sessions
  * @param {String} id The id of the session to delete
  */
 function cleanup(id) {

@@ -1,10 +1,15 @@
-/** Serializer */
+/** 
+ * Serializer
+ * @namespace {object} Internal/Serializer
+ */
 
 'use strict';
 
 /* Methods -------------------------------------------------------------------*/
 
 /**
+ * Serializes a frame
+ * @memberof Internal/Serializer
  * @param {Number} frame The frame id
  * @param {String} channel The channel name
  * @param {Array} packets The list of packets to serialize
@@ -80,6 +85,8 @@ function parseFrame(frames, payload, startIndex) {
 }
 
 /**
+ * Reads a frame
+ * @memberof Internal/Serializer
  * @param {UInt8Array} payload The bytes to deserialize
  * @returns {object} The deserialized frames
  */

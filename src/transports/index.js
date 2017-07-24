@@ -1,4 +1,9 @@
-/** Adapters  */
+/**
+ * Kalm.transports
+ * @memberof Kalm
+ * @name transports
+ * @example ['IPC', 'TCP', 'UDP']
+ */
 
 'use strict';
 

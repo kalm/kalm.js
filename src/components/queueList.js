@@ -1,4 +1,4 @@
-/** QueueList */
+/* QueueList */
 
 'use strict';
 
@@ -10,7 +10,8 @@ const Queue = require('./queue');
 
 function QueueList(scope) {
 
-  /** 
+  /**
+   * Creates a new named Queue
    * @memberof Client
    */
   function queue(name, wrap) {
@@ -27,7 +28,8 @@ function QueueList(scope) {
     return scope.queues[name];
   }
   
-  /** 
+  /**
+   * Force-triggers all named Queues
    * @memberof Client
    */
   function flush() {
