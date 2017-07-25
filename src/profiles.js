@@ -7,7 +7,7 @@
  * 
  * @memberof Kalm
  * @name profiles
- * @example ['dynamic', 'heartbeat', 'threshold', 'manual', { tick: number|null, maxBytes: number|null }]
+ * @example ['dynamic', 'heartbeat', 'threshold', 'realtime', 'manual', { tick: number|null, maxBytes: number|null }]
  */
 
 'use strict';
@@ -17,8 +17,9 @@
 const dynamic = Object.freeze({ tick: 5, maxBytes: 1400 });
 const heartbeat = Object.freeze({ tick: 5, maxBytes: null });
 const threshold = Object.freeze({ tick: null, maxBytes: 1400 });
+const realtime = Object.freeze({ tick: -1, maxBytes: null });
 const manual = Object.freeze({ tick: null,  maxBytes: null });
 
 /* Exports -------------------------------------------------------------------*/
 
-module.exports = { dynamic, heartbeat, threshold, manual };
+module.exports = { dynamic, heartbeat, threshold, realtime, manual };
