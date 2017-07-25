@@ -1,4 +1,4 @@
-/** Entry point */
+/* Entry point */
 
 'use strict';
 

@@ -1,4 +1,9 @@
-/** Encoders */
+/**
+ * Kalm.serials
+ * @memberof Kalm
+ * @name serials
+ * @example ['JSON']
+ */
 
 'use strict';
 

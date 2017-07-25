@@ -1,4 +1,13 @@
-/** Client class */
+/** 
+ * Client
+ * @namespace {object} Client
+ * @example {
+ *   backlog: [], 
+ *   pending: [], 
+ *   socketTimeout: 300000, 
+ *   connected: 1
+ * }
+ */
 
 'use strict';
 
@@ -11,6 +20,7 @@ const debug = require('debug')('kalm');
 function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
   
   /**
+   * Writes a message to a queue
    * @memberof Client
    * @param {string} name The channel to send to data through
    * @param {string|object} payload The payload to send
@@ -22,7 +32,8 @@ function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
     return scope;
   }
 
-  /** 
+  /**
+   * Flushes the queues and destroys the connection
    * @memberof Client
    */
   function destroy(callback) {
@@ -75,7 +86,7 @@ function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
     return {
       body,
       client: scope,
-      reply: scope.write.bind(null, frame.channel),
+      reply: scope.write,
       frame: {
         id: frame.frame,
         channel: frame.channel,

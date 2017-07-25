@@ -1,4 +1,10 @@
-/** Server class */
+/** 
+ * Server class
+ * @namespace Server
+ * @example {
+ *   connections: []
+ * }
+ */
 
 'use strict';
 
@@ -9,8 +15,11 @@ const debug = require('debug')('kalm');
 /* Methods -------------------------------------------------------------------*/
 
 function Server(scope, crypto, clientFactory) {
+ 
+  let disconnectionHandler = null; 
 
   /**
+   * Sends a message to all open connections
    * @memberof Server
    * @param {string} channel The name of the channel to send to
    * @param {string|object} payload The payload to send
@@ -22,6 +31,7 @@ function Server(scope, crypto, clientFactory) {
   }
 
   /**
+   * Shuts the server down, flushing all queues and closing all open connections 
    * @memberof Server
    * @param {function} callback The callback method for the operation
    */
@@ -74,7 +84,7 @@ function Server(scope, crypto, clientFactory) {
       
     scope.connections.push(client);
     scope.emit('connection', client);
-    client.on('disconnect', scope.emit.bind('disconnection'));
+    client.on('disconnect', disconnectionHandler);
     debug(`log: connection from ${origin.host}:${origin.port}`);
     return client;
   }
@@ -82,6 +92,8 @@ function Server(scope, crypto, clientFactory) {
   function init() {
     scope.transport.listen({ handleConnection, handleError }, scope)
       .then(listener => scope.listener = listener);
+    disconnectionHandler = scope.emit.bind(scope, 'disconnection');
+    
     return scope;
   }
 

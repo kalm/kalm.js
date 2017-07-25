@@ -1,4 +1,4 @@
-/** Server factory */
+/* Server factory */
 
 'use strict';
 
@@ -10,11 +10,14 @@ const crypto = require('crypto');
 const defaults = require('./defaults');
 const Server = require('./components/server');
 const clientFactory = require('./clientFactory');
+const validation = require('./utils/validation');
 
 /* Methods -------------------------------------------------------------------*/
 
 function create(options) {
   const server = { id: crypto.randomBytes(8).toString('hex') };
+
+  validation.validateOptions(options);
 
   Object.assign(server,
     defaults,

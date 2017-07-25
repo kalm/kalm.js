@@ -110,17 +110,18 @@ Name | Module
 JSON | `Kalm.serials.JSON`
 MSG-PACK | [kalm-msgpack](https://github.com/fed135/kalm-msgpack)
 Snappy | [kalm-snappy](https://github.com/fed135/kalm-snappy)
-`null` | As-is
+`null` | No transformation (data must be a Buffer or UInt8Array)
 
 
 **Profiles**
 
 Name | Module | Condition
 --- | --- | --- |
-dynamic | `Kalm.profiles.dynamic` | Triggers based on buffer size and maximum time range (default) `{ step: 16, maxBytes: 1400 }`
-heartbeat | `Kalm.profiles.heartbeat` | Triggers at a fixed time interval `{ step: 16, maxBytes: null }`
-threshold | `Kalm.profiles.threshold` | Triggers when buffer reaches a certain size `{ step: null, maxBytes: 1400 }`
-manual | `Kalm.profiles.manual` | Need to process queues by hand `{ step: null, maxBytes: null }`
+dynamic | `Kalm.profiles.dynamic` | Triggers based on buffer size and maximum time range (default) | `{ step: 5, maxBytes: 1400 }`
+heartbeat | `Kalm.profiles.heartbeat` | Triggers at a fixed time interval | `{ step: 5, maxBytes: null }`
+threshold | `Kalm.profiles.threshold` | Triggers when buffer reaches a certain size | `{ step: null, maxBytes: 1400 }`
+realtime | `Kalm.profiles.realtime` | Triggers immediatly on writing to a queue | `{ step: -1, maxBytes: null }`
+manual | `Kalm.profiles.manual` | Need to process queues by hand | `{ step: null, maxBytes: null }`
 
 
 **Loading transports, profiles and serializers**

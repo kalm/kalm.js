@@ -1,6 +1,7 @@
 /**
  * TCP transport methods
- * @module transports.TCP
+ * @category transports
+ * @namespace {object} transports/TCP
  */
 
 'use strict';
@@ -12,6 +13,8 @@ const net = require('net');
 /* Methods -------------------------------------------------------------------*/
 
 /**
+ * Starts listening for incomming connections
+ * @memberof transports/TCP
  * @param {object} handlers The server handlers
  * @param {object} options The options for the listener
  * @returns {Promise(object)} The new listener
@@ -25,6 +28,8 @@ function listen (handlers, options) {
 }
 
 /**
+ * Gets the socket destination info
+ * @memberof transports/TCP
  * @param {Socket} socket a socket handle
  * @returns {object} The host and port info for that socket
  */
@@ -36,6 +41,8 @@ function getOrigin(socket) {
 }
 
 /**
+ * Creates a socket handle
+ * @memberof transports/TCP
  * @param {Client} client The client to create the socket for
  * @returns {Socket} The created tcp client
  */
@@ -44,6 +51,8 @@ function createSocket(client) {
 }
 
 /**
+ * Binds the proper listeners to the socket
+ * @memberof transports/TCP
  * @param {Socket} socket A socket handle
  * @param {object} handlers A collection of handlers to attach
  */
@@ -57,6 +66,8 @@ function attachSocket(socket, handlers) {
 }
 
 /**
+ * Stops the server, closing all current connections
+ * @memberof transports/TCP
  * @param {Server} server The server object
  * @param {function} callback The success callback for the operation
  */
@@ -65,6 +76,8 @@ function stop(server, callback) {
 }
 
 /**
+ * Sends the frame via the client socket
+ * @memberof transports/TCP
  * @param {Socket} socket The socket to use
  * @param {Buffer} payload The body of the request
  */
@@ -73,6 +86,8 @@ function send(socket, payload) {
 }
 
 /**
+ * Disconnects the socket
+ * @memberof transports/TCP
  * @param {Client} client The client to disconnect
  * @param {function} callback The callback method
  */
