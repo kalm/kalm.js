@@ -15,7 +15,7 @@
  * @returns {Buffer} The encoded payload
  */
 function encode(payload) {
-  return (Buffer.isBuffer(payload)) ? payload : new Buffer(JSON.stringify(payload));
+  return (Buffer.isBuffer(payload)) ? payload : toUInt8Array(JSON.stringify(payload));
 }
 
 /**
@@ -26,6 +26,16 @@ function encode(payload) {
  */
 function decode(payload) {
   return JSON.parse(String.fromCharCode.apply(null, payload));
+}
+
+/** @private */
+function toUInt8Array(str) {
+  const chars = [];
+  for (let i = 0; i < str.length; i++) {
+    chars.push(str.charCodeAt(i));
+  }
+
+  return chars;
 }
 
 /* Exports -------------------------------------------------------------------*/

@@ -1,10 +1,11 @@
 {
   "name": "kalm",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "The socket manager",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha tests/unit --recursive && mocha tests/integration"
+    "test": "mocha tests/unit --recursive && mocha tests/integration",
+    "bench": "node tests/benchmarks"
   },
   "repository": {
     "type": "git",

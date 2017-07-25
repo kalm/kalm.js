@@ -28,7 +28,7 @@ describe('JSON Encoder', () => {
     Object.keys(tests).forEach((test) => {
       it('should encode ' + test, () => { 
         tests[test].forEach((payload) => {
-          expect(testModule.encode(wrap(payload))).to.be.instanceof(Buffer);
+          expect(testModule.encode(wrap(payload))).to.be.instanceof(Array);
         });
       });
     });

@@ -13,13 +13,16 @@ const Client = require('./components/client');
 const serializer = require('./utils/serializer');
 const sessions = require('./utils/sessions');
 const encrypter = require('./utils/encrypter');
+const validation = require('./utils/validation');
 
 /* Methods -------------------------------------------------------------------*/
 
 function create(options) {
-  const client = { hostname: '0.0.0.0' };
+  const client = { hostname: defaults.hostname };
   const multiplex = Multiplex(client);
   const queueList = QueueList(client);
+
+  validation.validateOptions(options);
 
   Object.assign(client,
     defaults,

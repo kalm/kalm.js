@@ -24,8 +24,9 @@ function Queue(scope, profile, wrap) {
 
   /** @private */
   function initTimer() {
-    if ((profile.tick > 0 || profile.tick === 0) && scope.timer === null) {
-      scope.timer = setTimeout(step, profile.tick);
+    if (scope.timer === null && profile.tick !== null) {
+      if (profile.tick < 0) step();
+      else if (profile.tick >= 0) scope.timer = setTimeout(step, profile.tick);
     }
   }
 

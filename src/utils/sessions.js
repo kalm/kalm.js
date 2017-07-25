@@ -19,11 +19,8 @@ const sessions = {};
  * @returns {object} The session bucket
  */
 function resolve(id) {
-  if (!sessions.hasOwnProperty(id)) {
-    sessions[id] = { data: {} }
-  }
-  sessions[id].lastUpdated = Date.now();
-  return sessions[id].data;
+  sessions[id] = sessions[id] || {};
+  return sessions[id];
 }
 
 /**

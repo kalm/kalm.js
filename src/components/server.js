@@ -15,6 +15,8 @@ const debug = require('debug')('kalm');
 /* Methods -------------------------------------------------------------------*/
 
 function Server(scope, crypto, clientFactory) {
+ 
+  let disconnectionHandler = null; 
 
   /**
    * Sends a message to all open connections
@@ -82,7 +84,7 @@ function Server(scope, crypto, clientFactory) {
       
     scope.connections.push(client);
     scope.emit('connection', client);
-    client.on('disconnect', scope.emit.bind('disconnection'));
+    client.on('disconnect', disconnectionHandler);
     debug(`log: connection from ${origin.host}:${origin.port}`);
     return client;
   }
@@ -90,6 +92,8 @@ function Server(scope, crypto, clientFactory) {
   function init() {
     scope.transport.listen({ handleConnection, handleError }, scope)
       .then(listener => scope.listener = listener);
+    disconnectionHandler = scope.emit.bind(scope, 'disconnection');
+    
     return scope;
   }
 

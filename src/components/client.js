@@ -86,7 +86,7 @@ function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
     return {
       body,
       client: scope,
-      reply: scope.write.bind(null, frame.channel),
+      reply: scope.write,
       frame: {
         id: frame.frame,
         channel: frame.channel,
