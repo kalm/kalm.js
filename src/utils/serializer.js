@@ -15,7 +15,9 @@
  * @param {Array} packets The list of packets to serialize
  */ 
 function serialize(frame, channel, packets) {
-  let result = [frame, channel.length];
+  let result = [];
+  result[0] = frame % 255;
+  result[1] = channel.length;
 
   for (let letter = 0; letter < channel.length; letter++) {
     result.push(channel.charCodeAt(letter));
@@ -39,7 +41,10 @@ function serialize(frame, channel, packets) {
 
 /** @private */
 function uint16Size(value) {
-  return [value >>> 8, value & 0xff];
+  const size = [];
+  size[0] = value >>> 8;
+  size[1] = value & 0xff;
+  return size;
 }
 
 /** @private */

@@ -88,8 +88,9 @@ describe('Client', () => {
         {foo: 'bar'}
       ];
       const addSpy = sinon.spy();
+      const encodeSpy = sinon.spy();
       const queueListMock = sinon.mock(queueList());
-      const client = testObject({}, { queueList: queueListMock.object });
+      const client = testObject({ serial: { encode: encodeSpy } }, { queueList: queueListMock.object });
 
       queueListMock.expects('queue')
         .withArgs('test-channel')
@@ -102,6 +103,7 @@ describe('Client', () => {
 
       queueListMock.verify();
       expect(addSpy.calledOnce).to.be.true;
+      expect(encodeSpy.calledOnce).to.be.true;
     });
   });
 

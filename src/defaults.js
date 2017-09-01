@@ -35,7 +35,8 @@ const defaults = {
   transport: transports.TCP,
   serial: serials.JSON,
   secretKey: null,
-  profile: profiles.dynamic
+  profile: profiles.dynamic,
+  socketTimeout: 300000
 };
 
 /* Exports -------------------------------------------------------------------*/

@@ -28,7 +28,7 @@ function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
    */
   function write(name, message) {
     queueList.queue(name, wrap)
-      .add(scope.serial ? scope.serial.encode(message) : message);
+      .add((scope.serial !== null) ? scope.serial.encode(message) : message);
     return scope;
   }
 
@@ -40,6 +40,9 @@ function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
     if (scope.connected) {
       queueList.flush();
       setTimeout(scope.transport.disconnect.bind(null, scope, handleDisconnect), 0);
+      if (callback instanceof Function) {
+        scope.once('disconnect', callback);
+      }
     }
   }
 
@@ -74,7 +77,7 @@ function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
     frames.forEach((frame) => {
       frame.packets.forEach((packet, messageIndex) => {
         Promise.resolve()
-          .then(() => scope.serial ? scope.serial.decode(packet) : packet)
+          .then(() => (scope.serial !== null) ? scope.serial.decode(packet) : packet)
           .catch(err => packet)
           .then(decodedPacket => multiplex.trigger(frame.channel, format(frame, decodedPacket, messageIndex)))
       });                 
@@ -111,7 +114,7 @@ function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
     return scope;
   }
 
-  return { write, destroy, backlog: [], pending: [], socketTimeout: 300000, connected: 1, init };
+  return { write, destroy, handleRequest, backlog: [], pending: [], connected: 1, init };
 }
 
 /* Exports -------------------------------------------------------------------*/

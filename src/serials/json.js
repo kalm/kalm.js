@@ -32,7 +32,7 @@ function decode(payload) {
 function toUInt8Array(str) {
   const chars = [];
   for (let i = 0; i < str.length; i++) {
-    chars.push(str.charCodeAt(i));
+    chars[i] = str.charCodeAt(i);
   }
 
   return chars;
