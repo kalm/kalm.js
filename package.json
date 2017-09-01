@@ -1,6 +1,6 @@
 {
   "name": "kalm",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "The socket manager",
   "main": "./index.js",
   "scripts": {
@@ -37,12 +37,12 @@
   },
   "homepage": "https://github.com/kalm/kalm-js#readme",
   "dependencies": {
-    "debug": "^2.6.0"
+    "debug": "^3.0.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.1.0",
-    "sinon": "^1.17.0"
+    "chai": "^4.1.0",
+    "mocha": "^3.5.0",
+    "sinon": "^3.2.0"
   },
   "browser": {
     "net": false,

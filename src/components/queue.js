@@ -21,6 +21,7 @@ const reservedBytes = 4;
 function Queue(scope, profile, wrap) {
 
   const baseBytes = scope.name.split('').length + reservedBytes;
+  const sizeBased = (profile.maxBytes !== null && profile.maxBytes !== undefined);
 
   /** @private */
   function initTimer() {
@@ -58,18 +59,16 @@ function Queue(scope, profile, wrap) {
     scope.packets.push(packet);
     scope.bytes += packet.length;
     
-    if (checkSize()) {
+    if (sizeBased === false || (sizeBased === true && checkSize())) {
       initTimer();
     }
   }
 
   /** @private */
   function checkSize() {
-    if (profile.maxBytes !== null && profile.maxBytes !== undefined) {
-      if (bytes() >= profile.maxBytes) {
-        step();
-        return false;
-      }
+    if (bytes() >= profile.maxBytes) {
+      step();
+      return false;
     }
     return true;
   }
@@ -80,7 +79,7 @@ function Queue(scope, profile, wrap) {
    * @returns {number} The queue size
    */
   function bytes() {
-    return scope.bytes + scope.packets.length * 2 + baseBytes;
+    return scope.bytes + (scope.packets.length * 2) + baseBytes;
   }
   
   /**

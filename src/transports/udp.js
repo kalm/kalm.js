@@ -15,9 +15,36 @@ const dgram = require('dgram');
 const _socketType = 'udp4';
 const _keySeparator = ':';
 const _localAddress = '0.0.0.0';
+const _clientCache = {};
 const _reuseAddr = true;
 
 /* Methods -------------------------------------------------------------------*/
+
+/** @private */
+function resolveClient(origin, handlers, options) {
+  const key = `${origin.address}.${origin.port}`;
+  if (_clientCache[key] === undefined) {
+    _clientCache[key] = {
+      client: handlers.handleConnection(null, { 
+        hostname: origin.address, 
+        port: origin.port,
+        connected: 0,
+        _hostname: options.hostname,
+        _port: options.port
+      }),
+      timeout: null,
+      cleanup: () => { 
+        _clientCache[key].destroy(() => { delete _clientCache[key]; });
+      }
+    };
+  }
+  else {
+    clearTimeout(_clientCache[key].timeout);
+  }
+
+  _clientCache[key].timeout = setTimeout(_clientCache[key].cleanup, options.socketTimeout);
+  return _clientCache[key].client;
+}
 
 /**
  * Starts listening for incomming connections
@@ -28,16 +55,7 @@ const _reuseAddr = true;
  */
 function listen(handlers, options) {
   const listener = dgram.createSocket({ type: _socketType, reuseAddr: _reuseAddr });
-  listener.on('message', (data, origin) => {
-    const client = handlers.handleConnection(null, { 
-      hostname: origin.address, 
-      port: origin.port,
-      pending: [data],
-      connected: 0,
-      _hostname: options.hostname,
-      _port: options.port
-    });
-  });
+  listener.on('message', (data, origin) => resolveClient(origin, handlers, options).handleRequest(data));
   listener.on('error', handlers.handleError);
   listener.bind(options.port, _localAddress);
   return Promise.resolve(listener);
