@@ -29,7 +29,7 @@ describe('Integration tests', () => {
 				server.stop(() => {
 					server = null;
 					done();
-				})
+				});
 			});
 
 			/* --- Tests --- */

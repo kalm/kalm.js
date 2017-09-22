@@ -23,7 +23,7 @@ const _reuseAddr = true;
 /** @private */
 function resolveClient(origin, handlers, options) {
   const key = `${origin.address}.${origin.port}`;
-  if (_clientCache[key] === undefined) {
+  if (!_clientCache.hasOwnProperty(key)) {
     _clientCache[key] = {
       client: handlers.handleConnection(null, { 
         hostname: origin.address, 
@@ -81,7 +81,7 @@ function getOrigin(socket) {
  * @param {Buffer} payload The body of the request
  */
 function send(socket, payload) {
-  socket.send(payload, 0, payload.length, socket._port, socket._hostname);
+  socket.send([payload], socket._port, socket._hostname);
 }
 
 /**

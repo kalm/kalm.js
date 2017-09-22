@@ -15,7 +15,7 @@ function QueueList(scope) {
    * @memberof Client
    */
   function queue(name, wrap) {
-    if (name in scope.queues) return scope.queues[name];
+    if (scope.queues.hasOwnProperty(name)) return scope.queues[name];
 
     scope.queues[name] = Queue({ 
       name,

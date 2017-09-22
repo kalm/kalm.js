@@ -10,8 +10,8 @@
 /** @private */
 function mapKeyIn(key) {
   const seed = Number(toUint8(key).join(''));
-  const list = new Array(256);
-  const dict = new Array(256);
+  const list = [0];
+  const dict = [0];
 
   for (let i = 0; i < 256; i++) {
     const temp = list[i] || i;
@@ -28,7 +28,7 @@ function mapKeyIn(key) {
 /** @private */
 function mapKeyOut(key) {
   const seed = Number(toUint8(key).join(''));
-  const dict = new Array(256);
+  const dict = [0];
 
   for (let i = 0; i < 256; i++) {
     const temp = dict[i] || i;
@@ -42,8 +42,7 @@ function mapKeyOut(key) {
 
 /** @private */
 function toUint8(str) {
-  return str.toString()
-    .split('')
+  return `${str}`.split('')
     .map(char => char.charCodeAt(0));
 }
 

@@ -30,9 +30,10 @@ function decode(payload) {
 
 /** @private */
 function toUInt8Array(str) {
-  const chars = [];
-  for (let i = 0; i < str.length; i++) {
-    chars[i] = str.charCodeAt(i);
+  const chars = [0];
+  const len = str.length;
+  for (let i = 0; i < len; i++) {
+    chars[i] = str.charCodeAt(i)|0;
   }
 
   return chars;
