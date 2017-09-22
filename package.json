@@ -1,12 +1,13 @@
 {
   "name": "kalm",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "The socket manager",
   "main": "./index.js",
   "scripts": {
     "test": "mocha tests/unit --recursive && mocha tests/integration",
     "bench": "node tests/benchmarks"
   },
+  "engines": { "node" : ">=6.0.0" },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kalm/kalm-js.git"
@@ -37,12 +38,12 @@
   },
   "homepage": "https://github.com/kalm/kalm-js#readme",
   "dependencies": {
-    "debug": "^3.0.0"
+    "debug": "~3.0.0"
   },
   "devDependencies": {
-    "chai": "^4.1.0",
-    "mocha": "^3.5.0",
-    "sinon": "^3.2.0"
+    "chai": "~4.1.0",
+    "mocha": "~3.5.0",
+    "sinon": "~3.3.0"
   },
   "browser": {
     "net": false,

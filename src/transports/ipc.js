@@ -41,7 +41,7 @@ function listen(handlers, options) {
 function getOrigin(socket) {
   return {
     host: socket._server._pipeName,
-    port: '' + socket._handle.fd
+    port: `${socket._handle.fd}`
   };
 }
 
@@ -52,7 +52,7 @@ function getOrigin(socket) {
  * @returns {Socket} The created ipc socket
  */
 function createSocket(client) {
-  return net.connect(_path + client.port);
+  return net.connect(`${_path}${client.port}`);
 }
 
 /**

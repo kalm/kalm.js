@@ -57,7 +57,7 @@ function Queue(scope, profile, wrap) {
    */
   function add(packet) {
     scope.packets.push(packet);
-    scope.bytes += packet.length;
+    scope.bytes = scope.bytes + packet.length;
     
     if (sizeBased === false || (sizeBased === true && checkSize())) {
       initTimer();
@@ -79,7 +79,7 @@ function Queue(scope, profile, wrap) {
    * @returns {number} The queue size
    */
   function bytes() {
-    return scope.bytes + (scope.packets.length * 2) + baseBytes;
+    return scope.bytes + (2 * scope.packets.length) + baseBytes;
   }
   
   /**

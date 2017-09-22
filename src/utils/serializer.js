@@ -15,11 +15,10 @@
  * @param {Array} packets The list of packets to serialize
  */ 
 function serialize(frame, channel, packets) {
-  let result = [];
-  result[0] = frame % 255;
-  result[1] = channel.length;
+  const channelLen = channel.length;
+  let result = [frame % 255, channelLen];
 
-  for (let letter = 0; letter < channel.length; letter++) {
+  for (let letter = 0; letter < channelLen; letter++) {
     result.push(channel.charCodeAt(letter));
   }
 
@@ -41,10 +40,7 @@ function serialize(frame, channel, packets) {
 
 /** @private */
 function uint16Size(value) {
-  const size = [];
-  size[0] = value >>> 8;
-  size[1] = value & 0xff;
-  return size;
+  return [value >>> 8, value & 0xff];
 }
 
 /** @private */
@@ -62,27 +58,27 @@ function parseFrame(frames, payload, startIndex) {
   };
 
   const letters = [];
-  const channelLength = payload[startIndex + 1];
-  let caret = startIndex + channelLength + 2;
+  const channelLength = payload[1 + startIndex];
+  let caret = 2 + startIndex + channelLength;
 
-  for (let letter = startIndex + 2; letter < startIndex + channelLength + 2; letter++) {
+  for (let letter = 2 + startIndex; letter < 2 + startIndex + channelLength; letter++) {
     letters.push(payload[letter]);
   }
   result.channel = String.fromCharCode.apply(null, letters);
 
-  const totalPackets = numericSize(payload[caret], payload[caret + 1]);
+  const totalPackets = numericSize(payload[caret], payload[1 + caret]);
 
-  caret = caret + 2;
+  caret = 2 + caret;
 
   for (let p = 0; p < totalPackets; p++) {
-    let packetLength = numericSize(payload[caret], payload[caret + 1]);
+    let packetLength = numericSize(payload[caret], payload[1 + caret]);
     let packet = [];
-    for (let byte = caret + 2; byte < packetLength + caret + 2; byte++) {
+    for (let byte = 2 + caret; byte < 2 + packetLength + caret; byte++) {
       packet.push(payload[byte]);
     }
     result.packets.push(packet);
 
-    caret = caret + packetLength + 2;
+    caret = 2 + caret + packetLength;
   }
 
   frames.push(result);
@@ -100,7 +96,7 @@ function deserialize(payload) {
   const payloadBytes = payload.length;
   let caret = 0;
 
-  while(caret<payloadBytes) {
+  while(caret < payloadBytes) {
     caret = parseFrame(frames, payload, caret);
   }
 
