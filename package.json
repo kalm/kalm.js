@@ -7,25 +7,33 @@
     "test": "mocha tests/unit --recursive && mocha tests/integration",
     "bench": "node tests/benchmarks"
   },
-  "engines": { "node" : ">=6.0.0" },
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kalm/kalm-js.git"
   },
   "keywords": [
+    "ipc",
+    "javascript",
+    "kalm",
+    "multiplexing",
+    "network",
+    "node",
+    "optimize",
     "socket",
     "tcp",
     "udp",
+    "websockets",
     "client",
     "server",
     "service",
     "peer",
     "micro",
     "latency",
-    "ipc",
     "messaging",
     "queue",
-    "kalm",
     "nagle",
     "buffer",
     "protocol",
@@ -49,5 +57,8 @@
     "net": false,
     "fs": false,
     "dgram": false
-  }
+  },
+  "contributors": [
+    "frederic charette <fredericcharette@gmail.com>"
+  ]
 }
