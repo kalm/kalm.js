@@ -79,6 +79,10 @@ function Client(scope, queueList, multiplex, serializer, sessions, encrypter) {
         Promise.resolve()
           .then(() => (scope.serial !== null) ? scope.serial.decode(packet) : packet)
           .catch(err => packet)
+          .then(msg => {
+            console.log('>>> msg', msg);
+            return msg;
+          })
           .then(decodedPacket => multiplex.trigger(frame.channel, format(frame, decodedPacket, messageIndex)))
       });                 
     });

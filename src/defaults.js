@@ -30,9 +30,9 @@ const transports = require('./transports');
  * }
  */
 const defaults = {
-  hostname: '0.0.0.0',
-  port: 3000,
-  transport: transports.TCP,
+  //hostname: '0.0.0.0',
+  //port: 3000,
+  //transport: transports.TCP,
   serial: serials.JSON,
   secretKey: null,
   profile: profiles.dynamic,

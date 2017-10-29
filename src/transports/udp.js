@@ -25,7 +25,7 @@ function resolveClient(origin, handlers, options) {
   const key = `${origin.address}.${origin.port}`;
   if (!_clientCache.hasOwnProperty(key)) {
     _clientCache[key] = {
-      client: handlers.handleConnection(null, { 
+      client: handlers.handleConnection(null, module.exports, {
         hostname: origin.address, 
         port: origin.port,
         connected: 0,
@@ -90,8 +90,8 @@ function send(socket, payload) {
  * @param {Server} server The server object
  * @param {function} callback The success callback for the operation
  */
-function stop(server, callback) {
-  server.listener.close();
+function stop(port, callback) {
+  port.listener.close();
   setTimeout(callback, 0);
 }
 
@@ -101,10 +101,10 @@ function stop(server, callback) {
  * @param {Client} client The client to create the socket for
  * @returns {Socket} The created tcp client
  */
-function createSocket(client) {
+function createSocket(port) {
   let socket = dgram.createSocket(_socketType);
-  socket._port = socket._port || client.port;
-  socket._hostname = socket._hostname || client.hostname;
+  socket._port = socket._port || port.port;
+  socket._hostname = socket._hostname || port.hostname;
   return socket;
 }
 
@@ -132,7 +132,7 @@ function attachSocket(socket, handlers) {
  * @param {Client} client The client to disconnect
  * @param {function} callback The callback method
  */
-function disconnect(client, callback) {
+function disconnect(port, callback) {
   setTimeout(callback, 0); // Nothing to do
 }
 

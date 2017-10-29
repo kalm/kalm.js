@@ -26,7 +26,7 @@ const _path = '/tmp/app.socket-';
  */
 function listen(handlers, options) {
   return new Promise(resolve => {
-    const listener = net.createServer(handlers.handleConnection);
+    const listener = net.createServer(socket => handlers.handleConnection(socket, module.exports));
     listener.on('error', handlers.handleError);
     listener.listen(_path + options.port, resolve.bind(null, listener));
   });
@@ -75,8 +75,8 @@ function attachSocket(socket, handlers) {
  * @param {Server} server The server object
  * @param {function} callback The success callback for the operation
  */
-function stop(server, callback) {
-  server.listener.close(() => setTimeout(callback, 0));
+function stop(port, callback) {
+  port.listener.close(() => setTimeout(callback, 0));
 }
 
 /**
@@ -95,9 +95,9 @@ function send(socket, payload) {
  * @param {Client} client The client to disconnect
  * @param {function} callback The callback method
  */
-function disconnect(client, callback) {
-  client.socket.end();
-  client.socket.destroy();
+function disconnect(port, callback) {
+  port.socket.end();
+  port.socket.destroy();
   setTimeout(callback, 0);
 }
 

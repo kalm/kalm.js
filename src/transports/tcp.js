@@ -21,7 +21,7 @@ const net = require('net');
  */
 function listen (handlers, options) {
   return new Promise(resolve => {
-    const listener = net.createServer(handlers.handleConnection);
+    const listener = net.createServer(socket => handlers.handleConnection(socket, module.exports));
     listener.on('error', handlers.handleError);
     listener.listen(options.port, resolve.bind(null, listener));
   });
@@ -46,8 +46,8 @@ function getOrigin(socket) {
  * @param {Client} client The client to create the socket for
  * @returns {Socket} The created tcp client
  */
-function createSocket(client) {
-  return net.connect(client.port, client.hostname);
+function createSocket(port) {
+  return net.connect(port.port, port.hostname);
 }
 
 /**
@@ -71,8 +71,8 @@ function attachSocket(socket, handlers) {
  * @param {Server} server The server object
  * @param {function} callback The success callback for the operation
  */
-function stop(server, callback) {
-  server.listener.close(() => setTimeout(callback, 0));
+function stop(port, callback) {
+  port.listener.close(() => setTimeout(callback, 0));
 }
 
 /**
@@ -91,9 +91,9 @@ function send(socket, payload) {
  * @param {Client} client The client to disconnect
  * @param {function} callback The callback method
  */
-function disconnect(client, callback) {
-  client.socket.end();
-  client.socket.destroy();
+function disconnect(port, callback) {
+  port.socket.end();
+  port.socket.destroy();
   setTimeout(callback, 0);
 }
 

@@ -39,20 +39,28 @@ function Server(scope, crypto, clientFactory) {
     callback = callback || function() {};
     debug('warn: stopping server');
 
-    if (scope.listener) {
+    if (scope.connections.length > 0) {
       Promise.resolve()
         .then(() => {
           scope.connections.forEach(connection => connection.destroy());
           scope.connections.length = 0;
-          scope.transport.stop(scope, callback);
-          scope.listener = null;
-        })
-        .catch(scope.handleError)
+        });
     }
-    else {
-      scope.listener = null;
-      setTimeout(callback, 0);
-    }
+
+    scope.ports.forEach((port) => {
+      if (port.listener) {
+        Promise.resolve()
+          .then(() => {
+            port.transport.stop(scope, callback);
+            port.listener = null;
+          })
+          .catch(scope.handleError)
+      }
+      else {
+        port.listener = null;
+        setTimeout(callback, 0);
+      }
+    });
   }
 
   /** @private */
@@ -62,8 +70,8 @@ function Server(scope, crypto, clientFactory) {
   }
 
   /** @private */
-  function handleConnection(socket, options) {
-    const origin = scope.transport.getOrigin(options || socket);
+  function handleConnection(socket, transport, options) {
+    const origin = transport.getOrigin(socket || options);
     const hash = crypto.createHash('sha1');
     hash.update(scope.id);
     hash.update(origin.host);
@@ -71,7 +79,7 @@ function Server(scope, crypto, clientFactory) {
 
     const client = clientFactory.create(Object.assign({
       id: hash.digest('hex'),
-      transport: scope.transport,
+      transport,
       serial: scope.serial,
       catch: scope.catch,
       socket,
@@ -90,9 +98,11 @@ function Server(scope, crypto, clientFactory) {
   }
 
   function init() {
-    scope.transport.listen({ handleConnection, handleError }, scope)
-      .then(listener => scope.listener = listener);
-    disconnectionHandler = scope.emit.bind(scope, 'disconnection');
+    scope.ports.forEach((port) => {
+      port.transport.listen({ handleConnection, handleError }, Object.assign({}, scope, port))
+        .then(listener => port.listener = listener);
+      disconnectionHandler = scope.emit.bind(scope, 'disconnection');
+    });
     
     return scope;
   }
