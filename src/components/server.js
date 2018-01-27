@@ -79,7 +79,12 @@ function Server(scope, crypto, clientFactory) {
       secretKey: scope.secretKey,
       isServer: true,
       hostname: origin.host,
-      port: origin.port
+      port: origin.port,
+      server: {
+        connections: scope.connections,
+        broadcast,
+        stop
+      }
     }, options));
       
     scope.connections.push(client);
