@@ -66,6 +66,7 @@ Giving profiles to your traffic output creates a more predictable load on the sy
           req.client     The connection handle reference
           req.frame      The details of the network frame
           req.session    The session store for that connection
+          req.reply      Replys to the other client on the same channel
         */
       });
 
