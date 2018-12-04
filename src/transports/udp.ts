@@ -12,7 +12,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     const clientCache = {};
 
     function addClient(client) {
-      const local: Remote = client.local();
+      const local: Remote = client.remote();
       const key: string = `${local.host}.${local.port}`;
 
       // Client connection - skip

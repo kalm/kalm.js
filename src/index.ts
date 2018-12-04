@@ -14,7 +14,7 @@ import realtime from './routines/realtime';
 import tick from './routines/tick';
 import { EventEmitter } from 'events';
 
-import { Server, ClientConfig, ServerConfig } from './types';
+import { Server, ClientConfig, ServerConfig, Provider as ProviderType } from './types';
 
 /* Local variables -----------------------------------------------------------*/
 
@@ -30,11 +30,14 @@ const defaults = {
 /* Methods -------------------------------------------------------------------*/
 
 function listen(options: ServerConfig): Server {
+  let _providers: ProviderType[];
   const server: Server = {
-    providers: options.providers.map(config => {
-      return Provider({ ...defaults, ...config }, new EventEmitter(), server);
-    }),
+    host: options.host || defaults.host,
+    providers: _providers.map,
   };
+  _providers = options.providers.map(config => {
+    return Provider({ ...defaults, ...config }, new EventEmitter(), server);
+  });
   return server;
 }
 

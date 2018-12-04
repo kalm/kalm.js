@@ -45,15 +45,15 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: any): Clie
   }
 
   function remote(): Remote {
-    if (!handle) return null;
-    return socket.remote(handle);
-  }
-
-  function local(): Remote {
     return {
       host: params.host,
       port: params.port,
     };
+  }
+
+  function local(): Remote {
+    if (!handle) return null;
+    return socket.remote(handle);
   }
 
   function _createChannel(channel: string): Channel {
@@ -132,6 +132,7 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: any): Clie
   emitter.on('error', _handleError);
   emitter.on('frame', _handleRequest);
   if (!handle) {
+    logger.log(`log: connecting to ${params.host}:${params.port}`);
     handle = socket.connect();
   }
 

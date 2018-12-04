@@ -50,9 +50,10 @@ function Provider(params: ClientConfig, emitter: EventEmitter, server: Server): 
 
   emitter.on('socket', handleConnection);
   emitter.on('error', _handleError);
+  logger.log(`log: listening on ${params.host}:${params.port}`);
   socket.bind();
 
-  return Object.assign(emitter, { broadcast, stop, connections });
+  return Object.assign(emitter, { label: params.label, broadcast, stop, connections });
 }
 
 /* Exports -------------------------------------------------------------------*/

@@ -6,7 +6,7 @@ import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function ipc({ socketTimeout = 5000, path = '/tmp/app.socket-' } = {}): Transport {
+function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' } = {}): Transport {
   return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
     let listener: net.Server;
 

@@ -7,18 +7,20 @@ import dgram from 'dgram';
 /* Types ---------------------------------------------------------------------*/
 
 export type ClientConfig = {
-    routine: Routine
-    format: Format
-    transport: Transport
-    secretKey: string
-    port: number
-    host: string
-    isServer: boolean
-    provider: any
+    label?: string
+    routine?: Routine
+    format?: Format
+    transport?: Transport
+    secretKey?: string
+    port?: number
+    host?: string
+    isServer?: boolean
+    provider?: any
 }
 
 export type ServerConfig = {
     providers: ClientConfig[]
+    host?: string
 }
 
 export type ByteList = number[] | Buffer
@@ -29,20 +31,24 @@ export type Remote = {
 }
 
 export type Server = {
-    providers: Provider[]
+    providers: <U>(callbackfn: (value: Provider, index: number, array: Provider[]) => U, thisArg?: any) => U[]
+    host: string
 }
 
-export type Provider = {
+export interface Provider extends EventEmitter {
     broadcast: (channel: string, message: Serializable) => void
+    label: string
     stop: () => void
     connections: Client[]
 }
 
-export type Client = {
+export interface Client extends EventEmitter {
     write: (channel: string, message: Serializable) => void
     destroy: () => void
     subscribe: (channel: string, handler: () => void) => void
     unsubscribe: (channel: string, handler: () => void) => void
+    local: () => Remote
+    remote: () => Remote
 }
 
 export type Channel = {
