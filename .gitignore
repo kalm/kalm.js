@@ -39,3 +39,5 @@ yarn-error.log
 NTH
 
 docs
+yarn.lock
+package-lock.json

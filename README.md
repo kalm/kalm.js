@@ -19,11 +19,11 @@
 
 ---
 
-- **Easy-to-use syntax** and feature parity for all protocols
+- **Easy-to-use syntax** unified across protocols
 - Flexible and extensible, load your own transports and serializers
-- **Multiplexing, session stores and packet encryption**
+- **Multiplexing, buffering and packet encryption**
 - Can be used between servers or in the **browser**
-- Lower resource footprint and over **better throughtput** than plain sockets
+- Lower resource footprint and **better throughtput** than plain sockets
 
 
 ## How it works
@@ -60,13 +60,11 @@ Giving profiles to your traffic output creates a more predictable load on the sy
 
     server.on('connection', (client) => { 
       // Subscribe to 'user.action' channel
-      client.subscribe('user.action', (req) => {
+      client.subscribe('user.action', (data, packet) => {
         /*
-          req.body       The body of the request
-          req.client     The connection handle reference
-          req.frame      The details of the network frame
-          req.session    The session store for that connection
-          req.reply      Replys to the other client on the same channel
+          data              The body of the request
+          packet.client     The connection handle reference
+          packet.frame      The details of the network frame
         */
       });
 

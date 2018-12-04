@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "module": "none",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "lib": [ "es2018", "dom", "es2018.promise" ],
+        "sourceMap": false,
+        "allowJs": true,
+        "target": "es2018",
+        "outFile": "kalm.js",
+        "outDir": "dist"
+
+    },
+    "include": [
+        "**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.js"
+    ]
+}
