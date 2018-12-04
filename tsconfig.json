@@ -11,15 +11,12 @@
         "sourceMap": false,
         "allowJs": true,
         "target": "es2018",
-        "outFile": "kalm.js",
-        "outDir": "dist"
-
+        "outFile": "bundle.js"
     },
     "include": [
         "**/*.ts"
     ],
     "exclude": [
-        "node_modules",
-        "**/*.js"
+        "node_modules"
     ]
 }
