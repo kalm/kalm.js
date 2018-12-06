@@ -22,8 +22,8 @@ function tcp({ socketTimeout = 30000 } = {}): Transport {
         port: handle.remotePort,
       };
     }
-    function connect(): net.Socket {
-      const connection: net.Socket = net.connect(params.port, params.host);
+    function connect(handle: net.Socket): net.Socket {
+      const connection: net.Socket = handle || net.connect(params.port, params.host);
       connection.on('data', req => emitter.emit('frame', req));
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
@@ -60,4 +60,4 @@ function tcp({ socketTimeout = 30000 } = {}): Transport {
 
 /* Exports -------------------------------------------------------------------*/
 
-export = tcp;
+export default tcp;

@@ -15,6 +15,7 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: any): Clie
   const encrypter = params.secretKey ? Encrypter(params.secretKey) : null;
   const serializer: Serializer = params.format(params, emitter);
   const socket: Socket = params.transport(params, emitter);
+  emitter.setMaxListeners(Infinity);
 
   function write(channel: string, message: Serializable): void {
     return _resolveChannel(channel).queue.add(serializer.encode(message));
@@ -58,6 +59,8 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: any): Clie
 
   function _createChannel(channel: string): Channel {
     const channelEmitter: EventEmitter = new EventEmitter();
+    channelEmitter.setMaxListeners(Infinity);
+
     return {
         emitter: channelEmitter,
         queue: params.routine(channel, params, channelEmitter),
@@ -96,19 +99,21 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: any): Clie
   function _handlePackets(frame: RawFrame, packet: ByteList, index: number): void {
     _decode(packet)
       .then(decodedPacket => {
-        _resolveChannel(frame.channel).emitter.emit(
-          'message',
-          [decodedPacket, {
-            client: params,
-            frame: {
-              channel: frame.channel,
-              id: frame.frameId,
-              messageIndex: index,
-              payloadBytes: frame.payloadBytes,
-              payloadMessages: frame.packets.length,
-            },
-            stats: {},
-          }]);
+        if (channels[frame.channel]) {
+          channels[frame.channel].emitter.emit(
+            'message',
+            [decodedPacket, {
+              client: params,
+              frame: {
+                channel: frame.channel,
+                id: frame.frameId,
+                messageIndex: index,
+                payloadBytes: frame.payloadBytes,
+                payloadMessages: frame.packets.length,
+              },
+              stats: {},
+            }]);
+        }
       });
   }
 
@@ -131,14 +136,12 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: any): Clie
   emitter.on('disconnect', _handleDisconnect);
   emitter.on('error', _handleError);
   emitter.on('frame', _handleRequest);
-  if (!handle) {
-    logger.log(`log: connecting to ${params.host}:${params.port}`);
-    handle = socket.connect();
-  }
+  if (!handle) logger.log(`log: connecting to ${params.host}:${params.port}`);
+  handle = socket.connect(handle);
 
-  return Object.assign(emitter, { write, destroy, subscribe, unsubscribe, remote, local });
+  return Object.assign(emitter, { write, destroy, subscribe, unsubscribe, remote, local, label: params.label });
 }
 
 /* Exports -------------------------------------------------------------------*/
 
-export = Client;
+export default Client;

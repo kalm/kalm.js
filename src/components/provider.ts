@@ -10,6 +10,7 @@ import { Serializable, ClientConfig, Socket, Remote, Server, Provider } from '..
 function Provider(params: ClientConfig, emitter: EventEmitter, server: Server): Provider {
   const connections = [];
   const socket: Socket = params.transport(params, emitter);
+  emitter.setMaxListeners(Infinity);
 
   function broadcast(channel: string, payload: Serializable): void {
     connections.forEach(c => c.write(channel, payload));
@@ -38,6 +39,7 @@ function Provider(params: ClientConfig, emitter: EventEmitter, server: Server): 
       provider: {
         broadcast,
         connections,
+        label: params.label,
         server,
         stop,
       },
@@ -58,4 +60,4 @@ function Provider(params: ClientConfig, emitter: EventEmitter, server: Server): 
 
 /* Exports -------------------------------------------------------------------*/
 
-export = Provider;
+export default Provider;

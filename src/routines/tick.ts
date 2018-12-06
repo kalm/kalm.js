@@ -10,6 +10,7 @@ function tick(hz: number): Routine {
         throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
     }
     const seed: number = Date.now();
+    let i: number = 0;
 
     function _delta(): number {
         const now: number = Date.now() - seed;
@@ -30,7 +31,8 @@ function tick(hz: number): Routine {
         function _step(): void {
             clearTimeout(timer);
             timer = null;
-            emitter.emit('runQueue', packets);
+            emitter.emit('runQueue', { frameId: i++, channel, packets });
+            if (i > 255) i = 0;
             packets.length = 0;
         }
 
@@ -42,4 +44,4 @@ function tick(hz: number): Routine {
 
 /* Exports -------------------------------------------------------------------*/
 
-export = tick;
+export default tick;

@@ -27,8 +27,8 @@ function _absorb(err) {
 
 function setup(resolve) {
 	server = dgram.createSocket('udp4');
-	server.on('message', function() {
-		count++;
+	server.on('message', (msg, origin) => {
+		server.send(Buffer.from(JSON.stringify(settings.testPayload)), 1111, '0.0.0.0');
 	});
 	handbreak = false;
 	server.on('error', _absorb);
@@ -54,17 +54,11 @@ function step(resolve) {
 	if (!client) {
 		client = dgram.createSocket('udp4');
 		client.on('error', _absorb);
+		client.on('message', () => count++);
+		client.bind(1111, '0.0.0.0');
 	}
 
-	var payload = new Buffer(JSON.stringify(settings.testPayload));
-
-	client.send(
-		payload, 
-		0, 
-		payload.length, 
-		settings.port, 
-		'0.0.0.0'
-	);
+	client.send(Buffer.from(JSON.stringify(settings.testPayload)), settings.port, '0.0.0.0');
 	resolve();
 }
 

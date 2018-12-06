@@ -30,12 +30,11 @@ const defaults = {
 /* Methods -------------------------------------------------------------------*/
 
 function listen(options: ServerConfig): Server {
-  let _providers: ProviderType[];
   const server: Server = {
     host: options.host || defaults.host,
-    providers: _providers.map,
+    providers: null,
   };
-  _providers = options.providers.map(config => {
+  server.providers = options.providers.map(config => {
     return Provider({ ...defaults, ...config }, new EventEmitter(), server);
   });
   return server;
@@ -47,7 +46,7 @@ function connect(options: ClientConfig) {
 
 /* Exports -------------------------------------------------------------------*/
 
-export = {
+export default {
   connect,
   formats: {
     json,

@@ -7,8 +7,11 @@ import { Queue, Routine } from '../types';
 
 function realtime(): Routine {
     return function queue(channel: string, params: object, emitter: EventEmitter): Queue {
+        let i: number = 0;
+
         function add(packet: number[]): void {
-            emitter.emit('runQueue', [packet]);
+            emitter.emit('runQueue', { frameId: i++, channel, packets: [packet] });
+            if (i > 255) i = 0;
         }
 
         function size(): number { return 0; }
@@ -20,4 +23,4 @@ function realtime(): Routine {
 
 /* Exports -------------------------------------------------------------------*/
 
-export = realtime;
+export default realtime;

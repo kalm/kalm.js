@@ -69,7 +69,7 @@ settings.port = 3000 + Math.round(Math.random()*1000);
 var adpts = Object.keys(Suite).map(function(k) {
 	return {
 		transport: k,
-		settings: {transport: k},
+		settings: {transport: k.toLowerCase()},
 		raw: Suite[k],
 		kalm: Kalm
 	};

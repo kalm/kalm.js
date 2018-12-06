@@ -40,12 +40,12 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
         });
         clientCache[key] = {
           client: null,
-          data,
+          data: [data],
           timeout: null,
         };
       } else {
         if (!clientCache[key].client) {
-          clientCache[key].push(data);
+          clientCache[key].data.push(data);
         } else {
           clientCache[key].client.emit('frame', data);
         }
@@ -57,6 +57,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       listener.on('message', (data, origin) => resolveClient(origin, data));
       listener.on('error', err => emitter.emit('error', err));
       listener.bind(params.port, localAddr);
+      emitter.emit('ready');
     }
 
     function remote(handle: dgram.Socket): Remote {
@@ -67,17 +68,17 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     }
 
     function send(handle: dgram.Socket, payload: ByteList): void {
-      handle.send(payload, handle['_port'], handle['_host']);
+      handle.send(Buffer.from(payload as number[]), handle['_port'], handle['_host']);
     }
 
     function stop(): void {
       listener.close();
     }
 
-    function connect(): dgram.Socket {
+    function connect(handle: dgram.Socket): dgram.Socket {
       const connection = dgram.createSocket(type as dgram.SocketType);
-      connection['_port'] = params.port;
-      connection['_host'] = params.host;
+      connection['_port'] = handle && handle['_port'] || params.port;
+      connection['_host'] = handle && handle['_host'] || params.host;
       connection.on('error', err => emitter.emit('error', err));
       connection.on('message', req => emitter.emit('frame', req));
       socket.bind(null, localAddr);
@@ -104,4 +105,4 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
 
 /* Exports -------------------------------------------------------------------*/
 
-export = udp;
+export default udp;

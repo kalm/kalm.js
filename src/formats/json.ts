@@ -35,4 +35,4 @@ function json(): Format {
 
 /* Exports -------------------------------------------------------------------*/
 
-export = json;
+export default json;

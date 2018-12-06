@@ -26,9 +26,7 @@ function _absorb(err) {
 
 function setup(resolve) {
 	server = net.createServer(function(socket) {
-		socket.on('data', function() {
-			count++;
-		});
+		socket.on('data', () => socket.write(JSON.stringify(settings.testPayload)));
 		socket.on('error', _absorb);
 	});
 	handbreak = false;
@@ -55,9 +53,9 @@ function step(resolve) {
 	if (!client) {
 		client = net.connect(settings.port, '0.0.0.0');
 		client.on('error', _absorb);
+		client.on('data', () => count++);
 	}
 
-	if (client)
 	client.write(JSON.stringify(settings.testPayload));
 	resolve();
 }

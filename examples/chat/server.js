@@ -1,24 +1,19 @@
-const { listen } = require('kalm');
-const wss = require('kalm-secure-websockets');
-const heartbeat = require('kalm/profiles/heartbeat');
+const kalm = require('../../dist/bundle');
+const ws = require('../../../kalm-websocket');
 
-const Server = listen({
+const Server = kalm.listen({
     providers: [
-        // Min config
         {
             label: 'server',
-            transport: wss,
-            options: {
-                cert: '...',
-                key: '...',
-            },
-            profile: heartbeat,
+            port: 8800,
+            transport: ws(),
+            routine: kalm.routines.tick(5), // Hz
         },
     ],
     host: '0.0.0.0',
 });
 
-Server.providers((provider) => {
+Server.providers.forEach((provider) => {
     provider.on('connection', (client) => {
         client.subscribe('c.evt', (msg, evt) => {
             provider.broadcast('r.evt', msg);

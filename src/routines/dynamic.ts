@@ -13,6 +13,7 @@ function dynamic(hz: number): Routine {
     return function queue(channel: string, params: object, emitter: EventEmitter): Queue {
         let timer: NodeJS.Timer = null;
         const packets: number[][] = [];
+        let i: number = 0;
 
         function add(packet: number[]): void {
             if (timer === null) {
@@ -24,7 +25,8 @@ function dynamic(hz: number): Routine {
         function _step(): void {
             clearTimeout(timer);
             timer = null;
-            emitter.emit('runQueue', packets);
+            emitter.emit('runQueue', { frameId: i++, channel, packets });
+            if (i > 255) i = 0;
             packets.length = 0;
         }
 
@@ -36,4 +38,4 @@ function dynamic(hz: number): Routine {
 
 /* Exports -------------------------------------------------------------------*/
 
-export = dynamic;
+export default dynamic;

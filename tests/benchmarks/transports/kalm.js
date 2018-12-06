@@ -7,7 +7,7 @@
 /* Requires ------------------------------------------------------------------*/
 
 var settings = require('../settings'); 
-var Kalm = require('../../../index');
+var Kalm = require('../../../dist/bundle');
 
 /* Local variables -----------------------------------------------------------*/
 
@@ -21,14 +21,18 @@ var handbreak = true;
 
 function setup(resolve) {
 	server = Kalm.listen({
-		port: settings.port,
-		transport: Kalm.transports[settings.transport],
-		profile: settings.profile,
-		secretKey: settings.secretKey
+		providers: [{
+			port: settings.port,
+			transport: Kalm.transports[settings.transport](),
+			routine: Kalm.routines[settings.routine[0]](settings.routine[1]),
+			secretKey: settings.secretKey
+		}]
 	});
 
-	server.on('connection', (c) => {
-		c.subscribe(settings.testChannel, (res) => count++);
+	server.providers.forEach((provider) => {
+		provider.on('connection', (c) => {
+			c.subscribe(settings.testChannel, (msg) => c.write(settings.testChannel, msg));
+		});
 	});
 
 	handbreak = false;
@@ -36,11 +40,10 @@ function setup(resolve) {
 }
 
 function teardown(resolve) {
-	if (server) server.stop(function() {
-		server = null;
-		client = null;
-		resolve(count);
-	});
+	server.providers.forEach(provider => provider.stop());
+	server = null;
+	client = null;
+	resolve(count);
 }
 
 function stop(resolve) {
@@ -53,13 +56,15 @@ function step(resolve) {
 	if (!client) {
 		client = Kalm.connect({
 			port: settings.port, 
-			transport: Kalm.transports[settings.transport], 
-			profile: settings.profile,
+			transport: Kalm.transports[settings.transport](),
+			routine: Kalm.routines.realtime(),
 			secretKey: settings.secretKey
 		});
+		client.subscribe(settings.testChannel, () => count++);
 	}
 
 	client.write(settings.testChannel, settings.testPayload);
+
 	resolve();
 }
 

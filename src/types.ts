@@ -31,7 +31,7 @@ export type Remote = {
 }
 
 export type Server = {
-    providers: <U>(callbackfn: (value: Provider, index: number, array: Provider[]) => U, thisArg?: any) => U[]
+    providers: Provider[]
     host: string
 }
 
@@ -75,7 +75,7 @@ export type Transport = (params: object, emitter: EventEmitter) => Socket
 export interface Socket {
     bind: () => void
     remote: (handle: net.Socket | dgram.Socket) => Remote
-    connect: () => net.Socket | dgram.Socket
+    connect: (handle?: net.Socket | dgram.Socket) => net.Socket | dgram.Socket
     stop: () => void
     send: (handle: net.Socket | dgram.Socket, message: ByteList) => void
     disconnect: (handle: net.Socket | dgram.Socket) => void

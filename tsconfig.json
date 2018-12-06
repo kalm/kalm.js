@@ -1,7 +1,6 @@
 {
     "compilerOptions": {
-        "module": "none",
-        "moduleResolution": "node",
+        "module": "esnext",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "noImplicitAny": false,
@@ -11,10 +10,10 @@
         "sourceMap": false,
         "allowJs": true,
         "target": "es2018",
-        "outFile": "bundle.js"
+        "outDir": "dist"
     },
     "include": [
-        "**/*.ts"
+        "src"
     ],
     "exclude": [
         "node_modules"

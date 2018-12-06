@@ -1,11 +1,11 @@
 /*
 [x] multi-server
-[ ] tick revised
+[x] tick revised
 [ ] stats 
 [ ] user error handling 
 [x] realtime as default 
 [ ] udp handshake
-[ ] proper remote ID 
+[ ] proper remote ID (wss)
 [x] reconnection --- they can handle themselves : on('disconnect')
 [x] cert support
 */

@@ -1,5 +1,8 @@
 tests
-README.md
+src
+examples
+.gitignore
+tsconfig.json
+tslint.json
+*.md
 .travis.yml
-CODE_OF_CONDUCT.md
-CONTRIBUTING.md

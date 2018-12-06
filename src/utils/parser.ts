@@ -49,17 +49,15 @@ function _numericSize(bytes: ByteList, index: number): number {
 }
 
 function _parseFrame(frames: RawFrame[], payload: ByteList, startIndex: number): number {
+  const channelLength = payload[1 + startIndex];
+  let caret = 4 + startIndex + channelLength;
+  const totalPackets = _numericSize(payload, 2 + startIndex + channelLength);
   const result = {
     channel: _parseFrameChannel(),
     frameId: payload[startIndex],
     packets: _parseFramePacket(),
     payloadBytes: payload.length,
   };
-
-  const channelLength = payload[1 + startIndex];
-  let caret = 2 + startIndex + channelLength;
-  const totalPackets = _numericSize(payload, caret);
-  caret = 2 + caret;
 
   function _parseFrameChannel(): string {
     const letters = payload.slice(2 + startIndex, 2 + startIndex + channelLength);
