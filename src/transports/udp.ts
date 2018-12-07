@@ -80,7 +80,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       connection['_port'] = handle && handle['_port'] || params.port;
       connection['_host'] = handle && handle['_host'] || params.host;
       connection.on('error', err => emitter.emit('error', err));
-      connection.on('message', req => emitter.emit('frame', req));
+      connection.on('message', req => emitter.emit('frame', [...req]));
       socket.bind(null, localAddr);
       emitter.emit('connect', connection);
       return connection;

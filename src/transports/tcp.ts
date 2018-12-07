@@ -24,7 +24,7 @@ function tcp({ socketTimeout = 30000 } = {}): Transport {
     }
     function connect(handle: net.Socket): net.Socket {
       const connection: net.Socket = handle || net.connect(params.port, params.host);
-      connection.on('data', req => emitter.emit('frame', req));
+      connection.on('data', req => emitter.emit('frame', [...req]));
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
       connection.on('close', () => emitter.emit('disconnect'));
@@ -37,7 +37,7 @@ function tcp({ socketTimeout = 30000 } = {}): Transport {
     }
 
     function send(handle: net.Socket, payload: ByteList): void {
-      if (handle) handle.write(payload);
+      if (handle) handle.write(Buffer.from(payload as number[]));
     }
 
     function disconnect(handle: net.Socket): void {

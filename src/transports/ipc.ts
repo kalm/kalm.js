@@ -25,7 +25,7 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' } = {}): Transpo
 
     function connect(handle: net.Socket): net.Socket {
       const connection: net.Socket = handle || net.connect(`${path}${params.port}`);
-      connection.on('data', req => emitter.emit('frame', req));
+      connection.on('data', req => emitter.emit('frame', [...req]));
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
       connection.on('close', () => emitter.emit('disconnect'));
@@ -38,7 +38,7 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' } = {}): Transpo
     }
 
     function send(handle: net.Socket, payload: ByteList): void {
-      if (handle) handle.write(payload);
+      if (handle) handle.write(Buffer.from(payload as number[]));
     }
 
     function disconnect(handle): void {

@@ -299,7 +299,7 @@
             }
             function connect(handle) {
                 const connection = handle || net.connect(`${path}${params.port}`);
-                connection.on('data', req => emitter.emit('frame', req));
+                connection.on('data', req => emitter.emit('frame', [...req]));
                 connection.on('error', err => emitter.emit('error', err));
                 connection.on('connect', () => emitter.emit('connect', connection));
                 connection.on('close', () => emitter.emit('disconnect'));
@@ -312,7 +312,7 @@
             }
             function send(handle, payload) {
                 if (handle)
-                    handle.write(payload);
+                    handle.write(Buffer.from(payload));
             }
             function disconnect(handle) {
                 if (handle) {
@@ -347,7 +347,7 @@
             }
             function connect(handle) {
                 const connection = handle || net.connect(params.port, params.host);
-                connection.on('data', req => emitter.emit('frame', req));
+                connection.on('data', req => emitter.emit('frame', [...req]));
                 connection.on('error', err => emitter.emit('error', err));
                 connection.on('connect', () => emitter.emit('connect', connection));
                 connection.on('close', () => emitter.emit('disconnect'));
@@ -360,7 +360,7 @@
             }
             function send(handle, payload) {
                 if (handle)
-                    handle.write(payload);
+                    handle.write(Buffer.from(payload));
             }
             function disconnect(handle) {
                 if (handle) {
@@ -444,7 +444,7 @@
                 connection['_port'] = handle && handle['_port'] || params.port;
                 connection['_host'] = handle && handle['_host'] || params.host;
                 connection.on('error', err => emitter.emit('error', err));
-                connection.on('message', req => emitter.emit('frame', req));
+                connection.on('message', req => emitter.emit('frame', [...req]));
                 socket.bind(null, localAddr);
                 emitter.emit('connect', connection);
                 return connection;
