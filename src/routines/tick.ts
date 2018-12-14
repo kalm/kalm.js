@@ -21,12 +21,12 @@ function tick(hz: number, seed: number = Date.now()): Routine {
         let timer: NodeJS.Timer = null;
         const packets: number[][] = [];
 
-        function add(packet: number[]): void {
+        function add(packet: Promise<number[]>): void {
             emitter.emit('stats.queueAdd', { frameId: i, packet: packets.length });
             if (timer === null) {
                 timer = setTimeout(_step, _delta());
             }
-            packets.push(packet);
+            packet.then(p => packets.push(p));
         }
 
         function _step(): void {

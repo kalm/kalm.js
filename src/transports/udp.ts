@@ -51,7 +51,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
         emitter.emit('socket', handle);
       }
 
-      if (data) clientCache[key].data.push(data);
+      if (data && !clientCache[key].client) clientCache[key].data.push(data);
       if (clientCache[key].client) clientCache[key].client.emit('frame', data);
     }
 

@@ -1,7 +1,7 @@
 /* Requires ------------------------------------------------------------------*/
 
 import { EventEmitter } from 'events';
-import { Queue, Routine } from '../types';
+import { Queue, Routine, ByteList } from '../types';
 
 /* Methods -------------------------------------------------------------------*/
 
@@ -15,12 +15,12 @@ function dynamic(hz: number): Routine {
         const packets: number[][] = [];
         let i: number = 0;
 
-        function add(packet: number[]): void {
+        function add(packet: Promise<number[]>): void {
             emitter.emit('stats.queueAdd', { frameId: i, packet: packets.length });
             if (timer === null) {
                 timer = setTimeout(_step, Math.round(1000 / hz));
             }
-            packets.push(packet);
+            packet.then(p => packets.push(p));
         }
 
         function _step(): void {

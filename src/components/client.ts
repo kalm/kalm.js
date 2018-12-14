@@ -115,36 +115,24 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
     frames.forEach(frame => frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i)));
   }
 
-  function _handlePackets(frame: RawFrame, packet: ByteList, index: number): void {
+  async function _handlePackets(frame: RawFrame, packet: ByteList, index: number): Promise<void> {
     if (packet.length === 0) return;
-    _decode(packet)
-      .then(decodedPacket => {
-        emitter.emit('stats.packetDecoded');
-        if (channels[frame.channel]) {
-          channels[frame.channel].emitter.emit(
-            'message',
-            [decodedPacket, {
-              client: params,
-              frame: {
-                channel: frame.channel,
-                id: frame.frameId,
-                messageIndex: index,
-                payloadBytes: frame.payloadBytes,
-                payloadMessages: frame.packets.length,
-              },
-            }]);
-        }
-      });
-  }
-
-  function _decode(packet: ByteList) {
-    return new Promise(resolve => {
-      resolve((params.format !== null) ? serializer.decode(packet) : packet);
-    })
-      .catch(err => {
-        logger.log(`error: could not deserialize packet ${err}`);
-        return packet;
-      });
+    const decodedPacket = (params.format !== null) ? await serializer.decode(packet) : packet;
+    emitter.emit('stats.packetDecoded');
+    if (channels[frame.channel]) {
+      channels[frame.channel].emitter.emit(
+        'message',
+        [decodedPacket, {
+          client: params,
+          frame: {
+            channel: frame.channel,
+            id: frame.frameId,
+            messageIndex: index,
+            payloadBytes: frame.payloadBytes,
+            payloadMessages: frame.packets.length,
+          },
+        }]);
+    }
   }
 
   function _handleDisconnect() {

@@ -71,15 +71,15 @@ export type SocketHandle = net.Socket | UDPSocketHandle
 
 export type Routine = (channel: string, params: object, emitter: EventEmitter) => Queue
 export interface Queue {
-    add: (packet: ByteList) => void
+    add: (packet: Promise<ByteList>) => void
     size: () => number
     flush: () => void
 }
 
 export type Format = (params: object, emitter: EventEmitter) => Serializer
 export interface Serializer {
-    encode: (message: Serializable) => ByteList
-    decode: (payload: ByteList) => Serializable
+    encode: (message: Serializable) => Promise<ByteList>
+    decode: (payload: ByteList) => Promise<Serializable>
 }
 
 export type Transport = (params: object, emitter: EventEmitter) => Socket

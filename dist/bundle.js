@@ -204,34 +204,23 @@
             const frames = parser.deserialize(decryptedPayload);
             frames.forEach(frame => frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i)));
         }
-        function _handlePackets(frame, packet, index) {
+        async function _handlePackets(frame, packet, index) {
             if (packet.length === 0)
                 return;
-            _decode(packet)
-                .then(decodedPacket => {
-                emitter.emit('stats.packetDecoded');
-                if (channels[frame.channel]) {
-                    channels[frame.channel].emitter.emit('message', [decodedPacket, {
-                            client: params,
-                            frame: {
-                                channel: frame.channel,
-                                id: frame.frameId,
-                                messageIndex: index,
-                                payloadBytes: frame.payloadBytes,
-                                payloadMessages: frame.packets.length,
-                            },
-                        }]);
-                }
-            });
-        }
-        function _decode(packet) {
-            return new Promise(resolve => {
-                resolve((params.format !== null) ? serializer.decode(packet) : packet);
-            })
-                .catch(err => {
-                logger.log(`error: could not deserialize packet ${err}`);
-                return packet;
-            });
+            const decodedPacket = (params.format !== null) ? await serializer.decode(packet) : packet;
+            emitter.emit('stats.packetDecoded');
+            if (channels[frame.channel]) {
+                channels[frame.channel].emitter.emit('message', [decodedPacket, {
+                        client: params,
+                        frame: {
+                            channel: frame.channel,
+                            id: frame.frameId,
+                            messageIndex: index,
+                            payloadBytes: frame.payloadBytes,
+                            payloadMessages: frame.packets.length,
+                        },
+                    }]);
+            }
         }
         function _handleDisconnect() {
             connected = 0;
@@ -285,18 +274,14 @@
 
     function json() {
         return function serializer(params, emitter) {
-            function encode(payload) {
+            async function encode(payload) {
                 return (Buffer.isBuffer(payload)) ? payload : toUInt8Array(JSON.stringify(payload));
             }
-            function decode(payload) {
+            async function decode(payload) {
                 return JSON.parse(String.fromCharCode.apply(null, payload));
             }
             function toUInt8Array(str) {
-                const chars = [0];
-                for (let i = 0; i < str.length; i++) {
-                    chars[i] = str.charCodeAt(i) | 0;
-                }
-                return chars;
+                return [...str].map(c => c.charCodeAt(0) | 0);
             }
             return { encode, decode };
         };
@@ -434,7 +419,7 @@
                     };
                     emitter.emit('socket', handle);
                 }
-                if (data)
+                if (data && !clientCache[key].client)
                     clientCache[key].data.push(data);
                 if (clientCache[key].client)
                     clientCache[key].client.emit('frame', data);
@@ -504,7 +489,7 @@
                 if (timer === null) {
                     timer = setTimeout(_step, Math.round(1000 / hz));
                 }
-                packets.push(packet);
+                packet.then(p => packets.push(p));
             }
             function _step() {
                 emitter.emit('stats.queueRun', { frameId: i, packets: packets.length });
@@ -525,10 +510,12 @@
             let i = 0;
             function add(packet) {
                 emitter.emit('stats.queueAdd', { frameId: i, packet: 0 });
-                emitter.emit('stats.queueRun', { frameId: i, packets: 1 });
-                emitter.emit('runQueue', { frameId: i++, channel, packets: [packet] });
-                if (i > 255)
-                    i = 0;
+                packet.then(p => {
+                    emitter.emit('stats.queueRun', { frameId: i, packets: 1 });
+                    emitter.emit('runQueue', { frameId: i++, channel, packets: [p] });
+                    if (i > 255)
+                        i = 0;
+                });
             }
             function size() { return 0; }
             function flush() { }
@@ -554,7 +541,7 @@
                 if (timer === null) {
                     timer = setTimeout(_step, _delta());
                 }
-                packets.push(packet);
+                packet.then(p => packets.push(p));
             }
             function _step() {
                 emitter.emit('stats.queueRun', { frameId: i, packets: packets.length });
