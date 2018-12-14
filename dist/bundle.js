@@ -74,6 +74,8 @@
         return result;
     }
     function deserialize(payload) {
+        if (payload === null)
+            return [];
         const frames = [];
         const payloadBytes = payload.length;
         let caret = 0;
@@ -105,6 +107,8 @@
         function _parseFramePacket() {
             const packets = [];
             for (let p = 0; p < totalPackets; p++) {
+                if (caret >= payload.length)
+                    continue;
                 const packetLength = _numericSize(payload, caret);
                 packets.push(payload.slice(2 + caret, 2 + packetLength + caret));
                 caret = 2 + caret + packetLength;
@@ -125,6 +129,7 @@
         const socket = params.transport(params, emitter);
         emitter.setMaxListeners(Infinity);
         function write(channel, message) {
+            emitter.emit('stats.packetWrite');
             return _resolveChannel(channel).queue.add(serializer.encode(message));
         }
         function destroy() {
@@ -142,17 +147,27 @@
             _resolveChannel(channel).emitter
                 .off('message', muWrap(handler))
                 .emit('unsubscribe');
+            if (channels[channel].emitter.listenerCount('message') === 0) {
+                channels[channel].queue.flush();
+                delete channels[channel];
+            }
         }
         function remote() {
+            if (params.isServer)
+                return socket.remote(handle);
             return {
                 host: params.host,
                 port: params.port,
             };
         }
         function local() {
-            if (!handle)
-                return null;
-            return socket.remote(handle);
+            if (params.isServer) {
+                return {
+                    host: params.host,
+                    port: params.port,
+                };
+            }
+            return null;
         }
         function _createChannel(channel) {
             const channelEmitter = new events.EventEmitter();
@@ -166,6 +181,7 @@
             let payload = parser.serialize(event.frameId, event.channel, event.packets);
             if (params.secretKey !== null)
                 payload = encrypter.encrypt(payload);
+            emitter.emit('stats.packetReady');
             socket.send(handle, payload);
         }
         function _resolveChannel(channel) {
@@ -183,13 +199,17 @@
             logger.log(`error: ${err.message}`);
         }
         function _handleRequest(payload) {
+            emitter.emit('stats.packetReceived');
             const decryptedPayload = (encrypter) ? encrypter.decrypt(payload) : payload;
             const frames = parser.deserialize(decryptedPayload);
             frames.forEach(frame => frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i)));
         }
         function _handlePackets(frame, packet, index) {
+            if (packet.length === 0)
+                return;
             _decode(packet)
                 .then(decodedPacket => {
+                emitter.emit('stats.packetDecoded');
                 if (channels[frame.channel]) {
                     channels[frame.channel].emitter.emit('message', [decodedPacket, {
                             client: params,
@@ -200,7 +220,6 @@
                                 payloadBytes: frame.payloadBytes,
                                 payloadMessages: frame.packets.length,
                             },
-                            stats: {},
                         }]);
                 }
             });
@@ -261,7 +280,7 @@
         emitter.on('error', _handleError);
         logger.log(`log: listening on ${params.host}:${params.port}`);
         socket.bind();
-        return Object.assign(emitter, { label: params.label, broadcast, stop, connections });
+        return Object.assign(emitter, { label: params.label, port: params.port, broadcast, stop, connections });
     }
 
     function json() {
@@ -384,7 +403,7 @@
             let listener;
             const clientCache = {};
             function addClient(client) {
-                const local = client.remote();
+                const local = client.local();
                 const key = `${local.host}.${local.port}`;
                 if (local.host === params.host && local.port === params.port)
                     return;
@@ -396,29 +415,29 @@
                 clientCache[key].data.length = 0;
             }
             function resolveClient(origin, data) {
+                const handle = {
+                    host: origin.address,
+                    port: origin.port,
+                    socket: listener,
+                };
+                if (data[0] === 83 && data[1] === 89 && data[2] === 78) {
+                    send(handle, Buffer.from('ACK'));
+                    data = null;
+                }
                 const key = `${origin.address}.${origin.port}`;
                 clearTimeout(clientCache[key] && clientCache[key].timeout);
                 if (!clientCache[key]) {
-                    emitter.emit('socket', {
-                        _host: params.host,
-                        _port: params.port,
-                        host: origin.address,
-                        port: origin.port,
-                    });
                     clientCache[key] = {
                         client: null,
-                        data: [data],
+                        data: [],
                         timeout: null,
                     };
+                    emitter.emit('socket', handle);
                 }
-                else {
-                    if (!clientCache[key].client) {
-                        clientCache[key].data.push(data);
-                    }
-                    else {
-                        clientCache[key].client.emit('frame', data);
-                    }
-                }
+                if (data)
+                    clientCache[key].data.push(data);
+                if (clientCache[key].client)
+                    clientCache[key].client.emit('frame', data);
             }
             function bind() {
                 listener = dgram.createSocket({ type: type, reuseAddr });
@@ -428,26 +447,34 @@
                 emitter.emit('ready');
             }
             function remote(handle) {
-                return {
-                    host: handle['_host'],
-                    port: handle['_port'],
-                };
+                return handle;
             }
             function send(handle, payload) {
-                handle.send(Buffer.from(payload), handle['_port'], handle['_host']);
+                handle.socket.send(Buffer.from(payload), handle.port, handle.host);
             }
             function stop() {
                 listener.close();
             }
             function connect(handle) {
+                if (handle)
+                    return handle;
                 const connection = dgram.createSocket(type);
-                connection['_port'] = handle && handle['_port'] || params.port;
-                connection['_host'] = handle && handle['_host'] || params.host;
                 connection.on('error', err => emitter.emit('error', err));
-                connection.on('message', req => emitter.emit('frame', [...req]));
-                socket.bind(null, localAddr);
-                emitter.emit('connect', connection);
-                return connection;
+                connection.on('message', req => {
+                    if (req[0] === 65 && req[1] === 67 && req[2] === 75) {
+                        emitter.emit('connect', connection);
+                    }
+                    else
+                        emitter.emit('frame', [...req]);
+                });
+                connection.bind(null, localAddr);
+                const res = {
+                    host: params.host,
+                    port: params.port,
+                    socket: connection,
+                };
+                send(res, Buffer.from('SYN'));
+                return res;
             }
             function disconnect() {
                 emitter.emit('disconnect');
@@ -473,12 +500,14 @@
             const packets = [];
             let i = 0;
             function add(packet) {
+                emitter.emit('stats.queueAdd', { frameId: i, packet: packets.length });
                 if (timer === null) {
                     timer = setTimeout(_step, Math.round(1000 / hz));
                 }
                 packets.push(packet);
             }
             function _step() {
+                emitter.emit('stats.queueRun', { frameId: i, packets: packets.length });
                 clearTimeout(timer);
                 timer = null;
                 emitter.emit('runQueue', { frameId: i++, channel, packets });
@@ -495,6 +524,8 @@
         return function queue(channel, params, emitter) {
             let i = 0;
             function add(packet) {
+                emitter.emit('stats.queueAdd', { frameId: i, packet: 0 });
+                emitter.emit('stats.queueRun', { frameId: i, packets: 1 });
                 emitter.emit('runQueue', { frameId: i++, channel, packets: [packet] });
                 if (i > 255)
                     i = 0;
@@ -505,31 +536,31 @@
         };
     }
 
-    function tick(hz) {
+    function tick(hz, seed = Date.now()) {
         if (hz <= 0 || hz > 1000) {
             throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
         }
-        const seed = Date.now();
         let i = 0;
         function _delta() {
             const now = Date.now() - seed;
+            i = (now / (1000 / hz)) % 255;
             return Math.round(now % (1000 / hz));
         }
         return function queue(channel, params, emitter) {
             let timer = null;
             const packets = [];
             function add(packet) {
+                emitter.emit('stats.queueAdd', { frameId: i, packet: packets.length });
                 if (timer === null) {
                     timer = setTimeout(_step, _delta());
                 }
                 packets.push(packet);
             }
             function _step() {
+                emitter.emit('stats.queueRun', { frameId: i, packets: packets.length });
                 clearTimeout(timer);
                 timer = null;
-                emitter.emit('runQueue', { frameId: i++, channel, packets });
-                if (i > 255)
-                    i = 0;
+                emitter.emit('runQueue', { frameId: i, channel, packets });
                 packets.length = 0;
             }
             function size() { return packets.length; }

@@ -29,6 +29,7 @@ function serialize(frameId: number, channel: string, packets: ByteList[]): numbe
 }
 
 function deserialize(payload: ByteList): RawFrame[] {
+  if (payload === null) return [];
   const frames: RawFrame[] = [];
   const payloadBytes: number = payload.length;
   let caret: number = 0;
@@ -67,6 +68,7 @@ function _parseFrame(frames: RawFrame[], payload: ByteList, startIndex: number):
   function _parseFramePacket(): ByteList[] {
     const packets: ByteList[] = [];
     for (let p = 0; p < totalPackets; p++) {
+      if (caret >= payload.length) continue;
       const packetLength = _numericSize(payload, caret);
       packets.push(payload.slice(2 + caret, 2 + packetLength + caret));
       caret = 2 + caret + packetLength;

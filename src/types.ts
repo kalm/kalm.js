@@ -56,7 +56,18 @@ export type Channel = {
     emitter: EventEmitter
 }
 
+export type ChannelList = {
+    [key: string]: Channel
+}
+
 export type Serializable = Buffer | object | string | null
+
+export type UDPSocketHandle = {
+    socket: dgram.Socket
+    port: number
+    host: string
+}
+export type SocketHandle = net.Socket | UDPSocketHandle
 
 export type Routine = (channel: string, params: object, emitter: EventEmitter) => Queue
 export interface Queue {
@@ -74,11 +85,11 @@ export interface Serializer {
 export type Transport = (params: object, emitter: EventEmitter) => Socket
 export interface Socket {
     bind: () => void
-    remote: (handle: net.Socket | dgram.Socket) => Remote
-    connect: (handle?: net.Socket | dgram.Socket) => net.Socket | dgram.Socket
+    remote: (handle: SocketHandle) => Remote
+    connect: (handle?: SocketHandle) => SocketHandle
     stop: () => void
-    send: (handle: net.Socket | dgram.Socket, message: ByteList) => void
-    disconnect: (handle: net.Socket | dgram.Socket) => void
+    send: (handle: SocketHandle, message: ByteList) => void
+    disconnect: (handle: SocketHandle) => void
 }
 
 export type RawFrame = {
@@ -86,4 +97,15 @@ export type RawFrame = {
     channel: string
     packets: ByteList[]
     payloadBytes: number
+}
+
+export type Frame = {
+    client: Client
+    frame: {
+      channel: string
+      id: number
+      messageIndex: number
+      payloadBytes: number
+      payloadMessages: number
+    }
 }

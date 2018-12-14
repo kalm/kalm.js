@@ -1,47 +1,34 @@
-/*
-[x] multi-server
-[x] tick revised
-[ ] stats 
-[ ] user error handling 
-[x] realtime as default 
-[ ] udp handshake
-[ ] proper remote ID (wss)
-[x] reconnection --- they can handle themselves : on('disconnect')
-[x] cert support
-*/
+const kalm = require('../../dist/bundle');
+const ws = require('../../../kalm-websocket');
 
-// Usage
+const seed = { host: '0.0.0.0', port: 3000 };
+const tickSeed = Date.now();
 
-const { listen, connect, routines, transports, formats } = require('kalm');
-
-const Server = listen({
+const Server = kalm.listen({
     providers: [
-        // Min config
         {
             label: 'external',
+            transport: ws(),
+            port: 3938,
+            routine: kalm.routines.tick(120, tickSeed),
         },
-        // Full config
         {
             label: 'internal',
-            transport: transports.TCP,
+            transport: kalm.transports.tcp(),
             port: 3000,
-            format: formats.JSON,
-            stats: true,
-            secretKey: '123',
-            routine: routines.tick(90),
-            socketTimeout: 300000,
-            options: { seed: { host: '0.0.0.0', port: 3000 }, cert: {} },
+            secretKey: 'ca8bda634ac5375cf3d9adc37251d4571e85174c',
+            routine: kalm.routines.realtime(),
         }
     ],
     host: '0.0.0.0',
 });
 
-Server.providers((provider) => {
-    const isIntern = provider.port === provider.options.seed.port;
-    const isSeed = (isIntern && provider.options.seed.host === Server.host);
+Server.providers.forEach((provider) => {
+    const isIntern = provider.label === 'internal';
+    const isSeed = (isIntern && seed.host === Server.host);
 
-    if (!isSeed) {
-        connect({}).write('n.add', { host: Server.host });
+    if (!isSeed && isIntern) {
+        kalm.connect({}).write('n.add', { host: Server.host });
     }
 
     provider.on('connection', (client) => {
@@ -52,95 +39,23 @@ Server.providers((provider) => {
                 }
                 else provider.connect(evt.remote);
             });
-        }
-
-        // Client event = client -> node
-        // Node event = node -> node
-        // Relayed event = node -> client
-        if (isIntern) {
             client.subscribe('n.evt', (msg, evt) => {
-                Server.providers((_provider) => {
+                Server.providers.forEach((_provider) => {
                     if (_provider.label === 'external') {
                         _provider.broadcast('r.evt', msg);
                     }
                 });
             });
-
+        } else {
             client.subscribe('c.evt', (msg, evt) => {
-                provider.broadcast('n.evt', msg);
+                Server.providers.forEach((_provider) => {
+                    if (_provider.label === 'internal') {
+                        _provider.broadcast('n.evt', msg);
+                    } else {
+                        _provider.broadcast('r.evt', msg);
+                    }
+                });
             });
         }
     });
 });
-
-/*
-    // client
-    {
-        id: <string>
-        provider: <Provider>
-        connected:
-        socket:
-        options:
-        remote:
-
-        write:
-        subscribe:
-        unsubscribe:
-        queue:
-        destroy:
-
-        on:
-        once:
-        ...
-    }
-
-    // provider
-    {
-        id:
-        label:
-        server:
-        handle:
-        port:
-        options:
-
-        clients:
-        broadcast:
-        close:
-        connect:
-
-        on:
-        once:
-        ...
-    }
-
-    // server
-    {
-        id:
-        config:
-        host:
-
-        providers:
-        addProvider:
-        removeProvider:
-    }
-
-    // message - event
-    <any>,
-    {
-        client:
-        stats: {
-            timestamp:
-            queue:
-            serialize:
-            wrap:
-        }
-        frame: {
-            id:
-            channel:
-            payloadBytes:
-            payloadMessages:
-            messageIndex:
-        },
-    }
-
-*/

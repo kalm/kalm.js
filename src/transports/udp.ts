@@ -1,7 +1,7 @@
 /* Requires ------------------------------------------------------------------*/
 
 import dgram from 'dgram';
-import { Socket, Transport, ByteList, ClientConfig, Remote } from '../types';
+import { Socket, Transport, ByteList, ClientConfig, Remote, SocketHandle, UDPSocketHandle } from '../types';
 import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
@@ -12,12 +12,11 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     const clientCache = {};
 
     function addClient(client) {
-      const local: Remote = client.remote();
+      const local: Remote = client.local();
       const key: string = `${local.host}.${local.port}`;
 
       // Client connection - skip
       if (local.host === params.host && local.port === params.port) return;
-
       clientCache[key].client = client;
       clientCache[key].timeout = setTimeout(client.destroy, socketTimeout);
 
@@ -28,28 +27,32 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     }
 
     function resolveClient(origin, data) {
+      const handle: UDPSocketHandle = {
+        host: origin.address,
+        port: origin.port,
+        socket: listener,
+      };
+
+      // Handle SYN
+      if (data[0] === 83 && data[1] === 89 && data[2] === 78) {
+        send(handle, Buffer.from('ACK'));
+        data = null;
+      }
+
       const key = `${origin.address}.${origin.port}`;
       clearTimeout(clientCache[key] && clientCache[key].timeout);
 
       if (!clientCache[key]) {
-        emitter.emit('socket', {
-          _host: params.host,
-          _port: params.port,
-          host: origin.address,
-          port: origin.port,
-        });
         clientCache[key] = {
           client: null,
-          data: [data],
+          data: [],
           timeout: null,
         };
-      } else {
-        if (!clientCache[key].client) {
-          clientCache[key].data.push(data);
-        } else {
-          clientCache[key].client.emit('frame', data);
-        }
+        emitter.emit('socket', handle);
       }
+
+      if (data) clientCache[key].data.push(data);
+      if (clientCache[key].client) clientCache[key].client.emit('frame', data);
     }
 
     function bind(): void {
@@ -60,30 +63,39 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       emitter.emit('ready');
     }
 
-    function remote(handle: dgram.Socket): Remote {
-      return {
-        host: handle['_host'],
-        port: handle['_port'],
-      };
+    function remote(handle: SocketHandle): Remote {
+      return handle as Remote;
     }
 
-    function send(handle: dgram.Socket, payload: ByteList): void {
-      handle.send(Buffer.from(payload as number[]), handle['_port'], handle['_host']);
+    function send(handle: UDPSocketHandle, payload: ByteList): void {
+      handle.socket.send(Buffer.from(payload as number[]), handle.port, handle.host);
     }
 
     function stop(): void {
       listener.close();
     }
 
-    function connect(handle: dgram.Socket): dgram.Socket {
+    function connect(handle?: SocketHandle): SocketHandle {
+      if (handle) return handle;
       const connection = dgram.createSocket(type as dgram.SocketType);
-      connection['_port'] = handle && handle['_port'] || params.port;
-      connection['_host'] = handle && handle['_host'] || params.host;
       connection.on('error', err => emitter.emit('error', err));
-      connection.on('message', req => emitter.emit('frame', [...req]));
-      socket.bind(null, localAddr);
-      emitter.emit('connect', connection);
-      return connection;
+      connection.on('message', req => {
+        // Handle ACK
+        if (req[0] === 65 && req[1] === 67 && req[2] === 75) {
+          emitter.emit('connect', connection);
+        } else emitter.emit('frame', [...req]);
+      });
+      connection.bind(null, localAddr);
+
+      const res = {
+        host: params.host,
+        port: params.port,
+        socket: connection,
+      };
+
+      // Ping test
+      send(res, Buffer.from('SYN'));
+      return res;
     }
 
     function disconnect(): void {

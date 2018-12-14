@@ -5,15 +5,15 @@ import { Queue, Routine } from '../types';
 
 /* Methods -------------------------------------------------------------------*/
 
-function tick(hz: number): Routine {
+function tick(hz: number, seed: number = Date.now()): Routine {
     if (hz <= 0 || hz > 1000) {
         throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
     }
-    const seed: number = Date.now();
     let i: number = 0;
 
     function _delta(): number {
         const now: number = Date.now() - seed;
+        i = (now / (1000 / hz)) % 255;
         return Math.round(now % (1000 / hz));
     }
 
@@ -22,6 +22,7 @@ function tick(hz: number): Routine {
         const packets: number[][] = [];
 
         function add(packet: number[]): void {
+            emitter.emit('stats.queueAdd', { frameId: i, packet: packets.length });
             if (timer === null) {
                 timer = setTimeout(_step, _delta());
             }
@@ -29,10 +30,10 @@ function tick(hz: number): Routine {
         }
 
         function _step(): void {
+            emitter.emit('stats.queueRun', { frameId: i, packets: packets.length });
             clearTimeout(timer);
             timer = null;
-            emitter.emit('runQueue', { frameId: i++, channel, packets });
-            if (i > 255) i = 0;
+            emitter.emit('runQueue', { frameId: i, channel, packets });
             packets.length = 0;
         }
 

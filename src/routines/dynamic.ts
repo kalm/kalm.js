@@ -16,6 +16,7 @@ function dynamic(hz: number): Routine {
         let i: number = 0;
 
         function add(packet: number[]): void {
+            emitter.emit('stats.queueAdd', { frameId: i, packet: packets.length });
             if (timer === null) {
                 timer = setTimeout(_step, Math.round(1000 / hz));
             }
@@ -23,6 +24,7 @@ function dynamic(hz: number): Routine {
         }
 
         function _step(): void {
+            emitter.emit('stats.queueRun', { frameId: i, packets: packets.length });
             clearTimeout(timer);
             timer = null;
             emitter.emit('runQueue', { frameId: i++, channel, packets });
