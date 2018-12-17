@@ -16,7 +16,6 @@ const Server = kalm.listen({
             label: 'internal',
             transport: kalm.transports.tcp(),
             port: 3000,
-            secretKey: 'ca8bda634ac5375cf3d9adc37251d4571e85174c',
             routine: kalm.routines.realtime(),
         }
     ],

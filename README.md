@@ -19,7 +19,6 @@
 
 - **Easy-to-use syntax** unified across protocols
 - Flexible and extensible, load your own transports and serializers
-- **Multiplexing, buffering and packet encryption**
 - Can be used between servers or in the **browser**
 - Lower resource footprint and **better throughtput** than plain sockets
 - **Zero dependencies**
@@ -48,7 +47,6 @@ See the [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
 - Transports [[wiki]](https://github.com/kalm/kalm.js/wiki/Transports)
 - Formats [[wiki]](https://github.com/kalm/kalm.js/wiki/Formats)
 - Routines  [[wiki]](https://github.com/kalm/kalm.js/wiki/Routines)
-- Encryption [[wiki]](https://github.com/kalm/kalm.js/wiki/Encryption)
 
 ## Logging
 

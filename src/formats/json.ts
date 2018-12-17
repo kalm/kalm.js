@@ -17,7 +17,7 @@ function json(): Format {
     }
 
     async function decode(payload: ByteList): Promise<Serializable> {
-      return JSON.parse(String.fromCharCode.apply(null, payload));
+      return JSON.parse(payload.toString());
     }
 
     return { encode, decode };

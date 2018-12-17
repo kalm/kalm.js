@@ -106,7 +106,7 @@ function udp({
         if (req[0] === 65 && req[1] === 67 && req[2] === 75) {
           clearTimeout(timeout);
           emitter.emit('connect', connection);
-        } else emitter.emit('frame', [...req]);
+        } else emitter.emit('frame', req);
       });
       connection.bind(null, localAddr);
 

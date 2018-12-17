@@ -7,45 +7,6 @@
     net = net && net.hasOwnProperty('default') ? net['default'] : net;
     dgram = dgram && dgram.hasOwnProperty('default') ? dgram['default'] : dgram;
 
-    function Encrypter(key) {
-        const seed = Number(_toUint8(key).join(''));
-        const outMap = _mapKeyOut(String(key));
-        const inMap = _mapKeyIn(String(key));
-        function encrypt(bytes) {
-            return bytes.map(byte => inMap[byte]);
-        }
-        function decrypt(bytes) {
-            return bytes.map(byte => outMap[byte]);
-        }
-        function _mapKeyIn(key) {
-            const list = [0];
-            const dict = [0];
-            for (let i = 0; i < 256; i++) {
-                const temp = list[i] || i;
-                const rand = (seed % (i + 1) + i) % 256;
-                list[i] = list[rand] || rand;
-                list[rand] = temp;
-            }
-            list.forEach((val, index) => dict[val] = index);
-            return dict;
-        }
-        function _mapKeyOut(key) {
-            const dict = [0];
-            for (let i = 0; i < 256; i++) {
-                const temp = dict[i] || i;
-                const rand = (seed % (i + 1) + i) % 256;
-                dict[i] = dict[rand] || rand;
-                dict[rand] = temp;
-            }
-            return dict;
-        }
-        function _toUint8(str) {
-            return `${str}`.split('')
-                .map(char => char.charCodeAt(0));
-        }
-        return { encrypt, decrypt };
-    }
-
     const enabled = ((typeof process === 'object' && process.env.NODE_DEBUG && process.env.NODE_DEBUG.indexOf('kalm') > -1) ||
         (typeof window === 'object' && window['BROWSER_DEBUG'] && window['BROWSER_DEBUG'].indexOf('kalm') > -1));
     function log(msg) {
@@ -108,7 +69,6 @@
         let connected = 1;
         const channels = {};
         const muWrap = handler => evt => handler(evt[0], evt[1]);
-        const encrypter = params.secretKey ? Encrypter(params.secretKey) : null;
         const serializer = params.format(params, emitter);
         const socket = params.transport(params, emitter);
         emitter.setMaxListeners(Infinity);
@@ -162,9 +122,7 @@
             };
         }
         function _wrap(event) {
-            let payload = parser.serialize(event.frameId, event.channel, event.packets);
-            if (params.secretKey !== null)
-                payload = encrypter.encrypt(payload);
+            const payload = parser.serialize(event.frameId, event.channel, event.packets);
             emitter.emit('stats.packetReady');
             socket.send(handle, payload);
         }
@@ -184,8 +142,7 @@
         }
         function _handleRequest(payload) {
             emitter.emit('stats.packetReceived');
-            const decryptedPayload = (encrypter) ? encrypter.decrypt(payload) : payload;
-            const frame = parser.deserialize(decryptedPayload);
+            const frame = parser.deserialize(payload);
             frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i));
         }
         async function _handlePackets(frame, packet, index) {
@@ -262,7 +219,7 @@
                 return Buffer.from(JSON.stringify(payload));
             }
             async function decode(payload) {
-                return JSON.parse(String.fromCharCode.apply(null, payload));
+                return JSON.parse(payload.toString());
             }
             return { encode, decode };
         };
@@ -284,7 +241,7 @@
             }
             function connect(handle) {
                 const connection = handle || net.connect(`${path}${params.port}`);
-                connection.on('data', req => emitter.emit('frame', [...req]));
+                connection.on('data', req => emitter.emit('frame', req));
                 connection.on('error', err => emitter.emit('error', err));
                 connection.on('connect', () => emitter.emit('connect', connection));
                 connection.on('close', () => emitter.emit('disconnect'));
@@ -332,7 +289,7 @@
             }
             function connect(handle) {
                 const connection = handle || net.connect(params.port, params.host);
-                connection.on('data', req => emitter.emit('frame', [...req]));
+                connection.on('data', req => emitter.emit('frame', req));
                 connection.on('error', err => emitter.emit('error', err));
                 connection.on('connect', () => emitter.emit('connect', connection));
                 connection.on('close', () => emitter.emit('disconnect'));
@@ -437,7 +394,7 @@
                         emitter.emit('connect', connection);
                     }
                     else
-                        emitter.emit('frame', [...req]);
+                        emitter.emit('frame', req);
                 });
                 connection.bind(null, localAddr);
                 const res = {
@@ -550,7 +507,6 @@
         host: '0.0.0.0',
         port: 3000,
         routine: realtime(),
-        secretKey: null,
         transport: tcp({ socketTimeout: 30000 }),
     };
     function listen(options) {

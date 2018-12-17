@@ -11,7 +11,6 @@ export type ClientConfig = {
     routine?: Routine
     format?: Format
     transport?: Transport
-    secretKey?: string
     port?: number
     host?: string
     isServer?: boolean

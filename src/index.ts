@@ -23,7 +23,6 @@ const defaults = {
   host: '0.0.0.0',
   port: 3000,
   routine: realtime(),
-  secretKey: null,
   transport: tcp({ socketTimeout: 30000 }),
 };
 

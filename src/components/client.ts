@@ -1,6 +1,5 @@
 /* Requires ------------------------------------------------------------------*/
 
-import Encrypter from '../utils/encrypter';
 import logger from '../utils/logger';
 import parser from '../utils/parser';
 import { EventEmitter } from 'events';
@@ -25,7 +24,6 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
   let connected: number = 1;
   const channels: ChannelList = {};
   const muWrap = handler => evt => handler(evt[0], evt[1]);
-  const encrypter = params.secretKey ? Encrypter(params.secretKey) : null;
   const serializer: Serializer = params.format(params, emitter);
   const socket: Socket = params.transport(params, emitter);
   emitter.setMaxListeners(Infinity);
@@ -85,8 +83,7 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
   }
 
   function _wrap(event: RawFrame): void {
-    let payload: number[] = parser.serialize(event.frameId, event.channel, event.packets);
-    if (params.secretKey !== null) payload = encrypter.encrypt(payload);
+    const payload: number[] = parser.serialize(event.frameId, event.channel, event.packets);
     emitter.emit('stats.packetReady');
     socket.send(handle, payload);
   }
@@ -108,10 +105,9 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
     logger.log(`error: ${err.message}`);
   }
 
-  function _handleRequest(payload: number[]): void {
+  function _handleRequest(payload: ByteList): void {
     emitter.emit('stats.packetReceived');
-    const decryptedPayload: ByteList = (encrypter) ? encrypter.decrypt(payload) : payload;
-    const frame: RawFrame = parser.deserialize(decryptedPayload);
+    const frame: RawFrame = parser.deserialize(payload);
     frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i));
   }
 
