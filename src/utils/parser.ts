@@ -41,16 +41,11 @@ function deserialize(payload: ByteList): RawFrame {
   let caret = 4 + channelLength;
   const totalPackets = _numericSize(payload, 2 + channelLength);
   const result = {
-    channel: _parseFrameChannel(),
+    channel: String.fromCharCode.apply(null, payload.slice(2, 2 + channelLength)),
     frameId: payload[0],
     packets: _parseFramePacket(),
     payloadBytes: payload.length,
   };
-
-  function _parseFrameChannel(): string {
-    const letters = payload.slice(2, 2 + channelLength);
-    return String.fromCharCode.apply(null, letters);
-  }
 
   function _parseFramePacket(): ByteList[] {
     const packets: ByteList[] = [];

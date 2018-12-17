@@ -84,15 +84,11 @@
         let caret = 4 + channelLength;
         const totalPackets = _numericSize(payload, 2 + channelLength);
         const result = {
-            channel: _parseFrameChannel(),
+            channel: String.fromCharCode.apply(null, payload.slice(2, 2 + channelLength)),
             frameId: payload[0],
             packets: _parseFramePacket(),
             payloadBytes: payload.length,
         };
-        function _parseFrameChannel() {
-            const letters = payload.slice(2, 2 + channelLength);
-            return String.fromCharCode.apply(null, letters);
-        }
         function _parseFramePacket() {
             const packets = [];
             for (let p = 0; p < totalPackets; p++) {
@@ -263,13 +259,10 @@
     function json() {
         return function serializer(params, emitter) {
             async function encode(payload) {
-                return (Buffer.isBuffer(payload)) ? payload : toUInt8Array(JSON.stringify(payload));
+                return Buffer.from(JSON.stringify(payload));
             }
             async function decode(payload) {
                 return JSON.parse(String.fromCharCode.apply(null, payload));
-            }
-            function toUInt8Array(str) {
-                return [...str].map(c => c.charCodeAt(0) | 0);
             }
             return { encode, decode };
         };
