@@ -73,35 +73,24 @@
         });
         return result;
     }
-    function deserialize(payload) {
-        if (payload === null)
-            return [];
-        const frames = [];
-        const payloadBytes = payload.length;
-        let caret = 0;
-        while (caret < payloadBytes) {
-            caret = _parseFrame(frames, payload, caret);
-        }
-        return frames;
-    }
     function _uint16Size(value) {
         return [value >>> 8, value & 0xff];
     }
     function _numericSize(bytes, index) {
         return (bytes[index] << 8) | bytes[index + 1];
     }
-    function _parseFrame(frames, payload, startIndex) {
-        const channelLength = payload[1 + startIndex];
-        let caret = 4 + startIndex + channelLength;
-        const totalPackets = _numericSize(payload, 2 + startIndex + channelLength);
+    function deserialize(payload) {
+        const channelLength = payload[1];
+        let caret = 4 + channelLength;
+        const totalPackets = _numericSize(payload, 2 + channelLength);
         const result = {
             channel: _parseFrameChannel(),
-            frameId: payload[startIndex],
+            frameId: payload[0],
             packets: _parseFramePacket(),
             payloadBytes: payload.length,
         };
         function _parseFrameChannel() {
-            const letters = payload.slice(2 + startIndex, 2 + startIndex + channelLength);
+            const letters = payload.slice(2, 2 + channelLength);
             return String.fromCharCode.apply(null, letters);
         }
         function _parseFramePacket() {
@@ -115,8 +104,7 @@
             }
             return packets;
         }
-        frames.push(result);
-        return caret;
+        return result;
     }
     var parser = { serialize, deserialize };
 
@@ -201,8 +189,8 @@
         function _handleRequest(payload) {
             emitter.emit('stats.packetReceived');
             const decryptedPayload = (encrypter) ? encrypter.decrypt(payload) : payload;
-            const frames = parser.deserialize(decryptedPayload);
-            frames.forEach(frame => frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i)));
+            const frame = parser.deserialize(decryptedPayload);
+            frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i));
         }
         async function _handlePackets(frame, packet, index) {
             if (packet.length === 0)
@@ -383,7 +371,7 @@
         };
     }
 
-    function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTimeout = 30000 } = {}) {
+    function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTimeout = 30000, connectTimeout = 1000, } = {}) {
         return function socket(params, emitter) {
             let listener;
             const clientCache = {};
@@ -419,10 +407,12 @@
                     };
                     emitter.emit('socket', handle);
                 }
-                if (data && !clientCache[key].client)
-                    clientCache[key].data.push(data);
-                if (clientCache[key].client)
-                    clientCache[key].client.emit('frame', data);
+                if (data) {
+                    if (clientCache[key].client)
+                        clientCache[key].client.emit('frame', data);
+                    else
+                        clientCache[key].data.push(data);
+                }
             }
             function bind() {
                 listener = dgram.createSocket({ type: type, reuseAddr });
@@ -435,7 +425,9 @@
                 return handle;
             }
             function send(handle, payload) {
-                handle.socket.send(Buffer.from(payload), handle.port, handle.host);
+                if (handle) {
+                    handle.socket.send(Buffer.from(payload), handle.port, handle.host);
+                }
             }
             function stop() {
                 listener.close();
@@ -444,9 +436,11 @@
                 if (handle)
                     return handle;
                 const connection = dgram.createSocket(type);
+                let timeout;
                 connection.on('error', err => emitter.emit('error', err));
                 connection.on('message', req => {
                     if (req[0] === 65 && req[1] === 67 && req[2] === 75) {
+                        clearTimeout(timeout);
                         emitter.emit('connect', connection);
                     }
                     else
@@ -459,9 +453,12 @@
                     socket: connection,
                 };
                 send(res, Buffer.from('SYN'));
+                timeout = setTimeout(() => disconnect(res), connectTimeout);
                 return res;
             }
-            function disconnect() {
+            function disconnect(handle) {
+                if (handle)
+                    handle = null;
                 emitter.emit('disconnect');
             }
             emitter.on('connection', addClient);

@@ -1,15 +1,32 @@
 /* Requires ------------------------------------------------------------------*/
 
 import dgram from 'dgram';
-import { Socket, Transport, ByteList, ClientConfig, Remote, SocketHandle, UDPSocketHandle } from '../types';
+import {
+  Socket,
+  Transport,
+  ByteList,
+  ClientConfig,
+  Remote,
+  SocketHandle,
+  UDPSocketHandle,
+  UDPConfig,
+  UDPClientList,
+  UDPClient,
+} from '../types';
 import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTimeout = 30000 } = {}): Transport {
+function udp({
+  type = 'udp4',
+  localAddr = '0.0.0.0',
+  reuseAddr = true,
+  socketTimeout = 30000,
+  connectTimeout = 1000,
+}: UDPConfig = {}): Transport {
   return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
     let listener: dgram.Socket;
-    const clientCache = {};
+    const clientCache: UDPClientList = {};
 
     function addClient(client) {
       const local: Remote = client.local();
@@ -39,7 +56,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
         data = null;
       }
 
-      const key = `${origin.address}.${origin.port}`;
+      const key: string = `${origin.address}.${origin.port}`;
       clearTimeout(clientCache[key] && clientCache[key].timeout);
 
       if (!clientCache[key]) {
@@ -47,12 +64,14 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
           client: null,
           data: [],
           timeout: null,
-        };
+        } as UDPClient;
         emitter.emit('socket', handle);
       }
 
-      if (data && !clientCache[key].client) clientCache[key].data.push(data);
-      if (clientCache[key].client) clientCache[key].client.emit('frame', data);
+      if (data) {
+        if (clientCache[key].client) clientCache[key].client.emit('frame', data);
+        else clientCache[key].data.push(data);
+      }
     }
 
     function bind(): void {
@@ -68,7 +87,9 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     }
 
     function send(handle: UDPSocketHandle, payload: ByteList): void {
-      handle.socket.send(Buffer.from(payload as number[]), handle.port, handle.host);
+      if (handle) {
+        handle.socket.send(Buffer.from(payload as number[]), handle.port, handle.host);
+      }
     }
 
     function stop(): void {
@@ -78,10 +99,12 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     function connect(handle?: SocketHandle): SocketHandle {
       if (handle) return handle;
       const connection = dgram.createSocket(type as dgram.SocketType);
+      let timeout: NodeJS.Timeout;
       connection.on('error', err => emitter.emit('error', err));
       connection.on('message', req => {
         // Handle ACK
         if (req[0] === 65 && req[1] === 67 && req[2] === 75) {
+          clearTimeout(timeout);
           emitter.emit('connect', connection);
         } else emitter.emit('frame', [...req]);
       });
@@ -95,10 +118,13 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
 
       // Ping test
       send(res, Buffer.from('SYN'));
+      timeout = setTimeout(() => disconnect(res), connectTimeout);
+
       return res;
     }
 
-    function disconnect(): void {
+    function disconnect(handle?: SocketHandle): void {
+      if (handle) handle = null;
       emitter.emit('disconnect');
     }
 

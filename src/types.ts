@@ -67,6 +67,15 @@ export type UDPSocketHandle = {
     port: number
     host: string
 }
+export type UDPClient = {
+    client: Client
+    timeout: NodeJS.Timeout
+    data: ByteList[]
+}
+export type UDPClientList = {
+    [key: string]: UDPClient
+}
+
 export type SocketHandle = net.Socket | UDPSocketHandle
 
 export type Routine = (channel: string, params: object, emitter: EventEmitter) => Queue
@@ -92,6 +101,23 @@ export interface Socket {
     disconnect: (handle: SocketHandle) => void
 }
 
+export type IPCConfig = {
+    socketTimeout?: number
+    path?: string
+}
+
+export type TCPConfig = {
+    socketTimeout?: number
+}
+
+export type UDPConfig = {
+  type?: string
+  localAddr?: string
+  reuseAddr?: boolean
+  socketTimeout?: number
+  connectTimeout?: number
+}
+
 export type RawFrame = {
     frameId: number
     channel: string
@@ -101,8 +127,8 @@ export type RawFrame = {
 
 export type Frame = {
     client: Client
+    channel: string
     frame: {
-      channel: string
       id: number
       messageIndex: number
       payloadBytes: number

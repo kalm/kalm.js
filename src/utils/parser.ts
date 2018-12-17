@@ -28,19 +28,6 @@ function serialize(frameId: number, channel: string, packets: ByteList[]): numbe
   return result;
 }
 
-function deserialize(payload: ByteList): RawFrame[] {
-  if (payload === null) return [];
-  const frames: RawFrame[] = [];
-  const payloadBytes: number = payload.length;
-  let caret: number = 0;
-
-  while (caret < payloadBytes) {
-    caret = _parseFrame(frames, payload, caret);
-  }
-
-  return frames;
-}
-
 function _uint16Size(value: number): ByteList {
   return [value >>> 8, value & 0xff];
 }
@@ -49,19 +36,19 @@ function _numericSize(bytes: ByteList, index: number): number {
   return (bytes[index] << 8) | bytes[index + 1];
 }
 
-function _parseFrame(frames: RawFrame[], payload: ByteList, startIndex: number): number {
-  const channelLength = payload[1 + startIndex];
-  let caret = 4 + startIndex + channelLength;
-  const totalPackets = _numericSize(payload, 2 + startIndex + channelLength);
+function deserialize(payload: ByteList): RawFrame {
+  const channelLength = payload[1];
+  let caret = 4 + channelLength;
+  const totalPackets = _numericSize(payload, 2 + channelLength);
   const result = {
     channel: _parseFrameChannel(),
-    frameId: payload[startIndex],
+    frameId: payload[0],
     packets: _parseFramePacket(),
     payloadBytes: payload.length,
   };
 
   function _parseFrameChannel(): string {
-    const letters = payload.slice(2 + startIndex, 2 + startIndex + channelLength);
+    const letters = payload.slice(2, 2 + channelLength);
     return String.fromCharCode.apply(null, letters);
   }
 
@@ -76,8 +63,7 @@ function _parseFrame(frames: RawFrame[], payload: ByteList, startIndex: number):
     return packets;
   }
 
-  frames.push(result);
-  return caret;
+  return result;
 }
 
 /* Exports -------------------------------------------------------------------*/

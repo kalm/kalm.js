@@ -111,8 +111,8 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
   function _handleRequest(payload: number[]): void {
     emitter.emit('stats.packetReceived');
     const decryptedPayload: ByteList = (encrypter) ? encrypter.decrypt(payload) : payload;
-    const frames: RawFrame[] = parser.deserialize(decryptedPayload);
-    frames.forEach(frame => frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i)));
+    const frame: RawFrame = parser.deserialize(decryptedPayload);
+    frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i));
   }
 
   async function _handlePackets(frame: RawFrame, packet: ByteList, index: number): Promise<void> {

@@ -1,12 +1,12 @@
 /* Requires ------------------------------------------------------------------*/
 
 import net from 'net';
-import { Socket, Transport, ByteList, ClientConfig, Remote } from '../types';
+import { Socket, Transport, ByteList, ClientConfig, Remote, TCPConfig } from '../types';
 import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function tcp({ socketTimeout = 30000 } = {}): Transport {
+function tcp({ socketTimeout = 30000 }: TCPConfig = {}): Transport {
   return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
     let listener: net.Server;
 
