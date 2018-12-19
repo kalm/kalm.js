@@ -1,65 +1,34 @@
 {
   "name": "kalm",
   "version": "3.0.0",
-  "description": "The socket manager",
-  "main": "./dist/bundle.js",
+  "description": "The socket optimizer",
+  "main": "packages/core/bin/core.js",
   "scripts": {
-    "build": "mkdir -p ./dist && rm -rf ./dist/* && ./node_modules/typescript/bin/tsc -p ./ && ./node_modules/rollup/bin/rollup ./dist/index.js --format umd --name \"kalm\" --file ./bundle.js && rm -rf ./dist/* && mv ./bundle.js ./dist/bundle.js",
-    "test": "mocha tests/unit --recursive && mocha tests/integration --exit",
-    "bench": "node tests/benchmarks"
+    "test": "lerna run test && mocha ./tests/integration --exit"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kalm/kalm-js.git"
+    "url": "git+https://github.com/kalm/kalm.js.git"
   },
-  "keywords": [
-    "ipc",
-    "javascript",
-    "kalm",
-    "multiplexing",
-    "network",
-    "node",
-    "optimize",
-    "socket",
-    "tcp",
-    "udp",
-    "websockets",
-    "client",
-    "server",
-    "service",
-    "peer",
-    "micro",
-    "latency",
-    "messaging",
-    "queue",
-    "nagle",
-    "buffer",
-    "protocol",
-    "web"
-  ],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/kalm/kalm-js/issues"
   },
   "homepage": "https://kalm.js.org",
+  "contributors": [
+    "frederic charette <fredericcharette@gmail.com>"
+  ],
   "devDependencies": {
     "@absolunet/eslint-config-node": "~1.2.0",
     "@types/core-js": "~2.5.0",
     "@types/node": "~10.12.0",
     "chai": "~4.2.0",
+    "lerna": "~3.6.0",
     "mocha": "~5.2.0",
     "rollup": "^0.67.4",
     "sinon": "~7.1.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.0"
-  },
-  "browser": {
-    "net": false,
-    "fs": false,
-    "dgram": false
-  },
-  "contributors": [
-    "frederic charette <fredericcharette@gmail.com>"
-  ]
+  }
 }

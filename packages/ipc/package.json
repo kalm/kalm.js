@@ -1,0 +1,51 @@
+{
+  "name": "@kalm/ipc",
+  "version": "3.0.0",
+  "description": "IPC transport for Kalm",
+  "main": "./bin/ipc.js",
+  "scripts": {
+    "build": "../../scripts/build.sh ipc ./src/ipc.ts ./bin/ipc.js",
+    "test": "mocha ./tests/unit --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalm/kalm-js.git"
+  },
+  "keywords": [
+    "multiplex",
+    "network",
+    "optimize",
+    "socket",
+    "websocket",
+    "client",
+    "server",
+    "service",
+    "peer",
+    "micro",
+    "latency",
+    "messaging",
+    "queue",
+    "nagle",
+    "buffer",
+    "protocol",
+    "web",
+    "ipc"
+  ],
+  "author": "frederic charette <fredericcharette@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/kalm/kalm-js/issues"
+  },
+  "homepage": "https://kalm.js.org",
+  "contributors": [
+    "frederic charette <fredericcharette@gmail.com>"
+  ],
+  "browser": {
+    "net": false,
+    "fs": false
+  },
+  "devDependencies": {
+    "chai": "~4.2.0",
+    "mocha": "~5.2.0"
+  }
+}
