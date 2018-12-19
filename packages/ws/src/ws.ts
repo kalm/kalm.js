@@ -43,9 +43,10 @@ function ws({ cert, key, secure }: WSConfig = {}): Transport {
     }
 
     function connect(handle?: WebSocket): WebSocket {
-      const connection: WebSocket = handle || new WS(`${secure===true?'wss':'ws'}://${params.host}:${params.port}`);
+      const protocol: string = secure === true ? 'wss' : 'ws';
+      const connection: WebSocket = handle || new WS(`${protocol}://${params.host}:${params.port}`);
       connection.binaryType = 'arraybuffer';
-      const evtType = isBrowser ? 'addEventListener' : 'on';
+      const evtType: string = isBrowser ? 'addEventListener' : 'on';
       connection['_queue'] = [];
       connection[evtType]('message', evt => emitter.emit('frame', Buffer.from(evt.data || evt)));
       connection[evtType]('error', err => emitter.emit('error', err));
@@ -59,8 +60,12 @@ function ws({ cert, key, secure }: WSConfig = {}): Transport {
     }
 
     function remote(handle: WebSocket): Remote {
+      const h = handle['headers'];
       return {
-        host: (handle['headers'] && handle['headers']['x-forwarded-for'] && handle['headers']['x-forwarded-for'].split(',')[0]) || handle['connection'] && handle['connection'].remoteAddress || '0.0.0.0',
+        host: (
+          (h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0]) ||
+          (handle['connection'] && handle['connection'].remoteAddress || '0.0.0.0')
+        ),
         port: handle['connection'] && handle['connection'].remotePort || 0
       };
     }

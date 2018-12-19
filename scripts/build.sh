@@ -1,4 +1,8 @@
+echo "Building" $1
 mkdir -p ./tmp
-./node_modules/typescript/bin/tsc -p ./ --outDir ./tmp $2
-./node_modules/rollup/bin/rollup ./tmp/$1 --format umd --name $1 --file $3
+rm -rf ./tmp/*
+../../node_modules/typescript/bin/tsc --outDir ./tmp
+echo "Compiled Typescript, rolling up"
+../../node_modules/rollup/bin/rollup ./tmp/packages/$1/src/$1.js --format umd --name $1 --file ./bin/$1.js
+echo "Build completed, cleaning up"
 rm -rf ./tmp

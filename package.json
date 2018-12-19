@@ -1,5 +1,5 @@
 {
-  "name": "kalm",
+  "name": "kalm-lerna",
   "version": "3.0.0",
   "description": "The socket optimizer",
   "main": "packages/core/bin/core.js",

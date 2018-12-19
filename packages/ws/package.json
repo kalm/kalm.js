@@ -4,7 +4,7 @@
   "description": "WebSocket transport for Kalm",
   "main": "./bin/ws.js",
   "scripts": {
-    "build": "../../scripts/build.sh ws ./src/ws.ts ./bin/ws.js",
+    "build": "../../scripts/build.sh ws",
     "test": "mocha ./tests/unit --exit"
   },
   "repository": {
@@ -42,6 +42,9 @@
   ],
   "dependencies": {
     "ws": "^6.1.0"
+  },
+  "browser": {
+    "https": false
   },
   "devDependencies": {
     "chai": "~4.2.0",

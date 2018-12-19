@@ -2,9 +2,9 @@
   "name": "kalm",
   "version": "3.0.0",
   "description": "The socket manager",
-  "main": "./dist/core.js",
+  "main": "./dist/kalm.js",
   "scripts": {
-    "build": "../../scripts/build.sh kalm ./src/core.ts ./bin/core.js",
+    "build": "../../scripts/build.sh kalm",
     "test": "mocha ./tests/unit --exit"
   },
   "repository": {

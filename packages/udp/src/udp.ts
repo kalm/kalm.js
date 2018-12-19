@@ -87,7 +87,7 @@ function udp({
 
     function send(handle: UDPSocketHandle, payload: Buffer | number[]): void {
       if (handle) {
-        handle.socket.send(Buffer.from(payload), handle.port, handle.host);
+        handle.socket.send(Buffer.from(payload as number[]), handle.port, handle.host);
       }
     }
 
