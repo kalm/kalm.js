@@ -1,5 +1,6 @@
-const kalm = require('../../dist/bundle');
-const ws = require('../../../kalm-websocket');
+const kalm = require('../../packages/kalm/bin/kalm');
+const ws = require('../../packages/ws/bin/ws');
+const tcp = require('../../packages/tcp/bin/tcp');
 
 const seed = { host: '0.0.0.0', port: 3000 };
 const tickSeed = Date.now();
@@ -14,7 +15,7 @@ const Server = kalm.listen({
         },
         {
             label: 'internal',
-            transport: kalm.transports.tcp(),
+            transport: tcp(),
             port: 3000,
             routine: kalm.routines.realtime(),
         }

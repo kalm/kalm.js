@@ -1,5 +1,5 @@
-const kalm = require('../../dist/bundle');
-const ws = require('../../../kalm-websocket');
+const kalm = require('../../packages/kalm/bin/kalm');
+const ws = require('../../packages/ws/bin/ws');
 
 const Server = kalm.listen({
     providers: [

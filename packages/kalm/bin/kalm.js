@@ -4,13 +4,13 @@
     (global.kalm = factory(global.events));
 }(this, (function (events) { 'use strict';
 
-    const enabled = ((typeof process === 'object' && process.env.NODE_DEBUG && process.env.NODE_DEBUG.indexOf('kalm') > -1) ||
-        (typeof window === 'object' && window['BROWSER_DEBUG'] && window['BROWSER_DEBUG'].indexOf('kalm') > -1));
+    const enabled = ((typeof process === 'object' && (process.env.NODE_DEBUG || '').indexOf('kalm') > -1) ||
+        (typeof window === 'object' && (window['DEBUG'] || '').indexOf('kalm') > -1));
     function log(msg) {
         if (enabled)
-            console.error(msg);
+            console.log(msg);
     }
-    var logger = { log, enabled };
+    var logger = { log };
 
     function serialize(frameId, channel, packets) {
         const channelLen = channel.length;
@@ -19,11 +19,11 @@
             result.push(channel.charCodeAt(letter));
         }
         result.push.apply(result, _uint16Size(packets.length));
-        packets.forEach(packet => {
-            if (packet['splice'] === undefined && !(packet instanceof Buffer)) {
+        packets.forEach((packet) => {
+            if (!(packet instanceof Buffer)) {
                 throw new Error(`
-        Cannot send unexpected type ${packet.constructor['name']} \`${JSON.stringify(packet)}\`.
-        Verify Serializer output or send data of type Buffer or UInt8Array
+        Cannot send packet \`${JSON.stringify(packet)}\`.
+        Verify Serializer output or send data of type Buffer
       `);
             }
             result.push.apply(result, _uint16Size(packet.length));
@@ -70,7 +70,8 @@
         emitter.setMaxListeners(50);
         function write(channel, message) {
             emitter.emit('stats.packetWrite');
-            return _resolveChannel(channel).queue.add(params.json === true ? Buffer.from(JSON.stringify(message)) : message);
+            return _resolveChannel(channel)
+                .queue.add(params.json === true ? Buffer.from(JSON.stringify(message)) : message);
         }
         function destroy() {
             for (const channel in channels)
@@ -285,8 +286,8 @@
     }
 
     const defaults = {
-        json: true,
         host: '0.0.0.0',
+        json: true,
         port: 3000,
         routine: realtime(),
         transport: null,

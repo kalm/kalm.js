@@ -34,7 +34,8 @@
                     listener.close();
             }
             function connect(handle) {
-                const connection = handle || new WS(`${secure === true ? 'wss' : 'ws'}://${params.host}:${params.port}`);
+                const protocol = secure === true ? 'wss' : 'ws';
+                const connection = handle || new WS(`${protocol}://${params.host}:${params.port}`);
                 connection.binaryType = 'arraybuffer';
                 const evtType = isBrowser ? 'addEventListener' : 'on';
                 connection['_queue'] = [];
@@ -48,8 +49,10 @@
                 return connection;
             }
             function remote(handle) {
+                const h = handle['headers'];
                 return {
-                    host: (handle['headers'] && handle['headers']['x-forwarded-for'] && handle['headers']['x-forwarded-for'].split(',')[0]) || handle['connection'] && handle['connection'].remoteAddress || '0.0.0.0',
+                    host: ((h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0]) ||
+                        (handle['connection'] && handle['connection'].remoteAddress || '0.0.0.0')),
                     port: handle['connection'] && handle['connection'].remotePort || 0
                 };
             }

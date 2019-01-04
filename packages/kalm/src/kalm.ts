@@ -13,8 +13,8 @@ import { Server, ClientConfig, ServerConfig } from '../../../types';
 /* Local variables -----------------------------------------------------------*/
 
 const defaults = {
-  json: true,
   host: '0.0.0.0',
+  json: true,
   port: 3000,
   routine: realtime(),
   transport: null,

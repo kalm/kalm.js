@@ -27,7 +27,8 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
 
   function write(channel: string, message: Serializable): void {
     emitter.emit('stats.packetWrite');
-    return _resolveChannel(channel).queue.add(params.json === true ? Buffer.from(JSON.stringify(message)) : message as Buffer);
+    return _resolveChannel(channel)
+      .queue.add(params.json === true ? Buffer.from(JSON.stringify(message)) : message as Buffer);
   }
 
   function destroy(): void {

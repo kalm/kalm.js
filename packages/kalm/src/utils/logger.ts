@@ -1,16 +1,16 @@
 /* Local variables ------------------------------------------------------------*/
 
 const enabled: boolean = (
-    (typeof process === 'object' && process.env.NODE_DEBUG && process.env.NODE_DEBUG.indexOf('kalm') > -1) ||
-    (typeof window === 'object' && window['BROWSER_DEBUG'] && window['BROWSER_DEBUG'].indexOf('kalm') > -1)
+    (typeof process === 'object' && (process.env.NODE_DEBUG || '').indexOf('kalm') > -1) ||
+    (typeof window === 'object' && (window['DEBUG'] || '').indexOf('kalm') > -1)
 );
 
 /* Methods -------------------------------------------------------------------*/
 
 function log(msg: string): void {
-    if (enabled) console.error(msg);
+    if (enabled) console.log(msg);
 }
 
 /* Exports --------------------------------------------------------------------*/
 
-export default { log, enabled };
+export default { log };

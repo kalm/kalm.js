@@ -14,13 +14,8 @@ function serialize(frameId: number, channel: string, packets: Buffer[]): number[
 
   result.push.apply(result, _uint16Size(packets.length));
 
-  packets.forEach(packet => {
-    if (packet['splice'] === undefined && !(packet instanceof Buffer)) {
-      throw new Error(`
-        Cannot send unexpected type ${packet.constructor['name']} \`${JSON.stringify(packet)}\`.
-        Verify Serializer output or send data of type Buffer or UInt8Array
-      `);
-    }
+  packets.forEach((packet: Buffer) => {
+    if (!(packet instanceof Buffer)) throw new Error(`Cannot send packet ${packet}. Must be of type Buffer`);
     result.push.apply(result, _uint16Size(packet.length));
     result.push.apply(result, packet);
   });

@@ -4,7 +4,7 @@
   "description": "IPC transport for Kalm",
   "main": "./bin/ipc.js",
   "scripts": {
-    "build": "../../scripts/build.sh ipc ./src/ipc.ts ./bin/ipc.js",
+    "build": "../../scripts/build.sh ipc",
     "test": "mocha ./tests/unit --exit"
   },
   "repository": {
