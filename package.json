@@ -4,7 +4,9 @@
   "description": "The socket optimizer",
   "main": "packages/core/bin/core.js",
   "scripts": {
-    "test": "lerna run test && mocha ./tests/integration --exit"
+    "test": "lerna run test && mocha ./tests/integration --exit",
+    "build": "lerna run build",
+    "bench": "node ./scripts/benchmarks"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,8 @@
     "mocha": "~5.2.0",
     "rollup": "^0.67.4",
     "sinon": "~7.1.0",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
     "tslint": "~5.11.0",
     "typescript": "~3.2.0"
   }

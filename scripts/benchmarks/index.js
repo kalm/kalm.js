@@ -10,13 +10,14 @@ const Kalm = require('./transports/kalm');
 const TCP = require('./transports/tcp');
 const IPC = require('./transports/ipc');
 const UDP = require('./transports/udp');
+const WS = require('./transports/socketio');
 const settings = require('./settings');
 
 /* Local variables -----------------------------------------------------------*/
 
 const _maxCount = null;
 let _curr = 0;
-const Suite = { IPC, TCP, UDP };
+const Suite = { IPC, TCP, UDP, WS };
 const tests = [];
 const results = {};
 
@@ -51,7 +52,8 @@ function _updateSettings(obj, resolve) {
 }
 
 function _errorHandler(err) {
-	console.log(err);
+	console.error(err);
+	process.exit(1);
 }
 
 function _postResults() {
@@ -77,12 +79,12 @@ var adpts = Object.keys(Suite).map(function(k) {
 
 adpts.forEach(function(i) {
 	tests.push(function(resolve) {
-		console.log('Configuring ' + i.transport);
+		// console.log('Configuring ' + i.transport);
 		_updateSettings(i.settings, resolve);
 	});
 
 	tests.push(function(resolve) {
-		console.log('Measuring raw ' + i.transport);
+		// console.log('Measuring raw ' + i.transport);
 		_measure(i.raw, function(total) {
 			results['raw_' + i.transport] = total;
 			resolve();
@@ -90,7 +92,7 @@ adpts.forEach(function(i) {
 	});
 
 	tests.push(function(resolve) {
-		console.log('Measuring Kalm ' + i.transport);
+		// console.log('Measuring Kalm ' + i.transport);
 		_measure(i.kalm, function(total) {
 			results['kalm_' + i.transport] = total;
 			resolve();

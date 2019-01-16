@@ -7,21 +7,24 @@
 /* Requires ------------------------------------------------------------------*/
 
 const expect = require('chai').expect;
-const Kalm = require('../../index');
+const Kalm = require('../../packages/kalm/bin/kalm');
 
 /* Suite --------------------------------------------------------------------*/
 
 describe('Integration tests', () => {
 
-	['IPC', 'TCP', 'UDP'].forEach((transport) => {
+	['ipc', 'tcp', 'udp', 'ws'].forEach((transport) => {
 		describe('Testing ' + transport + ' transport', () => {
-			let server;
+      let server;
+      let soc = require(`../../packages/${transport}/bin/${transport}`)();
 
 			/* --- Setup ---*/
 
 			// Create a server before each scenario
 			beforeEach(() => {
-				server = Kalm.listen({ transport: Kalm.transports[transport] });
+				server = Kalm.listen({
+          transport: soc
+        });
 			});
 
 			// Cleanup afterwards
@@ -43,7 +46,7 @@ describe('Integration tests', () => {
 					});
 				});
 
-				let client = Kalm.connect({ transport: Kalm.transports[transport] });
+				let client = Kalm.connect({ transport: soc });
 				client.write('test', payload);
 			});
 
@@ -60,7 +63,7 @@ describe('Integration tests', () => {
 					});
 				});
 
-				let client = Kalm.connect({ transport: Kalm.transports[transport] });
+				let client = Kalm.connect({ transport: soc });
 				client.write('test.large', largePayload);
 			});
 
@@ -75,7 +78,7 @@ describe('Integration tests', () => {
           c.unsubscribe('test');
         });
 
-        let client = Kalm.connect({ transport: Kalm.transports[transport] });
+        let client = Kalm.connect({ transport: soc });
         client.write('test', payload);
 
         setTimeout(() => done(), 100);
@@ -93,7 +96,7 @@ describe('Integration tests', () => {
         });
 
         let client = Kalm.connect({ 
-          transport: Kalm.transports[transport],
+          transport: soc,
           serial: null,
           profile: { maxBytes: 30 } 
         });
@@ -103,7 +106,6 @@ describe('Integration tests', () => {
 
       it('should encrypt and decrypt and maintain integrity of messages', (done) => {
         let payload = new Buffer(JSON.stringify({foo:'bar'}));
-        server.secretKey = '__some_test_key__';
         server.serial = null;
         server.on('connection', (c) => {
           c.subscribe('test', (data) => {
@@ -113,9 +115,8 @@ describe('Integration tests', () => {
         });
 
         let client = Kalm.connect({ 
-          transport: Kalm.transports[transport],
+          transport: soc,
           serial: null, 
-          secretKey: '__some_test_key__'
         });
         client.write('test', payload);
       });

@@ -1,14 +1,14 @@
 /* Requires ------------------------------------------------------------------*/
 
-import Client from './components/client';
-import Provider from './components/provider';
+import client from './components/client';
+import provider from './components/provider';
 
 import dynamic from './routines/dynamic';
 import realtime from './routines/realtime';
 import tick from './routines/tick';
 import { EventEmitter } from 'events';
 
-import { Server, ClientConfig, ServerConfig } from '../../../types';
+import { ProviderConfig, Provider, ClientConfig, Client } from '../../../types';
 
 /* Local variables -----------------------------------------------------------*/
 
@@ -22,19 +22,14 @@ const defaults = {
 
 /* Methods -------------------------------------------------------------------*/
 
-function listen(options: ServerConfig): Server {
-  const server: Server = {
-    host: options.host || defaults.host,
-    providers: null,
-  };
-  server.providers = options.providers.map(config => {
-    return Provider({ ...defaults, ...config }, new EventEmitter(), server);
-  });
-  return server;
+function listen(options: ProviderConfig): Provider {
+  options.label = options.label || Math.random().toString(36).substring(7);
+  return provider({ ...defaults, ...options }, new EventEmitter());
 }
 
-function connect(options: ClientConfig) {
-  return Client({ ...defaults, ...options }, new EventEmitter());
+function connect(options: ClientConfig): Client {
+  options.label = options.label || Math.random().toString(36).substring(7);
+  return client({ ...defaults, ...options }, new EventEmitter());
 }
 
 /* Exports -------------------------------------------------------------------*/

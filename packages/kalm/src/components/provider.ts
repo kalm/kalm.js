@@ -3,11 +3,11 @@
 import logger from '../utils/logger';
 import Client from './client';
 import { EventEmitter } from 'events';
-import { Serializable, ClientConfig, Socket, Remote, Server, Provider } from '../../../../types';
+import { Serializable, ClientConfig, Socket, Remote, Provider } from '../../../../types';
 
 /* Methods -------------------------------------------------------------------*/
 
-function Provider(params: ClientConfig, emitter: EventEmitter, server: Server): Provider {
+function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
   const connections = [];
   const socket: Socket = params.transport(params, emitter);
 
@@ -39,7 +39,6 @@ function Provider(params: ClientConfig, emitter: EventEmitter, server: Server): 
         broadcast,
         connections,
         label: params.label,
-        server,
         stop,
       },
     }, new EventEmitter(), handle);

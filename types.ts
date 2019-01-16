@@ -17,19 +17,18 @@ export type ClientConfig = {
     provider?: any
 }
 
-export type ServerConfig = {
-    providers: ClientConfig[]
+export type ProviderConfig = {
+    label?: string
+    routine?: Routine
+    json?: Boolean
+    transport?: Transport
+    port?: number
     host?: string
 }
 
 export type Remote = {
     host: string
     port: number
-}
-
-export type Server = {
-    providers: Provider[]
-    host: string
 }
 
 export interface Provider extends EventEmitter {

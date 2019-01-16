@@ -4,8 +4,9 @@
     (global.kalm = factory(global.events));
 }(this, (function (events) { 'use strict';
 
-    const enabled = ((typeof process === 'object' && (process.env.NODE_DEBUG || '').indexOf('kalm') > -1) ||
-        (typeof window === 'object' && (window['DEBUG'] || '').indexOf('kalm') > -1));
+    const enabled = ((typeof process === 'object' && process.env.NODE_DEBUG) ||
+        (typeof window === 'object' && window.DEBUG) ||
+        '').indexOf('kalm') > -1;
     function log(msg) {
         if (enabled)
             console.log(msg);
@@ -20,12 +21,8 @@
         }
         result.push.apply(result, _uint16Size(packets.length));
         packets.forEach((packet) => {
-            if (!(packet instanceof Buffer)) {
-                throw new Error(`
-        Cannot send packet \`${JSON.stringify(packet)}\`.
-        Verify Serializer output or send data of type Buffer
-      `);
-            }
+            if (!(packet instanceof Buffer))
+                throw new Error(`Cannot send packet ${packet}. Must be of type Buffer`);
             result.push.apply(result, _uint16Size(packet.length));
             result.push.apply(result, packet);
         });
@@ -173,7 +170,7 @@
         return Object.assign(emitter, { write, destroy, subscribe, unsubscribe, remote, local, label: params.label });
     }
 
-    function Provider(params, emitter, server) {
+    function Provider(params, emitter) {
         const connections = [];
         const socket = params.transport(params, emitter);
         function broadcast(channel, payload) {
@@ -194,7 +191,6 @@
                     broadcast,
                     connections,
                     label: params.label,
-                    server,
                     stop,
                 } }), new events.EventEmitter(), handle);
             connections.push(client);
@@ -293,14 +289,7 @@
         transport: null,
     };
     function listen(options) {
-        const server = {
-            host: options.host || defaults.host,
-            providers: null,
-        };
-        server.providers = options.providers.map(config => {
-            return Provider(Object.assign({}, defaults, config), new events.EventEmitter(), server);
-        });
-        return server;
+        return Provider(Object.assign({}, defaults, options), new events.EventEmitter());
     }
     function connect(options) {
         return Client(Object.assign({}, defaults, options), new events.EventEmitter());

@@ -1,9 +1,12 @@
 /* Local variables ------------------------------------------------------------*/
 
+declare const window: any;
+
 const enabled: boolean = (
-    (typeof process === 'object' && (process.env.NODE_DEBUG || '').indexOf('kalm') > -1) ||
-    (typeof window === 'object' && (window['DEBUG'] || '').indexOf('kalm') > -1)
-);
+    (typeof process === 'object' && process.env.NODE_DEBUG) ||
+    (typeof window === 'object' && window.DEBUG) ||
+    ''
+).indexOf('kalm') > -1;
 
 /* Methods -------------------------------------------------------------------*/
 

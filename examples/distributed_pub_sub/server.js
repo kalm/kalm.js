@@ -5,30 +5,31 @@ const tcp = require('../../packages/tcp/bin/tcp');
 const seed = { host: '0.0.0.0', port: 3000 };
 const tickSeed = Date.now();
 
-const Server = kalm.listen({
-    providers: [
-        {
-            label: 'external',
-            transport: ws(),
-            port: 3938,
-            routine: kalm.routines.tick(120, tickSeed),
-        },
-        {
-            label: 'internal',
-            transport: tcp(),
-            port: 3000,
-            routine: kalm.routines.realtime(),
-        }
-    ],
-    host: '0.0.0.0',
-});
+const seedHost = '0.0.0.0'; // Apply seed config
 
-Server.providers.forEach((provider) => {
+const providers = [
+    kalm.listen({
+        label: 'internal',
+        transport: tcp(),
+        port: 3000,
+        routine: kalm.routines.realtime(),
+        host: '0.0.0.0', // Apply local ip
+    }),
+    kalm.listen({
+        label: 'external',
+        transport: ws(),
+        port: 3938,
+        routine: kalm.routines.tick(120, tickSeed),
+        host: '0.0.0.0', // Apply local ip
+    })
+];
+
+providers.forEach((provider) => {
     const isIntern = provider.label === 'internal';
-    const isSeed = (isIntern && seed.host === Server.host);
+    const isSeed = (isIntern && seed.host === seedHost);
 
     if (!isSeed && isIntern) {
-        kalm.connect({}).write('n.add', { host: Server.host });
+        kalm.connect({}).write('n.add', { host: seedHost });
     }
 
     provider.on('connection', (client) => {
@@ -40,7 +41,7 @@ Server.providers.forEach((provider) => {
                 else provider.connect(evt.remote);
             });
             client.subscribe('n.evt', (msg, evt) => {
-                Server.providers.forEach((_provider) => {
+                providers.forEach((_provider) => {
                     if (_provider.label === 'external') {
                         _provider.broadcast('r.evt', msg);
                     }
@@ -48,7 +49,7 @@ Server.providers.forEach((provider) => {
             });
         } else {
             client.subscribe('c.evt', (msg, evt) => {
-                Server.providers.forEach((_provider) => {
+                providers.forEach((_provider) => {
                     if (_provider.label === 'internal') {
                         _provider.broadcast('n.evt', msg);
                     } else {
