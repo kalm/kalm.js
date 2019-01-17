@@ -48,7 +48,6 @@ See the [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
 ## Options
 
 - Transports [[wiki]](https://github.com/kalm/kalm.js/wiki/Transports)
-- Formats [[wiki]](https://github.com/kalm/kalm.js/wiki/Formats)
 - Routines  [[wiki]](https://github.com/kalm/kalm.js/wiki/Routines)
 
 ## Logging

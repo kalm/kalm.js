@@ -24,7 +24,8 @@ describe('Integration tests', () => {
 			beforeEach(() => {
 				server = Kalm.listen({
           transport: soc
-        });
+				});
+				server.on('error', console.error)
 			});
 
 			// Cleanup afterwards
