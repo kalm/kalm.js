@@ -15,7 +15,7 @@ describe('Kalm constructors', () => {
         });
 
         it('listen should bind to a transport if one is provided', () => {
-            server = kalm.listen({ transport: mockTransport });
+            server = kalm.listen({ transport: mockTransport() });
             expect(bindSpy.called).to.be.true;
         });
 
@@ -32,7 +32,7 @@ describe('Kalm constructors', () => {
         });
 
         it('listen should connect via a transport if one is provided', () => {
-            client = kalm.listen({ transport: mockTransport });
+            client = kalm.connect({ transport: mockTransport() });
             expect(connectSpy.called).to.be.true;
         });
     

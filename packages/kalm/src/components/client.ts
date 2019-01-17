@@ -21,7 +21,6 @@ import {
 function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHandle): Client {
   let connected: number = 1;
   const channels: ChannelList = {};
-  const muWrap = handler => evt => handler(evt[0], evt[1]);
   const socket: Socket = params.transport(params, emitter);
   emitter.setMaxListeners(50);
 
@@ -37,15 +36,13 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
   }
 
   function subscribe(channel: string, handler: <T extends Serializable>(msg: T, frame: Frame) => void): void {
-    _resolveChannel(channel).emitter.on('message', muWrap(handler));
+    _resolveChannel(channel).emitter.on('message', handler);
   }
 
-  function unsubscribe(channel: string, handler: () => void): void {
+  function unsubscribe(channel: string, handler?: <T extends Serializable>(msg: T, frame: Frame) => void): void {
     if (!(channel in channels)) return;
-    _resolveChannel(channel).emitter
-        .off('message', muWrap(handler))
-        .emit('unsubscribe');
-
+    if (handler) channels[channel].emitter.off('message', handler);
+    else channels[channel].emitter.removeAllListeners('message');
     if (channels[channel].emitter.listenerCount('message') === 0) {
       channels[channel].queue.flush();
       delete channels[channel];
@@ -115,7 +112,8 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
     if (channels[frame.channel]) {
       channels[frame.channel].emitter.emit(
         'message',
-        [decodedPacket, {
+        decodedPacket,
+        {
           client: params,
           frame: {
             channel: frame.channel,
@@ -124,7 +122,8 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
             payloadBytes: frame.payloadBytes,
             payloadMessages: frame.packets.length,
           },
-        }]);
+        },
+      );
     }
   }
 

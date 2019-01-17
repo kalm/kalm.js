@@ -62,7 +62,6 @@
     function Client(params, emitter, handle) {
         let connected = 1;
         const channels = {};
-        const muWrap = handler => evt => handler(evt[0], evt[1]);
         const socket = params.transport(params, emitter);
         emitter.setMaxListeners(50);
         function write(channel, message) {
@@ -77,14 +76,15 @@
                 setTimeout(() => socket.disconnect(handle), 0);
         }
         function subscribe(channel, handler) {
-            _resolveChannel(channel).emitter.on('message', muWrap(handler));
+            _resolveChannel(channel).emitter.on('message', handler);
         }
         function unsubscribe(channel, handler) {
             if (!(channel in channels))
                 return;
-            _resolveChannel(channel).emitter
-                .off('message', muWrap(handler))
-                .emit('unsubscribe');
+            if (handler)
+                channels[channel].emitter.off('message', handler);
+            else
+                channels[channel].emitter.removeAllListeners('message');
             if (channels[channel].emitter.listenerCount('message') === 0) {
                 channels[channel].queue.flush();
                 delete channels[channel];
@@ -144,16 +144,16 @@
             const decodedPacket = (params.json === true) ? JSON.parse(packet.toString()) : packet;
             emitter.emit('stats.packetDecoded');
             if (channels[frame.channel]) {
-                channels[frame.channel].emitter.emit('message', [decodedPacket, {
-                        client: params,
-                        frame: {
-                            channel: frame.channel,
-                            id: frame.frameId,
-                            messageIndex: index,
-                            payloadBytes: frame.payloadBytes,
-                            payloadMessages: frame.packets.length,
-                        },
-                    }]);
+                channels[frame.channel].emitter.emit('message', decodedPacket, {
+                    client: params,
+                    frame: {
+                        channel: frame.channel,
+                        id: frame.frameId,
+                        messageIndex: index,
+                        payloadBytes: frame.payloadBytes,
+                        payloadMessages: frame.packets.length,
+                    },
+                });
             }
         }
         function _handleDisconnect() {
@@ -289,9 +289,11 @@
         transport: null,
     };
     function listen(options) {
+        options.label = options.label || Math.random().toString(36).substring(7);
         return Provider(Object.assign({}, defaults, options), new events.EventEmitter());
     }
     function connect(options) {
+        options.label = options.label || Math.random().toString(36).substring(7);
         return Client(Object.assign({}, defaults, options), new events.EventEmitter());
     }
     var kalm = {

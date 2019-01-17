@@ -1,7 +1,7 @@
 {
   "name": "kalm",
   "version": "3.0.0",
-  "description": "The socket manager",
+  "description": "The socket optimizer",
   "main": "./dist/kalm.js",
   "scripts": {
     "build": "../../scripts/build.sh kalm",

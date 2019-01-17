@@ -6,14 +6,13 @@
   Kalm
 </h1>
 <h3 align="center">
-  The Socket Manager
+  The Socket Optimizer
   <br/><br/><br/>
 </h3>
 <br/>
 
 [![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/kalm)
 [![Build Status](https://travis-ci.org/kalm/kalm.js.svg?branch=master)](https://travis-ci.org/kalm/kalm.js)
-[![Dependencies Status](https://david-dm.org/kalm/kalm.js.svg)](https://david-dm.org/kalm/kalm.js)
 
 ---
 
@@ -26,13 +25,17 @@
 
 ## Performance
 
-<img align="center" alt="performance" width="320px" src="https://kalm.js.org/images/kalm-logo.png" />
+<img align="center" alt="perf" width="320px" src="https://kalm.js.org/images/kalm-logo.png" />
 
 ## Install
 
-```
-    npm install kalm
-```
+Install the core package
+
+`npm install kalm`
+
+Install the transport layer ('tcp' for example)
+
+`npm install @kalm/tcp`
 
 ## How it works
 
@@ -60,7 +63,7 @@ Kalm uses the built-in `NODE_DEBUG` flag. Just include `kalm` in your value.
 
 **Benchmarks**
 
-`node tests/benchmarks`
+`npm run bench`
 
 ## Contribute
 
