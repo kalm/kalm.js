@@ -6,7 +6,7 @@
 
 ## Options
 
-```json
+```
 {
     socketTimeout = 30000,
     path = '/tmp/app.socket-'

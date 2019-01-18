@@ -6,7 +6,7 @@
 
 ## Options
 
-```json
+```
 {
     cert = null,
     key = null,

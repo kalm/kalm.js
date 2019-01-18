@@ -6,7 +6,7 @@
 
 ## Options
 
-```json
+```
 {
     type = 'udp4',
     localAddr = '0.0.0.0',
