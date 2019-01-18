@@ -1,3 +1,9 @@
 tests
-README.md
+src
+examples
+.gitignore
+tsconfig.json
+tslint.json
+*.md
 .travis.yml
+package-lock.json
