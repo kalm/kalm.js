@@ -1,13 +1,13 @@
 <h1 align="center">
   <a title="The socket optimizer" href="http://kalm.js.org">
-    <img alt="Kalm" width="320px" src="https://kalm.js.org/images/kalmv3.png" />
-    <br/><br/>
+    <img alt="Kalm" width="300px" src="https://kalm.js.org/images/kalmv3.png" />
+    <br/>
   </a>
   Kalm
 </h1>
 <h3 align="center">
   The Socket Optimizer
-  <br/><br/><br/>
+  <br/><br/>
 </h3>
 <br/>
 
@@ -25,7 +25,7 @@
 
 ## Performance
 
-<img align="center" alt="perf" width="320px" src="https://kalm.js.org/images/kalm-logo.png" />
+<img align="center" alt="perf" src="https://kalm.js.org/images/kalmv3chart.png" />
 
 ## Install
 
