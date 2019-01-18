@@ -20,7 +20,7 @@
 - Flexible and extensible, load your own transports and routines
 - Can be used between servers or in the **browser**
 - Lower resource footprint and **better throughtput** than plain sockets
-- **Zero dependencies**
+- **Zero dependencies** and can be bundled down to ~5kb!
 
 
 ## Performance
