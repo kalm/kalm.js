@@ -31,6 +31,7 @@
     "web",
     "ws"
   ],
+  "files":["bin/ws.js"],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
