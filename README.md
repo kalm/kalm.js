@@ -17,7 +17,7 @@
 ---
 
 - **Easy-to-use syntax** unified across protocols
-- Flexible and extensible, load your own transports and serializers
+- Flexible and extensible, load your own transports and routines
 - Can be used between servers or in the **browser**
 - Lower resource footprint and **better throughtput** than plain sockets
 - **Zero dependencies**
@@ -37,36 +37,35 @@ Install the transport layer ('tcp' for example)
 
 `npm install @kalm/tcp`
 
-## How it works
+## Build
+
+`npm run build`
+
+## Documentation
 
 [[Read more]](https://github.com/kalm/kalm.js/wiki/How-it-works)
+
+- Transports [[wiki]](https://github.com/kalm/kalm.js/wiki/Transports)
+- Routines  [[wiki]](https://github.com/kalm/kalm.js/wiki/Routines)
 
 ## Usage
 
 See the [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
 
-## Options
-
-- Transports [[wiki]](https://github.com/kalm/kalm.js/wiki/Transports)
-- Routines  [[wiki]](https://github.com/kalm/kalm.js/wiki/Routines)
-
 ## Logging
 
-Kalm uses the built-in `NODE_DEBUG` flag. Just include `kalm` in your value.
+Kalm uses the standard `NODE_DEBUG` environment variable. Just include `kalm` in your value.
 
 ## Testing
 
-**Unit + Smoke tests**
-
 `npm test`
 
-**Benchmarks**
 
 `npm run bench`
 
 ## Contribute
 
-The proverbial door is wide open - if you see something that you want, [open an issue](//github.com/kalm/kalm.js/issues/new) or file a pull request, we'll be more than happy to take a look!
+If you think of something that you want, [open an issue](//github.com/kalm/kalm.js/issues/new) or file a pull request, we'll be more than happy to take a look!
 
 ## License 
 
