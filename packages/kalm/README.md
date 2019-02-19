@@ -27,6 +27,8 @@
 
 <img align="center" alt="perf" src="https://kalm.js.org/images/kalmv3chart.png" />
 
+The performance gain comes from buffering packets before sending them- eventually sending batches instead of individual packages. The more traffic getting processed, the better the improvement. You can read more about the algorithm [here](https://en.wikipedia.org/wiki/Nagle%27s_algorithm)
+
 ## Install
 
 Install the core package
