@@ -1,8 +1,8 @@
 {
   "name": "@kalm/tcp",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "TCP transport for Kalm",
-  "main": "./bin/tcp.js",
+  "main": "./bin/tcp.min.js",
   "scripts": {
     "build": "../../scripts/build.sh tcp",
     "test": "mocha ./tests/unit --exit"
@@ -31,7 +31,7 @@
     "web",
     "tcp"
   ],
-  "files":["bin/tcp.js"],
+  "files":["bin/tcp.min.js"],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
@@ -45,7 +45,7 @@
     "net": false
   },
   "devDependencies": {
-    "chai": "~4.2.0",
-    "mocha": "~5.2.0"
+    "chai": "^4.2.0",
+    "mocha": "^6.1.0"
   }
 }

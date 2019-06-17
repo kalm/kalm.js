@@ -41,3 +41,4 @@ NTH
 docs
 yarn.lock
 package-lock.json
+.vscode

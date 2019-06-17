@@ -1,8 +1,15 @@
 language: node_js
+cache: yarn
 node_js:
   - "10"
   - "8"
-script: 
-  - npm test 
-  - npm run bench
+script:
+  - yarn run lint
+  - yarn run test
+  - yarn run bench
 sudo: false
+install: 
+  - yarn
+before_install:
+  - npm install yarn@^1.13.0
+  - yarn --version
