@@ -3,8 +3,9 @@ cache: yarn
 node_js:
   - "10"
   - "8"
-script: 
-  - yarn run test 
+script:
+  - yarn run lint
+  - yarn run test
   - yarn run bench
 sudo: false
 install: 
