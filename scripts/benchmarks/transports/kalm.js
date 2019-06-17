@@ -1,80 +1,80 @@
-/** 
+/**
  * KALM Benchmark
  */
 
-'use strict';
 
 /* Requires ------------------------------------------------------------------*/
 
-var settings = require('../settings'); 
-var Kalm = require('../../../packages/kalm/bin/kalm');
-var transports = {
-	ipc: require('../../../packages/ipc/bin/ipc'),
-	tcp: require('../../../packages/tcp/bin/tcp'),
-	udp: require('../../../packages/udp/bin/udp'),
-	ws: require('../../../packages/ws/bin/ws'),
-}
+const settings = require('../settings');
+const Kalm = require('../../../packages/kalm/bin/kalm.min');
+
+const transports = {
+  ipc: require('../../../packages/ipc/bin/ipc.min'),
+  tcp: require('../../../packages/tcp/bin/tcp.min'),
+  udp: require('../../../packages/udp/bin/udp.min'),
+  ws: require('../../../packages/ws/bin/ws.min'),
+};
 
 /* Local variables -----------------------------------------------------------*/
 
-var server;
-var client;
+let server;
+let client;
 
-var count = 0;
-var handbreak = true;
+let count = 0;
+let handbreak = true;
 
 /* Methods -------------------------------------------------------------------*/
 
 function setup(resolve) {
-	server = Kalm.listen({
-		port: settings.port,
-		json: true,
-		transport: transports[settings.transport](),
-		routine: Kalm.routines[settings.routine[0]](settings.routine[1]),
-	});
+  server = Kalm.listen({
+    port: settings.port,
+    json: true,
+    transport: transports[settings.transport](),
+    routine: Kalm.routines[settings.routine[0]](settings.routine[1]),
+  });
 
-	server.on('connection', (c) => {
-		c.subscribe(settings.testChannel, (msg) => c.write(settings.testChannel, msg));
-	});
+  server.on('connection', (c) => {
+    c.subscribe(settings.testChannel, msg => c.write(settings.testChannel, msg));
+  });
 
-	handbreak = false;
-	setTimeout(resolve, 0);
+  handbreak = false;
+  setTimeout(resolve, 0);
 }
 
 function teardown(resolve) {
-	server.stop();
-	server = null;
-	client = null;
-	resolve(count);
+  server.stop();
+  server = null;
+  client = null;
+  resolve(count);
 }
 
 function stop(resolve) {
-	handbreak = true;
-	setTimeout(resolve, 0);
+  handbreak = true;
+  setTimeout(resolve, 0);
 }
 
 function step(resolve) {
-	if (handbreak) return;
-	if (!client) {
-		client = Kalm.connect({
-			port: settings.port,
-			json: true,
-			transport: transports[settings.transport](),
-			routine: Kalm.routines.realtime(),
-		});
-		client.subscribe(settings.testChannel, () => count++);
-	}
+  if (handbreak) return;
+  if (!client) {
+    client = Kalm.connect({
+      port: settings.port,
+      json: true,
+      transport: transports[settings.transport](),
+      routine: Kalm.routines.realtime(),
+    });
+    client.subscribe(settings.testChannel, () => count++);
+  }
 
-	client.write(settings.testChannel, settings.testPayload);
+  client.write(settings.testChannel, settings.testPayload);
 
-	resolve();
+  resolve();
 }
 
 /* Exports -------------------------------------------------------------------*/
 
 module.exports = {
-	setup: setup,
-	teardown: teardown,
-	step: step,
-	stop: stop
+  setup,
+  teardown,
+  step,
+  stop,
 };

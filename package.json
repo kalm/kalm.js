@@ -1,11 +1,14 @@
 {
   "name": "kalm-lerna",
-  "version": "3.0.0",
+  "private": true,
+  "version": "3.1.0",
   "description": "The socket optimizer",
   "main": "packages/core/bin/core.js",
   "scripts": {
-    "test": "lerna run test && mocha ./tests/integration --exit",
-    "build": "lerna run build",
+    "lint": "eslint .",
+    "lint:fix": "yarn lint --fix",
+    "test": "yarn workspaces run test --ci && mocha ./tests/integration --exit",
+    "build": "yarn workspaces run build --ci",
     "bench": "node ./scripts/benchmarks"
   },
   "repository": {
@@ -21,18 +24,20 @@
   "contributors": [
     "frederic charette <fredericcharette@gmail.com>"
   ],
+  "typings": "./types.ts",
+  "workspaces": [ "packages/*" ],
   "devDependencies": {
-    "@absolunet/eslint-config-node": "~1.2.0",
-    "@types/core-js": "~2.5.0",
-    "@types/node": "~10.12.0",
-    "chai": "~4.2.0",
-    "lerna": "~3.6.0",
-    "mocha": "~5.2.0",
-    "rollup": "^0.67.4",
-    "sinon": "~7.1.0",
-    "socket.io": "^2.1.1",
-    "socket.io-client": "^2.1.1",
-    "tslint": "~5.11.0",
-    "typescript": "~3.2.0"
+    "@types/node": "^12.0.0",
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.0",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "mocha": "^6.1.0",
+    "rollup": "^1.15.0",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
+    "typescript": "^3.5.0"
   }
 }

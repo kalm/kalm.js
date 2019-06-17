@@ -1,8 +1,8 @@
 {
   "name": "@kalm/udp",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "UDP transport for Kalm",
-  "main": "./bin/udp.js",
+  "main": "./bin/udp.min.js",
   "scripts": {
     "build": "../../scripts/build.sh udp",
     "test": "mocha ./tests/unit --exit"
@@ -31,7 +31,7 @@
     "web",
     "udp"
   ],
-  "files":["bin/udp.js"],
+  "files":["bin/udp.min.js"],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
@@ -45,7 +45,7 @@
     "dgram": false
   },
   "devDependencies": {
-    "chai": "~4.2.0",
-    "mocha": "~5.2.0"
+    "chai": "^4.2.0",
+    "mocha": "^6.1.0"
   }
 }

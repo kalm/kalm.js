@@ -7,3 +7,6 @@ tslint.json
 *.md
 .travis.yml
 package-lock.json
+yarn.lock
+.vscode
+.github
