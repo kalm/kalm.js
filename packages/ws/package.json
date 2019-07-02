@@ -1,8 +1,8 @@
 {
   "name": "@kalm/ws",
-  "version": "3.1.0",
+  "version": "3.1.2",
   "description": "WebSocket transport for Kalm",
-  "main": "./bin/ws.min.js",
+  "main": "bin/ws.min.js",
   "scripts": {
     "build": "../../scripts/build.sh ws",
     "test": "mocha ./tests/unit --exit"

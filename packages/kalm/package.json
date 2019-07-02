@@ -1,8 +1,8 @@
 {
   "name": "kalm",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "The socket optimizer",
-  "main": "./bin/kalm.min.js",
+  "main": "bin/kalm.min.js",
   "scripts": {
     "build": "../../scripts/build.sh kalm",
     "test": "mocha ./tests/unit --exit"
