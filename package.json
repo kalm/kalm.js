@@ -1,9 +1,9 @@
 {
   "name": "kalm-lerna",
   "private": true,
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "The socket optimizer",
-  "main": "packages/core/bin/core.js",
+  "main": "packages/kalm/bin/kalm.js",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "yarn lint --fix",
