@@ -66,7 +66,7 @@ function _postResults() {
 // Roll port number
 settings.port = 3000 + Math.round(Math.random() * 1000);
 
-const adpts = Object.keys(Suite).map(k => ({
+const adpts = Object.keys(Suite).map((k) => ({
   transport: k,
   settings: { transport: k.toLowerCase() },
   raw: Suite[k],
@@ -99,6 +99,6 @@ adpts.forEach((i) => {
 tests.push(_postResults);
 
 tests.reduce(
-  (c, n) => c.then(resolve => new Promise(n).then(resolve, _errorHandler), _errorHandler),
+  (c, n) => c.then((resolve) => new Promise(n).then(resolve, _errorHandler), _errorHandler),
   Promise.resolve(),
 );

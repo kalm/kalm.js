@@ -1,11 +1,10 @@
 /* Requires ------------------------------------------------------------------*/
 
 import { EventEmitter } from 'events';
-import { Queue, Routine } from '../../../../types';
 
 /* Methods -------------------------------------------------------------------*/
 
-function realtime(): Routine {
+function realtime(): KalmRoutine {
     return function queue(channel: string, params: object, emitter: EventEmitter): Queue {
         let i: number = 0;
 

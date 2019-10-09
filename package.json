@@ -1,7 +1,7 @@
 {
   "name": "kalm-lerna",
   "private": true,
-  "version": "3.1.2",
+  "version": "3.2.0",
   "description": "The socket optimizer",
   "main": "packages/kalm/bin/kalm.js",
   "scripts": {
@@ -24,20 +24,19 @@
   "contributors": [
     "frederic charette <fredericcharette@gmail.com>"
   ],
-  "typings": "./types.ts",
+  "typings": "./types.d.ts",
   "workspaces": [ "packages/*" ],
   "devDependencies": {
-    "@types/node": "^12.0.0",
-    "@typescript-eslint/eslint-plugin": "^1.10.2",
-    "@typescript-eslint/parser": "^1.10.0",
+    "@types/node": "^12.7.0",
+    "@typescript-eslint/eslint-plugin": "^2.3.0",
+    "@typescript-eslint/parser": "^2.3.0",
     "chai": "^4.2.0",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.8.0",
-    "mocha": "^6.1.0",
-    "rollup": "^1.15.0",
-    "socket.io": "^2.2.0",
-    "socket.io-client": "^2.2.0",
-    "typescript": "^3.5.0"
+    "eslint": "^6.5.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.0",
+    "mocha": "^6.2.0",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
+    "typescript": "^3.6.0"
   }
 }

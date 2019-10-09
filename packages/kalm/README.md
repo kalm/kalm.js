@@ -27,7 +27,7 @@
 
 <img align="center" alt="perf" src="https://kalm.js.org/images/kalmv3chart.png" />
 
-The performance gain comes from buffering packets before sending them- eventually sending batches instead of individual packages. The more traffic getting processed, the better the improvement. You can read more about the algorithm [here](https://en.wikipedia.org/wiki/Nagle%27s_algorithm)
+The performance gain comes from buffering packets before sending them- eventually sending batches instead of individual packages. The more traffic getting processed, the better the improvement. Many strategies are offered as routines. You can read more about the packet buffering algorithm [here](https://en.wikipedia.org/wiki/Nagle%27s_algorithm)
 
 ## Install
 
@@ -39,9 +39,34 @@ Install the transport layer ('tcp' for example)
 
 `npm install @kalm/tcp`
 
-## Build
+## Usage
 
-`npm run build`
+**Server**
+
+```javascript
+const Server = kalm.listen({
+  port: 8800,
+  transport: ws(),
+  routine: kalm.routines.tick(5), // Hz
+  host: '0.0.0.0',
+});
+```
+
+**Client**
+
+```javascript
+const kalm = require('kalm');
+const ws = require('@kalm/ws');
+
+const Client = kalm.connect({
+  host: '0.0.0.0',
+  port: 8800,
+  transport: ws(),
+  routine: kalm.routines.realtime(),
+});
+```
+
+See the [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder for great real-world examples!
 
 ## Documentation
 
@@ -50,13 +75,13 @@ Install the transport layer ('tcp' for example)
 - Transports [[wiki]](https://github.com/kalm/kalm.js/wiki/Transports)
 - Routines  [[wiki]](https://github.com/kalm/kalm.js/wiki/Routines)
 
-## Usage
-
-See the [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
-
 ## Logging
 
-Kalm uses the standard `NODE_DEBUG` environment variable. Just include `kalm` in your value.
+Kalm uses the `NODE_DEBUG` environment variable. Just include `kalm` in your value.
+
+Example: 
+
+`NODE_DEBUG=net,kalm node myApp.js`
 
 ## Testing
 

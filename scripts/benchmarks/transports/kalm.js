@@ -34,7 +34,7 @@ function setup(resolve) {
   });
 
   server.on('connection', (c) => {
-    c.subscribe(settings.testChannel, msg => c.write(settings.testChannel, msg));
+    c.subscribe(settings.testChannel, (msg) => c.write(settings.testChannel, msg));
   });
 
   handbreak = false;

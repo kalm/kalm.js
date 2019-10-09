@@ -6,16 +6,18 @@
         "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
-        "lib": [ "es2018", "dom", "es2018.promise" ],
         "sourceMap": false,
         "allowJs": true,
-        "target": "es2018",
+        "target": "esnext",
         "outDir": "dist"
     },
     "include": [
-        "./src"
+        "./packages",
+        "./src",
+        "./types.d.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "**/*.min.js"
     ]
 }

@@ -1,12 +1,5 @@
 /* Requires ------------------------------------------------------------------*/
 
-import {
-  Socket,
-  Transport,
-  ClientConfig,
-  Remote,
-  WSConfig,
-} from '../../../types';
 import { EventEmitter } from 'events';
 
 const isBrowser = (typeof WebSocket !== 'undefined');
@@ -14,7 +7,7 @@ const WS = isBrowser ? WebSocket : require('ws');
 
 /* Methods -------------------------------------------------------------------*/
 
-function ws({ cert, key, secure }: WSConfig = {}): Transport {
+function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
     let listener;
 

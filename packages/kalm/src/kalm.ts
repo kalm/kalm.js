@@ -8,8 +8,6 @@ import realtime from './routines/realtime';
 import tick from './routines/tick';
 import { EventEmitter } from 'events';
 
-import { ProviderConfig, Provider, ClientConfig, Client } from '../../../types';
-
 /* Local variables -----------------------------------------------------------*/
 
 const defaults = {

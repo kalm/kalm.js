@@ -3,18 +3,6 @@
 import logger from '../utils/logger';
 import parser from '../utils/parser';
 import { EventEmitter } from 'events';
-import {
-  Channel,
-  ClientConfig,
-  RawFrame,
-  Serializable,
-  Socket,
-  Client,
-  Remote,
-  Frame,
-  SocketHandle,
-  ChannelList,
-} from '../../../../types';
 
 /* Methods -------------------------------------------------------------------*/
 

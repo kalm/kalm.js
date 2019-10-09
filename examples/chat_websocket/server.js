@@ -10,8 +10,8 @@ const Server = kalm.listen({
 });
 
 Server.on('connection', (client) => {
-  client.subscribe('c.evt', (msg, evt) => {
-    Server.broadcast('r.evt', msg);
+  client.subscribe('c.evt', (body, frame) => {
+    Server.broadcast('r.evt', body);
   });
 
   Server.broadcast('r.sys', { msg: 'user joined' });

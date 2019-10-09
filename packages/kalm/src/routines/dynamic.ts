@@ -1,11 +1,10 @@
 /* Requires ------------------------------------------------------------------*/
 
 import { EventEmitter } from 'events';
-import { Queue, Routine } from '../../../../types';
 
 /* Methods -------------------------------------------------------------------*/
 
-function dynamic(hz: number): Routine {
+function dynamic(hz: number): KalmRoutine {
     if (hz <= 0 || hz > 1000) {
         throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
     }

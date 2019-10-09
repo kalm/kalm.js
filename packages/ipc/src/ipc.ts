@@ -1,13 +1,11 @@
 /* Requires ------------------------------------------------------------------*/
 
 import net from 'net';
-import { Socket, Transport, ClientConfig, Remote, IPCConfig } from '../../../types';
-import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): Transport {
-  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
+function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
     function bind(): void {

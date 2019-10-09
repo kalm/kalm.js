@@ -10,8 +10,8 @@ const Client = kalm.connect({
   routine: kalm.routines.realtime(),
 });
 
-Client.subscribe('r.evt', (evt, frame) => console.log(`${evt.name}: ${evt.msg}`, frame));
-Client.subscribe('r.sys', (evt, frame) => console.log(`[System]: ${evt.msg}`, frame));
+Client.subscribe('r.evt', (body, frame) => console.log(`${body.name}: ${body.msg}`, frame));
+Client.subscribe('r.sys', (body, frame) => console.log(`[System]: ${body.msg}`, frame));
 
 Client.on('connect', () => {
   Client.write('c.evt', { name: Client.label, msg: 'Hey everyone!' });

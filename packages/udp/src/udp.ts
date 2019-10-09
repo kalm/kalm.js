@@ -1,33 +1,16 @@
 /* Requires ------------------------------------------------------------------*/
 
 import dgram from 'dgram';
-import {
-  Socket,
-  Transport,
-  ClientConfig,
-  Remote,
-  SocketHandle,
-  UDPSocketHandle,
-  UDPConfig,
-  UDPClientList,
-  UDPClient,
-} from '../../../types';
-import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function udp({
-  type = 'udp4',
-  localAddr = '0.0.0.0',
-  reuseAddr = true,
-  socketTimeout = 30000,
-  connectTimeout = 1000,
-}: UDPConfig = {}): Transport {
-  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
+function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTimeout = 30000, connectTimeout = 1000,
+}: UDPConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: dgram.Socket;
     const clientCache: UDPClientList = {};
 
-    function addClient(client) {
+    function addClient(client: Client): void {
       const local: Remote = client.local();
       const key: string = `${local.host}.${local.port}`;
 

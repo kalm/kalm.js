@@ -1,11 +1,10 @@
 /* Requires ------------------------------------------------------------------*/
 
 import { EventEmitter } from 'events';
-import { Queue, Routine } from '../../../../types';
 
 /* Methods -------------------------------------------------------------------*/
 
-function tick(hz: number, seed: number = Date.now()): Routine {
+function tick(hz: number, seed: number = Date.now()): KalmRoutine {
     if (hz <= 0 || hz > 1000) {
         throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
     }

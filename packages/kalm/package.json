@@ -1,6 +1,6 @@
 {
   "name": "kalm",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "description": "The socket optimizer",
   "main": "bin/kalm.min.js",
   "scripts": {
@@ -35,7 +35,8 @@
     "ws",
     "core"
   ],
-  "files":["bin/kalm.min.js"],
+  "typings": "./bin/types.d.ts",
+  "files": ["bin/kalm.min.js"],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
@@ -47,7 +48,7 @@
   ],
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.1.0",
-    "sinon": "^7.3.2"
+    "mocha": "^6.2.0",
+    "sinon": "^7.5.0"
   }
 }

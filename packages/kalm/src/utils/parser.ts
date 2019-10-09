@@ -1,7 +1,3 @@
-/* Requires ------------------------------------------------------------------*/
-
-import { RawFrame } from '../../../../types';
-
 /* Methods -------------------------------------------------------------------*/
 
 function serialize(frameId: number, channel: string, packets: Buffer[]): number[] {

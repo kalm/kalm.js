@@ -1,13 +1,11 @@
 /* Requires ------------------------------------------------------------------*/
 
 import net from 'net';
-import { Socket, Transport, ClientConfig, Remote, TCPConfig } from '../../../types';
-import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function tcp({ socketTimeout = 30000 }: TCPConfig = {}): Transport {
-  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
+function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
     function bind(): void {

@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ws",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "description": "WebSocket transport for Kalm",
   "main": "bin/ws.min.js",
   "scripts": {
@@ -31,7 +31,8 @@
     "web",
     "ws"
   ],
-  "files":["bin/ws.min.js"],
+  "typings": "./bin/types.d.ts",
+  "files": ["bin/ws.min.js"],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
@@ -42,7 +43,7 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "dependencies": {
-    "ws": "^7.0.0"
+    "ws": "^7.1.0"
   },
   "browser": {
     "http": false,
@@ -50,6 +51,6 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.1.0"
+    "mocha": "^6.2.0"
   }
 }

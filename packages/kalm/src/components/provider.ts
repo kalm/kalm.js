@@ -3,7 +3,6 @@
 import logger from '../utils/logger';
 import Client from './client';
 import { EventEmitter } from 'events';
-import { Serializable, ClientConfig, Socket, Remote, Provider } from '../../../../types';
 
 /* Methods -------------------------------------------------------------------*/
 
