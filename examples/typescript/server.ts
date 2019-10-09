@@ -1,10 +1,10 @@
-import { listen, routines, Provider, Client, Frame } from 'kalm';
+import kalm from 'kalm';
 import ws from '@kalm/ws';
 
-const provider: Provider = listen({
+const provider = kalm.listen({
   transport: ws(),
   port: 3938,
-  routine: routines.tick(5),
+  routine: kalm.routines.tick(5),
   host: '0.0.0.0',
 });
 
@@ -13,8 +13,8 @@ type MyCustomPayload = {
   message: string
 };
 
-provider.on('connection', (client: Client) => {
-  client.subscribe('foo', (body: MyCustomPayload, frame: Frame) => {
+provider.on('connection', (client) => {
+  client.subscribe('foo', (body: MyCustomPayload, frame) => {
     console.log('Client event', body, frame);
   });
 

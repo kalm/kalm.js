@@ -4,7 +4,8 @@
   "description": "WebSocket transport for Kalm",
   "main": "bin/ws.js",
   "scripts": {
-    "build": "../../scripts/build.sh ws"
+    "build": "../../scripts/build.sh ws",
+    "clean": "../../scripts/cleanup.sh"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,7 @@
     "web",
     "ws"
   ],
-  "typings": "./bin/types.d.ts",
+  "typings": "./types.d.ts",
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {

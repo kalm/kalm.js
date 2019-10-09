@@ -4,7 +4,8 @@
   "description": "The socket optimizer",
   "main": "bin/kalm.js",
   "scripts": {
-    "build": "../../scripts/build.sh kalm"
+    "build": "../../scripts/build.sh kalm",
+    "clean": "../../scripts/cleanup.sh"
   },
   "repository": {
     "type": "git",
@@ -34,7 +35,7 @@
     "ws",
     "core"
   ],
-  "typings": "./bin/types.d.ts",
+  "typings": "./types.d.ts",
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {

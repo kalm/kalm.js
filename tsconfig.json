@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "esnext",
+        "module": "none",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "noImplicitAny": false,
@@ -8,7 +8,7 @@
         "preserveConstEnums": true,
         "sourceMap": false,
         "allowJs": true,
-        "target": "esnext",
+        "target": "es2019",
         "outDir": "dist"
     },
     "include": [

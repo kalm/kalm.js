@@ -1,9 +1,9 @@
+#!/bin/sh
+
 echo "Building" $1
-mkdir -p ./bin
-rm -rf ./bin/*
+../../scripts/cleanup.sh
 cp ../../tsconfig.json ./tsconfig.json
+cp ../../types.d.ts ./types.d.ts
 ../../node_modules/typescript/bin/tsc --outDir ./bin
-echo "Copying .d.ts file to bin"
-cp ../../types.d.ts ./bin/types.d.ts
 echo "Build completed, cleaning up"
 rm -rf ./tsconfig.json

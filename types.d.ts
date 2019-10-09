@@ -35,8 +35,8 @@ interface Provider extends NodeJS.EventEmitter {
 interface Client extends NodeJS.EventEmitter {
     write: (channel: string, message: Serializable) => void
     destroy: () => void
-    subscribe: (channel: string, handler: () => void) => void
-    unsubscribe: (channel: string, handler: () => void) => void
+    subscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
+    unsubscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
     local: () => Remote
     remote: () => Remote
 }
@@ -68,14 +68,14 @@ type UDPClientList = {
 
 type SocketHandle = NodeJS.Socket | UDPSocketHandle | WebSocket
 
-type KalmRoutine = (channel: string, params: any, emitter: NodeJS.EventEmitter) => Queue
+interface KalmRoutine { (channel: string, params: any, emitter: NodeJS.EventEmitter): Queue }
 interface Queue {
     add: (packet: Buffer) => void
     size: () => number
     flush: () => void
 }
 
-type KalmTransport = (params: any, emitter: NodeJS.EventEmitter) => Socket
+interface KalmTransport { (params: any, emitter: NodeJS.EventEmitter): Socket }
 interface Socket {
     bind: () => void
     remote: (handle: SocketHandle) => Remote

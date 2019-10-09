@@ -1,10 +1,10 @@
-import { connect, routines, Client, Frame } from 'kalm';
+import kalm from 'kalm';
 import ws from '@kalm/ws';
 
-const client: Client = connect({
+const client = kalm.connect({
   transport: ws(),
   port: 3938,
-  routine: routines.realtime(),
+  routine: kalm.routines.realtime(),
 });
 
 type MyCustomPayload = {
@@ -12,7 +12,7 @@ type MyCustomPayload = {
   message: string
 };
 
-client.subscribe('r.evt', (body: MyCustomPayload, frame: Frame) => {
+client.subscribe('r.evt', (body: MyCustomPayload, frame) => {
   console.log('Server event', body, frame);
 });
 

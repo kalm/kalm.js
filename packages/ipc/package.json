@@ -4,7 +4,8 @@
   "description": "IPC transport for Kalm",
   "main": "bin/ipc.js",
   "scripts": {
-    "build": "../../scripts/build.sh ipc"
+    "build": "../../scripts/build.sh ipc",
+    "clean": "../../scripts/cleanup.sh"
   },
   "repository": {
     "type": "git",
@@ -32,7 +33,7 @@
   ],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
-  "typings": "./bin/types.d.ts",
+  "typings": "./types.d.ts",
   "bugs": {
     "url": "https://github.com/kalm/kalm-js/issues"
   },

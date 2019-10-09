@@ -9,6 +9,7 @@
     "lint:fix": "yarn lint --fix",
     "test": "jest ./packages && jest ./tests/integration --forceExit",
     "build": "yarn workspaces run build --ci",
+    "clean": "yarn workspaces run clean --ci",
     "bench": "node ./scripts/benchmarks"
   },
   "repository": {
