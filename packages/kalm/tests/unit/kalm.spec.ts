@@ -1,9 +1,7 @@
-const { expect } = require('chai');
-const sinon = require('sinon');
-const kalm = require('../../bin/kalm.min');
+import kalm from '../../src/kalm';
 
-const bindSpy = sinon.spy();
-const connectSpy = sinon.spy();
+const bindSpy = jest.fn();
+const connectSpy = jest.fn();
 const mockTransport = () => () => ({ bind: bindSpy, connect: connectSpy });
 
 describe('Kalm constructors', () => {
@@ -11,16 +9,16 @@ describe('Kalm constructors', () => {
     let server;
 
     it('should throw an error if no transports are provided', () => {
-      expect(kalm.listen).to.throw();
+      expect(kalm.listen).toThrow();
     });
 
     it('listen should bind to a transport if one is provided', () => {
       server = kalm.listen({ transport: mockTransport() });
-      expect(bindSpy.called).to.be.true;
+      expect(bindSpy).toHaveBeenCalled();
     });
 
     it('should return an object with all the required fields', () => {
-      expect(server).to.have.property('label');
+      expect(server).toHaveProperty('label');
     });
   });
 
@@ -28,16 +26,16 @@ describe('Kalm constructors', () => {
     let client;
 
     it('should throw an error if no transports are provided', () => {
-      expect(kalm.connect).to.throw();
+      expect(kalm.connect).toThrow();
     });
 
     it('listen should connect via a transport if one is provided', () => {
       client = kalm.connect({ transport: mockTransport() });
-      expect(connectSpy.called).to.be.true;
+      expect(connectSpy).toHaveBeenCalled();
     });
 
     it('should return an object with all the required fields', () => {
-      expect(client).to.have.property('label');
+      expect(client).toHaveProperty('label');
     });
   });
 });

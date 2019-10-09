@@ -6,7 +6,7 @@
       "import/resolver": {
         "node": {
           "paths": ["packages"],
-          "extensions": [".ts", ".spec.js"]
+          "extensions": [".ts", ".spec.ts"]
         }
       }
     },

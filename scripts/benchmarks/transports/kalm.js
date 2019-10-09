@@ -6,13 +6,13 @@
 /* Requires ------------------------------------------------------------------*/
 
 const settings = require('../settings');
-const Kalm = require('../../../packages/kalm/bin/kalm.min');
+const Kalm = require('../../../packages/kalm/bin/kalm');
 
 const transports = {
-  ipc: require('../../../packages/ipc/bin/ipc.min'),
-  tcp: require('../../../packages/tcp/bin/tcp.min'),
-  udp: require('../../../packages/udp/bin/udp.min'),
-  ws: require('../../../packages/ws/bin/ws.min'),
+  ipc: require('../../../packages/ipc/bin/ipc'),
+  tcp: require('../../../packages/tcp/bin/tcp'),
+  udp: require('../../../packages/udp/bin/udp'),
+  ws: require('../../../packages/ws/bin/ws'),
 };
 
 /* Local variables -----------------------------------------------------------*/

@@ -83,4 +83,4 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
 
 /* Exports -------------------------------------------------------------------*/
 
-module.exports = ws;
+export default ws;

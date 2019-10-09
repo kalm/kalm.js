@@ -5,8 +5,7 @@
 
 /* Requires ------------------------------------------------------------------*/
 
-const { expect } = require('chai');
-const Kalm = require('../../packages/kalm/bin/kalm.min');
+import Kalm from '../../packages/kalm/src/kalm';
 
 /* Suite --------------------------------------------------------------------*/
 
@@ -14,7 +13,7 @@ describe('Integration tests', () => {
   ['ipc', 'tcp', 'udp', 'ws'].forEach((transport) => {
     describe(`Testing ${transport} transport`, () => {
       let server;
-      const soc = require(`../../packages/${transport}/bin/${transport}.min`)(); /* eslint-disable-line */
+      const soc = require(`../../packages/${transport}/src/${transport}`).default(); /* eslint-disable-line */
 
       /* --- Setup ---*/
 
@@ -38,7 +37,7 @@ describe('Integration tests', () => {
         const payload = { foo: 'bar' };
         server.on('connection', (c) => {
           c.subscribe('test', (data) => {
-            expect(data).to.eql(payload);
+            expect(data).toEqual(payload);
             done();
           });
         });
@@ -55,7 +54,7 @@ describe('Integration tests', () => {
 
         server.on('connection', (c) => {
           c.subscribe('test.large', (data) => {
-            expect(data).to.eql(largePayload);
+            expect(data).toEqual(largePayload);
             done();
           });
         });
@@ -69,7 +68,7 @@ describe('Integration tests', () => {
         server.on('connection', (c) => {
           c.subscribe('test', () => {
             // Throw on purpose
-            expect(false).to.be.true;
+            expect(false).toBe(true);
             done();
           });
 
