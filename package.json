@@ -26,7 +26,14 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "typings": "./types.d.ts",
-  "workspaces": [ "packages/*" ],
+  "workspaces": [
+    "packages/*"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
+  },
   "devDependencies": {
     "@types/jest": "^24.0.17",
     "@types/node": "^12.7.0",
@@ -35,6 +42,7 @@
     "eslint": "^6.5.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.0",
+    "husky": "^3.0.8",
     "jest": "^24.9.0",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
