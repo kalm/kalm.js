@@ -31,6 +31,7 @@
     "web",
     "ipc"
   ],
+  "files": ["bin", "types.d.ts"],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "typings": "./types.d.ts",
