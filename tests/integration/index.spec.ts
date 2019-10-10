@@ -10,7 +10,7 @@ import Kalm from '../../packages/kalm/src/kalm';
 /* Suite --------------------------------------------------------------------*/
 
 describe('Integration tests', () => {
-  ['ipc', 'tcp', 'udp', 'ws'].forEach((transport) => {
+  ['ipc', 'tcp', 'udp', 'ws'].forEach(transport => {
     describe(`Testing ${transport} transport`, () => {
       let server;
       const soc = require(`../../packages/${transport}/src/${transport}`).default(); /* eslint-disable-line */
@@ -25,7 +25,7 @@ describe('Integration tests', () => {
       });
 
       // Cleanup afterwards
-      afterEach((done) => {
+      afterEach(done => {
         server.stop();
         server = null;
         setTimeout(() => done(), 100);
@@ -33,10 +33,10 @@ describe('Integration tests', () => {
 
       /* --- Tests --- */
 
-      it(`should work with ${transport}`, (done) => {
+      it(`should work with ${transport}`, done => {
         const payload = { foo: 'bar' };
-        server.on('connection', (c) => {
-          c.subscribe('test', (data) => {
+        server.on('connection', c => {
+          c.subscribe('test', data => {
             expect(data).toEqual(payload);
             done();
           });
@@ -46,14 +46,14 @@ describe('Integration tests', () => {
         client.write('test', payload);
       });
 
-      it(`should handle large payloads with ${transport}`, (done) => {
+      it(`should handle large payloads with ${transport}`, done => {
         const largePayload = [];
         while (largePayload.length < 2048) {
           largePayload.push({ foo: 'bar' });
         }
 
-        server.on('connection', (c) => {
-          c.subscribe('test.large', (data) => {
+        server.on('connection', c => {
+          c.subscribe('test.large', data => {
             expect(data).toEqual(largePayload);
             done();
           });
@@ -63,9 +63,9 @@ describe('Integration tests', () => {
         client.write('test.large', largePayload);
       });
 
-      it('should not trigger for unsubscribed channels', (done) => {
+      it('should not trigger for unsubscribed channels', done => {
         const payload = { foo: 'bar' };
-        server.on('connection', (c) => {
+        server.on('connection', c => {
           c.subscribe('test', () => {
             // Throw on purpose
             expect(false).toBe(true);

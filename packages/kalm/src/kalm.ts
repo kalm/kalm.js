@@ -1,12 +1,12 @@
 /* Requires ------------------------------------------------------------------*/
 
+import { EventEmitter } from 'events';
 import client from './components/client';
 import provider from './components/provider';
 
 import dynamic from './routines/dynamic';
 import realtime from './routines/realtime';
 import tick from './routines/tick';
-import { EventEmitter } from 'events';
 
 /* Local variables -----------------------------------------------------------*/
 
@@ -20,14 +20,14 @@ const defaults = {
 
 /* Methods -------------------------------------------------------------------*/
 
+const uniqueLabel = () => Math.random().toString(36).substring(7);
+
 function listen(options: ProviderConfig): Provider {
-  options.label = options.label || Math.random().toString(36).substring(7);
-  return provider({ ...defaults, ...options }, new EventEmitter());
+  return provider({ label: uniqueLabel(), ...defaults, ...options }, new EventEmitter());
 }
 
 function connect(options: ClientConfig): Client {
-  options.label = options.label || Math.random().toString(36).substring(7);
-  return client({ ...defaults, ...options }, new EventEmitter());
+  return client({ label: uniqueLabel(), ...defaults, ...options }, new EventEmitter());
 }
 
 /* Exports -------------------------------------------------------------------*/

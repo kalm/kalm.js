@@ -6,7 +6,7 @@
 /* Requires ------------------------------------------------------------------*/
 
 const settings = require('../settings');
-const Kalm = require('../../../packages/kalm/bin/kalm');
+const Kalm = require('../../../packages/kalm/bin/kalm').default;
 
 const transports = {
   ipc: require('../../../packages/ipc/bin/ipc'),
@@ -29,7 +29,7 @@ function setup(resolve) {
   server = Kalm.listen({
     port: settings.port,
     json: true,
-    transport: transports[settings.transport](),
+    transport: transports[settings.transport].default(),
     routine: Kalm.routines[settings.routine[0]](settings.routine[1]),
   });
 
@@ -59,7 +59,7 @@ function step(resolve) {
     client = Kalm.connect({
       port: settings.port,
       json: true,
-      transport: transports[settings.transport](),
+      transport: transports[settings.transport].default(),
       routine: Kalm.routines.realtime(),
     });
     client.subscribe(settings.testChannel, () => count++);

@@ -1,8 +1,8 @@
 /* Requires ------------------------------------------------------------------*/
 
+import { EventEmitter } from 'events';
 import logger from '../utils/logger';
 import Client from './client';
-import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
@@ -52,7 +52,13 @@ function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
   logger.log(`log: listening on ${params.host}:${params.port}`);
   socket.bind();
 
-  return Object.assign(emitter, { label: params.label, port: params.port, broadcast, stop, connections });
+  return Object.assign(emitter, {
+    label: params.label,
+    port: params.port,
+    broadcast,
+    stop,
+    connections,
+  });
 }
 
 /* Exports -------------------------------------------------------------------*/

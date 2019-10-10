@@ -16,8 +16,8 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
 
     function remote(handle: net.Socket): Remote {
       return {
-        host: handle['_server']._pipeName,
-        port: handle['_handle'].fd,
+        host: handle._server._pipeName,
+        port: handle._handle.fd,
       };
     }
 

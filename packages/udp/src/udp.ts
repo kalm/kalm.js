@@ -25,45 +25,6 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       clientCache[key].data.length = 0;
     }
 
-    function resolveClient(origin, data) {
-      const handle: UDPSocketHandle = {
-        host: origin.address,
-        port: origin.port,
-        socket: listener,
-      };
-
-      // Handle SYN
-      if (data[0] === 83 && data[1] === 89 && data[2] === 78) {
-        send(handle, Buffer.from('ACK'));
-        data = null;
-      }
-
-      const key: string = `${origin.address}.${origin.port}`;
-      clearTimeout(clientCache[key] && clientCache[key].timeout);
-
-      if (!clientCache[key]) {
-        clientCache[key] = {
-          client: null,
-          data: [],
-          timeout: null,
-        } as UDPClient;
-        emitter.emit('socket', handle);
-      }
-
-      if (data) {
-        if (clientCache[key].client) clientCache[key].client.emit('frame', data);
-        else clientCache[key].data.push(data);
-      }
-    }
-
-    function bind(): void {
-      listener = dgram.createSocket({ type: type as dgram.SocketType, reuseAddr });
-      listener.on('message', (data, origin) => resolveClient(origin, data));
-      listener.on('error', err => emitter.emit('error', err));
-      listener.bind(params.port, localAddr);
-      emitter.emit('ready');
-    }
-
     function remote(handle: SocketHandle): Remote {
       return handle as Remote;
     }
@@ -76,6 +37,11 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
 
     function stop(): void {
       listener.close();
+    }
+
+    function disconnect(handle?: UDPSocketHandle): void {
+      if (handle && handle.socket) handle.socket = null;
+      emitter.emit('disconnect');
     }
 
     function connect(handle?: SocketHandle): SocketHandle {
@@ -105,9 +71,44 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       return res;
     }
 
-    function disconnect(handle?: SocketHandle): void {
-      if (handle) handle = null;
-      emitter.emit('disconnect');
+    function resolveClient(origin, data) {
+      const handle: UDPSocketHandle = {
+        host: origin.address,
+        port: origin.port,
+        socket: listener,
+      };
+      let isSynPacket = false;
+
+      // Handle SYN
+      if (data[0] === 83 && data[1] === 89 && data[2] === 78) {
+        send(handle, Buffer.from('ACK'));
+        isSynPacket = true;
+      }
+
+      const key: string = `${origin.address}.${origin.port}`;
+      clearTimeout(clientCache[key] && clientCache[key].timeout);
+
+      if (!clientCache[key]) {
+        clientCache[key] = {
+          client: null,
+          data: [],
+          timeout: null,
+        } as UDPClient;
+        emitter.emit('socket', handle);
+      }
+
+      if (data && !isSynPacket) {
+        if (clientCache[key].client) clientCache[key].client.emit('frame', data);
+        else clientCache[key].data.push(data);
+      }
+    }
+
+    function bind(): void {
+      listener = dgram.createSocket({ type: type as dgram.SocketType, reuseAddr });
+      listener.on('message', (data, origin) => resolveClient(origin, data));
+      listener.on('error', err => emitter.emit('error', err));
+      listener.bind(params.port, localAddr);
+      emitter.emit('ready');
     }
 
     emitter.on('connection', addClient);
