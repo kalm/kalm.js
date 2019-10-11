@@ -1,3 +1,4 @@
-**/*.min.js
+*.js
 examples
 node_modules
+scripts

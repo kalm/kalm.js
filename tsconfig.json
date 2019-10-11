@@ -1,21 +1,23 @@
 {
     "compilerOptions": {
-        "module": "esnext",
+        "module": "none",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
-        "lib": [ "es2018", "dom", "es2018.promise" ],
         "sourceMap": false,
         "allowJs": true,
-        "target": "es2018",
+        "target": "es2019",
         "outDir": "dist"
     },
     "include": [
-        "./src"
+        "./packages",
+        "./src",
+        "./types.d.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "**/*.js"
     ]
 }

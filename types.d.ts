@@ -1,88 +1,82 @@
-/* Requires ------------------------------------------------------------------*/
-
-import { EventEmitter } from 'events';
-import net from 'net';
-import dgram from 'dgram';
-
 /* Types ---------------------------------------------------------------------*/
 
-export type ClientConfig = {
+interface ClientConfig {
     label?: string
-    routine?: Routine
+    routine?: KalmRoutine
     json?: Boolean
-    transport?: Transport
+    transport?: KalmTransport
     port?: number
     host?: string
     isServer?: boolean
     provider?: any
 }
 
-export type ProviderConfig = {
+interface ProviderConfig {
     label?: string
-    routine?: Routine
+    routine?: KalmRoutine
     json?: Boolean
-    transport?: Transport
+    transport?: KalmTransport
     port?: number
     host?: string
 }
 
-export type Remote = {
+type Remote = {
     host: string
     port: number
 }
 
-export interface Provider extends EventEmitter {
+interface Provider extends NodeJS.EventEmitter {
     broadcast: (channel: string, message: Serializable) => void
     label: string
     stop: () => void
     connections: Client[]
 }
 
-export interface Client extends EventEmitter {
+interface Client extends NodeJS.EventEmitter {
     write: (channel: string, message: Serializable) => void
     destroy: () => void
-    subscribe: (channel: string, handler: () => void) => void
-    unsubscribe: (channel: string, handler: () => void) => void
+    subscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
+    unsubscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
     local: () => Remote
     remote: () => Remote
 }
 
-export type Channel = {
+type Channel = {
     queue: Queue
-    emitter: EventEmitter
+    emitter: NodeJS.EventEmitter
 }
 
-export type ChannelList = {
+type ChannelList = {
     [key: string]: Channel
 }
 
-export type Serializable = Buffer | object | string | null
+type Serializable = Buffer | object | string | null
 
-export type UDPSocketHandle = {
-    socket: dgram.Socket
+type UDPSocketHandle = {
+    socket: any
     port: number
     host: string
 }
-export type UDPClient = {
+type UDPClient = {
     client: Client
     timeout: NodeJS.Timeout
     data: Buffer[]
 }
-export type UDPClientList = {
+type UDPClientList = {
     [key: string]: UDPClient
 }
 
-export type SocketHandle = net.Socket | UDPSocketHandle | WebSocket
+type SocketHandle = NodeJS.Socket | UDPSocketHandle | WebSocket
 
-export type Routine = (channel: string, params: object, emitter: EventEmitter) => Queue
-export interface Queue {
+interface KalmRoutine { (channel: string, params: any, emitter: NodeJS.EventEmitter): Queue }
+interface Queue {
     add: (packet: Buffer) => void
     size: () => number
     flush: () => void
 }
 
-export type Transport = (params: object, emitter: EventEmitter) => Socket
-export interface Socket {
+interface KalmTransport { (params: any, emitter: NodeJS.EventEmitter): Socket }
+interface Socket {
     bind: () => void
     remote: (handle: SocketHandle) => Remote
     connect: (handle?: SocketHandle) => SocketHandle
@@ -91,16 +85,16 @@ export interface Socket {
     disconnect: (handle: SocketHandle) => void
 }
 
-export type IPCConfig = {
+interface IPCConfig {
     socketTimeout?: number
     path?: string
 }
 
-export type TCPConfig = {
+interface TCPConfig {
     socketTimeout?: number
 }
 
-export type UDPConfig = {
+interface UDPConfig {
   type?: string
   localAddr?: string
   reuseAddr?: boolean
@@ -108,20 +102,20 @@ export type UDPConfig = {
   connectTimeout?: number
 }
 
-export type WSConfig = {
+interface WSConfig {
     cert?: string
     key?: string
     secure?: boolean
 }
 
-export type RawFrame = {
+type RawFrame = {
     frameId: number
     channel: string
     packets: Buffer[]
     payloadBytes: number
 }
 
-export type Frame = {
+type Frame = {
     client: Client
     channel: string
     frame: {

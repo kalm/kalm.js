@@ -1,15 +1,16 @@
 language: node_js
 cache: yarn
 node_js:
+  - "12"
   - "10"
-  - "8"
 script:
   - yarn run lint
   - yarn run test
+  - yarn run build
   - yarn run bench
 sudo: false
 install: 
   - yarn
 before_install:
-  - npm install yarn@^1.13.0
+  - npm install yarn@^1.19.0
   - yarn --version

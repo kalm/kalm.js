@@ -1,12 +1,5 @@
 /* Requires ------------------------------------------------------------------*/
 
-import {
-  Socket,
-  Transport,
-  ClientConfig,
-  Remote,
-  WSConfig,
-} from '../../../types';
 import { EventEmitter } from 'events';
 
 const isBrowser = (typeof WebSocket !== 'undefined');
@@ -14,7 +7,7 @@ const WS = isBrowser ? WebSocket : require('ws');
 
 /* Methods -------------------------------------------------------------------*/
 
-function ws({ cert, key, secure }: WSConfig = {}): Transport {
+function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
     let listener;
 
@@ -34,7 +27,7 @@ function ws({ cert, key, secure }: WSConfig = {}): Transport {
       if (handle && handle.readyState === 1) {
         handle.send(Buffer.from(payload));
       } else {
-        handle['_queue'].push(payload);
+        handle._queue.push(payload);
       }
     }
 
@@ -47,12 +40,12 @@ function ws({ cert, key, secure }: WSConfig = {}): Transport {
       const connection: WebSocket = handle || new WS(`${protocol}://${params.host}:${params.port}`);
       connection.binaryType = 'arraybuffer';
       const evtType: string = isBrowser ? 'addEventListener' : 'on';
-      connection['_queue'] = [];
-      connection[evtType]('message', evt => emitter.emit('frame', Buffer.from(evt.data || evt)));
+      connection._queue = [];
+      connection[evtType]('message', evt => emitter.emit('rawFrame', Buffer.from(evt.data || evt)));
       connection[evtType]('error', err => emitter.emit('error', err));
       connection[evtType]('close', () => emitter.emit('disconnect'));
       connection[evtType]('open', () => {
-        connection['_queue'].forEach(payload => send(connection, payload));
+        connection._queue.forEach(payload => send(connection, payload));
         emitter.emit('connect', connection);
       });
 
@@ -60,13 +53,13 @@ function ws({ cert, key, secure }: WSConfig = {}): Transport {
     }
 
     function remote(handle: WebSocket): Remote {
-      const h = handle['headers'];
+      const h = handle.headers;
       return {
         host: (
-          (h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0]) ||
-          (handle['connection'] && handle['connection'].remoteAddress || '0.0.0.0')
+          (h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0])
+          || (handle.connection && handle.connection.remoteAddress || '0.0.0.0')
         ),
-        port: handle['connection'] && handle['connection'].remotePort || 0
+        port: handle.connection && handle.connection.remotePort || 0,
       };
     }
 

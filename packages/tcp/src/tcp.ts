@@ -1,13 +1,11 @@
 /* Requires ------------------------------------------------------------------*/
 
 import net from 'net';
-import { Socket, Transport, ClientConfig, Remote, TCPConfig } from '../../../types';
-import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function tcp({ socketTimeout = 30000 }: TCPConfig = {}): Transport {
-  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
+export function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
     function bind(): void {
@@ -24,7 +22,7 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): Transport {
     }
     function connect(handle: net.Socket): net.Socket {
       const connection: net.Socket = handle || net.connect(params.port, params.host);
-      connection.on('data', req => emitter.emit('frame', req));
+      connection.on('data', req => emitter.emit('rawFrame', req));
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
       connection.on('close', () => emitter.emit('disconnect'));
@@ -60,4 +58,4 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): Transport {
 
 /* Exports -------------------------------------------------------------------*/
 
-export default tcp;
+module.exports = tcp;

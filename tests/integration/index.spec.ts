@@ -5,28 +5,27 @@
 
 /* Requires ------------------------------------------------------------------*/
 
-const { expect } = require('chai');
-const Kalm = require('../../packages/kalm/bin/kalm.min');
+import { connect, listen } from '../../packages/kalm/src/kalm';
 
 /* Suite --------------------------------------------------------------------*/
 
 describe('Integration tests', () => {
-  ['ipc', 'tcp', 'udp', 'ws'].forEach((transport) => {
+  ['ipc', 'tcp', 'udp', 'ws'].forEach(transport => {
     describe(`Testing ${transport} transport`, () => {
       let server;
-      const soc = require(`../../packages/${transport}/bin/${transport}.min`)(); /* eslint-disable-line */
+      const soc = require(`../../packages/${transport}/src/${transport}`)(); /* eslint-disable-line */
 
       /* --- Setup ---*/
 
       // Create a server before each scenario
       beforeEach(() => {
-        server = Kalm.listen({
+        server = listen({
           transport: soc,
         });
       });
 
       // Cleanup afterwards
-      afterEach((done) => {
+      afterEach(done => {
         server.stop();
         server = null;
         setTimeout(() => done(), 100);
@@ -34,49 +33,49 @@ describe('Integration tests', () => {
 
       /* --- Tests --- */
 
-      it(`should work with ${transport}`, (done) => {
+      it(`should work with ${transport}`, done => {
         const payload = { foo: 'bar' };
-        server.on('connection', (c) => {
-          c.subscribe('test', (data) => {
-            expect(data).to.eql(payload);
+        server.on('connection', c => {
+          c.subscribe('test', data => {
+            expect(data).toEqual(payload);
             done();
           });
         });
 
-        const client = Kalm.connect({ transport: soc });
+        const client = connect({ transport: soc });
         client.write('test', payload);
       });
 
-      it(`should handle large payloads with ${transport}`, (done) => {
+      it(`should handle large payloads with ${transport}`, done => {
         const largePayload = [];
         while (largePayload.length < 2048) {
           largePayload.push({ foo: 'bar' });
         }
 
-        server.on('connection', (c) => {
-          c.subscribe('test.large', (data) => {
-            expect(data).to.eql(largePayload);
+        server.on('connection', c => {
+          c.subscribe('test.large', data => {
+            expect(data).toEqual(largePayload);
             done();
           });
         });
 
-        const client = Kalm.connect({ transport: soc });
+        const client = connect({ transport: soc });
         client.write('test.large', largePayload);
       });
 
-      it('should not trigger for unsubscribed channels', (done) => {
+      it('should not trigger for unsubscribed channels', done => {
         const payload = { foo: 'bar' };
-        server.on('connection', (c) => {
+        server.on('connection', c => {
           c.subscribe('test', () => {
             // Throw on purpose
-            expect(false).to.be.true;
+            expect(false).toBe(true);
             done();
           });
 
           c.unsubscribe('test');
         });
 
-        const client = Kalm.connect({ transport: soc });
+        const client = connect({ transport: soc });
         setTimeout(() => client.write('test', payload), 100);
         setTimeout(() => done(), 200);
       });

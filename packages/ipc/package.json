@@ -1,11 +1,11 @@
 {
   "name": "@kalm/ipc",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "description": "IPC transport for Kalm",
-  "main": "bin/ipc.min.js",
+  "main": "bin/ipc.js",
   "scripts": {
     "build": "../../scripts/build.sh ipc",
-    "test": "mocha ./tests/unit --exit"
+    "clean": "../../scripts/cleanup.sh"
   },
   "repository": {
     "type": "git",
@@ -31,9 +31,10 @@
     "web",
     "ipc"
   ],
+  "files": ["bin", "types.d.ts"],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
-  "files":["bin/ipc.min.js"],
+  "typings": "./types.d.ts",
   "bugs": {
     "url": "https://github.com/kalm/kalm-js/issues"
   },
@@ -44,9 +45,5 @@
   "browser": {
     "net": false,
     "fs": false
-  },
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^6.1.0"
   }
 }

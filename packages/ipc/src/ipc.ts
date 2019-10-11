@@ -1,13 +1,20 @@
 /* Requires ------------------------------------------------------------------*/
 
 import net from 'net';
-import { Socket, Transport, ClientConfig, Remote, IPCConfig } from '../../../types';
-import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): Transport {
-  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
+interface IPCSocket extends net.Socket {
+  _server: {
+    _pipeName: string
+  }
+  _handle: {
+    fd: number
+  }
+}
+
+export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
     function bind(): void {
@@ -16,16 +23,16 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
       listener.listen(path + params.port, () => emitter.emit('ready'));
     }
 
-    function remote(handle: net.Socket): Remote {
+    function remote(handle: IPCSocket): Remote {
       return {
-        host: handle['_server']._pipeName,
-        port: handle['_handle'].fd,
+        host: handle._server._pipeName,
+        port: handle._handle.fd,
       };
     }
 
     function connect(handle: net.Socket): net.Socket {
       const connection: net.Socket = handle || net.connect(`${path}${params.port}`);
-      connection.on('data', req => emitter.emit('frame', req));
+      connection.on('data', req => emitter.emit('rawFrame', req));
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
       connection.on('close', () => emitter.emit('disconnect'));
@@ -61,4 +68,4 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
 
 /* Exports -------------------------------------------------------------------*/
 
-export default ipc;
+module.exports = ipc;

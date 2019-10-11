@@ -11,8 +11,8 @@ const Client = kalm.connect({
   routine: kalm.routines.realtime(),
 });
 
-Client.subscribe('r.evt', (evt, frame) => {
-  console.log('Relayed event', evt, frame);
+Client.subscribe('r.evt', (body, frame) => {
+  console.log('Relayed event', body, frame);
 });
 
 // now send some events
