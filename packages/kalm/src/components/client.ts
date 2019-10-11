@@ -23,7 +23,6 @@ export function Client(params: ClientConfig, emitter: EventEmitter, handle?: Soc
 
   function _wrap(event: RawFrame): void {
     const payload: number[] = serialize(event.frameId, event.channel, event.packets);
-    emitter.emit('stats.packetReady');
     socket.send(handle, payload);
   }
 
@@ -38,7 +37,6 @@ export function Client(params: ClientConfig, emitter: EventEmitter, handle?: Soc
   function _handlePackets(frame: RawFrame, packet: Buffer, index: number): Promise<void> {
     if (packet.length === 0) return;
     const decodedPacket = (params.json === true) ? JSON.parse(packet.toString()) : packet;
-    emitter.emit('stats.packetDecoded');
     if (channels[frame.channel]) {
       channels[frame.channel].emitter.emit(
         'message',
@@ -67,8 +65,8 @@ export function Client(params: ClientConfig, emitter: EventEmitter, handle?: Soc
   }
 
   function _handleRequest(payload: Buffer): void {
-    emitter.emit('stats.packetReceived');
     const frame: RawFrame = deserialize(payload);
+    emitter.emit('frame', frame);
     frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i));
   }
 
@@ -78,7 +76,6 @@ export function Client(params: ClientConfig, emitter: EventEmitter, handle?: Soc
   }
 
   function write(channel: string, message: Serializable): void {
-    emitter.emit('stats.packetWrite');
     return _resolveChannel(channel)
       .queue.add(params.json === true ? Buffer.from(JSON.stringify(message)) : message as Buffer);
   }
@@ -123,7 +120,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, handle?: Soc
   emitter.on('connect', _handleConnect);
   emitter.on('disconnect', _handleDisconnect);
   emitter.on('error', _handleError);
-  emitter.on('frame', _handleRequest);
+  emitter.on('rawFrame', _handleRequest);
   if (!handle) log(`connecting to ${params.host}:${params.port}`);
   handle = socket.connect(handle);
 

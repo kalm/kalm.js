@@ -90,6 +90,21 @@ Example:
 
 `NODE_DEBUG=net,kalm node myApp.js`
 
+## Events
+
+Kalm offers events to track when packets are processed by routines or when a raw frame is received.
+
+| Event | Payload | Description |
+| --- | --- | --- |
+| `error` | Error | (provider, client) Emits on errors. |
+| `ready` | void | (provider) Indicates that the provider is now actively listeneing for new connections |
+| `connection` | [Client](./types.d.ts#L35) | (provider) Indicates that a client has successfuly connected |
+| `connect` | [Client](./types.d.ts#L35) | (client) Indicates that a client has successfuly connected |
+| `disconnect` | void | (client) Indicates that a client has disconnected |
+| `frame` | [RawFrame](./types.d.ts#L111) | (client) Triggered when recieving a parsed full frame. |
+| `stats.queueAdd` | ```{ frameId: number, packets: number}``` | (client) Indicates that a packet was queued to a frame. |
+| `stats.queueRun` | ```{ frameId: number, packets: number}``` | (client) Indicates that a frame is being sent. |
+
 ## Testing
 
 `npm test`

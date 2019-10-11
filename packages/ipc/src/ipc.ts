@@ -32,7 +32,7 @@ export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCCon
 
     function connect(handle: net.Socket): net.Socket {
       const connection: net.Socket = handle || net.connect(`${path}${params.port}`);
-      connection.on('data', req => emitter.emit('frame', req));
+      connection.on('data', req => emitter.emit('rawFrame', req));
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
       connection.on('close', () => emitter.emit('disconnect'));

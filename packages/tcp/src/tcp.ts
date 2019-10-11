@@ -22,7 +22,7 @@ export function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
     }
     function connect(handle: net.Socket): net.Socket {
       const connection: net.Socket = handle || net.connect(params.port, params.host);
-      connection.on('data', req => emitter.emit('frame', req));
+      connection.on('data', req => emitter.emit('rawFrame', req));
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
       connection.on('close', () => emitter.emit('disconnect'));

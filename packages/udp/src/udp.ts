@@ -54,7 +54,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
         if (req[0] === 65 && req[1] === 67 && req[2] === 75) {
           clearTimeout(timeout);
           emitter.emit('connect', connection);
-        } else emitter.emit('frame', req);
+        } else emitter.emit('rawFrame', req);
       });
       connection.bind(null, localAddr);
 
@@ -98,7 +98,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       }
 
       if (data && !isSynPacket) {
-        if (clientCache[key].client) clientCache[key].client.emit('frame', data);
+        if (clientCache[key].client) clientCache[key].client.emit('rawFrame', data);
         else clientCache[key].data.push(data);
       }
     }
