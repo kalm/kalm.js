@@ -4,7 +4,16 @@ import net from 'net';
 
 /* Methods -------------------------------------------------------------------*/
 
-function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
+interface IPCSocket extends net.Socket {
+  _server: {
+    _pipeName: string
+  }
+  _handle: {
+    fd: number
+  }
+}
+
+export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
@@ -14,7 +23,7 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
       listener.listen(path + params.port, () => emitter.emit('ready'));
     }
 
-    function remote(handle: net.Socket): Remote {
+    function remote(handle: IPCSocket): Remote {
       return {
         host: handle._server._pipeName,
         port: handle._handle.fd,
@@ -59,4 +68,4 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
 
 /* Exports -------------------------------------------------------------------*/
 
-export default ipc;
+module.exports = ipc;

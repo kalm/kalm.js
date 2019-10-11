@@ -8,7 +8,7 @@ function _numericSize(bytes: Buffer, index: number): number {
   return (bytes[index] << 8) | bytes[index + 1];
 }
 
-function serialize(frameId: number, channel: string, packets: Buffer[]): number[] {
+export function serialize(frameId: number, channel: string, packets: Buffer[]): number[] {
   const channelLen: number = channel.length;
   const result: number[] = [frameId % 255, channelLen];
 
@@ -27,7 +27,7 @@ function serialize(frameId: number, channel: string, packets: Buffer[]): number[
   return result;
 }
 
-function deserialize(payload: Buffer): RawFrame {
+export function deserialize(payload: Buffer): RawFrame {
   const channelLength = payload[1];
   let caret = 4 + channelLength;
   const totalPackets = _numericSize(payload, 2 + channelLength);
@@ -52,7 +52,3 @@ function deserialize(payload: Buffer): RawFrame {
 
   return result;
 }
-
-/* Exports -------------------------------------------------------------------*/
-
-export default { serialize, deserialize };

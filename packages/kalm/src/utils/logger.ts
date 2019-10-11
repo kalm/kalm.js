@@ -8,12 +8,10 @@ const enabled: boolean = (
     || ''
 ).indexOf('kalm') > -1;
 
+const prefix = `KALM ${typeof process === 'object' && process.pid}`;
+
 /* Methods -------------------------------------------------------------------*/
 
-function log(msg: string): void {
-  if (enabled) console.log(msg); // eslint-disable-line no-console
+export function log(msg: string): void {
+  if (enabled) console.log(`${prefix}: ${msg}`); // eslint-disable-line no-console
 }
-
-/* Exports --------------------------------------------------------------------*/
-
-export default { log };

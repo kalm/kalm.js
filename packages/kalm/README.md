@@ -44,6 +44,9 @@ Install the transport layer ('tcp' for example)
 **Server**
 
 ```javascript
+const kalm = require('kalm');
+const ws = require('@kalm/ws');
+
 const Server = kalm.listen({
   port: 8800,
   transport: ws(),
@@ -65,8 +68,12 @@ const Client = kalm.connect({
   routine: kalm.routines.realtime(),
 });
 ```
+To see working implementations, check out our [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
 
-See the [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder for great real-world examples!
+- [Chat via websockets](https://github.com/kalm/kalm.js/tree/master/examples/chat_websocket)
+- [Distributed Pub-Sub](https://github.com/kalm/kalm.js/tree/master/examples/distributed_pub_sub)
+- [Packet compressing](https://github.com/kalm/kalm.js/tree/master/examples/compression)
+- [Typescript usage](https://github.com/kalm/kalm.js/tree/master/examples/typescript)
 
 ## Documentation
 

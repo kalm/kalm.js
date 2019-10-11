@@ -1,5 +1,5 @@
-import logger from '../../../src/utils/logger';
+import { log } from '../../../src/utils/logger';
 
 describe('Logger util', () => {
-  it('TODO', () => { expect(logger).not.toBeUndefined(); });
+  it('TODO', () => { expect(log).not.toBeUndefined(); });
 });

@@ -126,4 +126,4 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
 
 /* Exports -------------------------------------------------------------------*/
 
-export default udp;
+module.exports = udp;

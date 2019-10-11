@@ -4,7 +4,7 @@ import net from 'net';
 
 /* Methods -------------------------------------------------------------------*/
 
-function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
+export function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
@@ -58,4 +58,4 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
 
 /* Exports -------------------------------------------------------------------*/
 
-export default tcp;
+module.exports = tcp;

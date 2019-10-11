@@ -5,7 +5,7 @@
 
 /* Requires ------------------------------------------------------------------*/
 
-import Kalm from '../../packages/kalm/src/kalm';
+import { connect, listen } from '../../packages/kalm/src/kalm';
 
 /* Suite --------------------------------------------------------------------*/
 
@@ -13,13 +13,13 @@ describe('Integration tests', () => {
   ['ipc', 'tcp', 'udp', 'ws'].forEach(transport => {
     describe(`Testing ${transport} transport`, () => {
       let server;
-      const soc = require(`../../packages/${transport}/src/${transport}`).default(); /* eslint-disable-line */
+      const soc = require(`../../packages/${transport}/src/${transport}`)(); /* eslint-disable-line */
 
       /* --- Setup ---*/
 
       // Create a server before each scenario
       beforeEach(() => {
-        server = Kalm.listen({
+        server = listen({
           transport: soc,
         });
       });
@@ -42,7 +42,7 @@ describe('Integration tests', () => {
           });
         });
 
-        const client = Kalm.connect({ transport: soc });
+        const client = connect({ transport: soc });
         client.write('test', payload);
       });
 
@@ -59,7 +59,7 @@ describe('Integration tests', () => {
           });
         });
 
-        const client = Kalm.connect({ transport: soc });
+        const client = connect({ transport: soc });
         client.write('test.large', largePayload);
       });
 
@@ -75,7 +75,7 @@ describe('Integration tests', () => {
           c.unsubscribe('test');
         });
 
-        const client = Kalm.connect({ transport: soc });
+        const client = connect({ transport: soc });
         setTimeout(() => client.write('test', payload), 100);
         setTimeout(() => done(), 200);
       });

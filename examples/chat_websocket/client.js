@@ -1,5 +1,9 @@
-const kalm = require('kalm');
-const ws = require('@kalm/ws');
+//const kalm = require('kalm');
+//const ws = require('@kalm/ws');
+
+const kalm = require('../../packages/kalm/bin/kalm');
+const ws = require('../../packages/ws/bin/ws');
+
 const { randomBytes } = require('crypto');
 
 const Client = kalm.connect({

@@ -4,7 +4,7 @@ import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function realtime(): KalmRoutine {
+export function realtime(): KalmRoutine {
   return function queue(channel: string, params: object, emitter: EventEmitter): Queue {
     let i: number = 0;
 
@@ -21,7 +21,3 @@ function realtime(): KalmRoutine {
     return { add, size, flush };
   };
 }
-
-/* Exports -------------------------------------------------------------------*/
-
-export default realtime;

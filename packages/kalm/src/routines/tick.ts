@@ -4,7 +4,7 @@ import { EventEmitter } from 'events';
 
 /* Methods -------------------------------------------------------------------*/
 
-function tick(hz: number, seed: number = Date.now()): KalmRoutine {
+export function tick(hz: number, seed: number = Date.now()): KalmRoutine {
   if (hz <= 0 || hz > 1000) {
     throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
   }
@@ -41,7 +41,3 @@ function tick(hz: number, seed: number = Date.now()): KalmRoutine {
     return { add, size, flush: _step };
   };
 }
-
-/* Exports -------------------------------------------------------------------*/
-
-export default tick;

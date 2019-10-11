@@ -1,12 +1,12 @@
 /* Requires ------------------------------------------------------------------*/
 
 import { EventEmitter } from 'events';
-import logger from '../utils/logger';
-import Client from './client';
+import { log } from '../utils/logger';
+import { Client } from './client';
 
 /* Methods -------------------------------------------------------------------*/
 
-function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
+export function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
   const connections = [];
   const socket: Socket = params.transport(params, emitter);
 
@@ -15,7 +15,7 @@ function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
   }
 
   function stop(): void {
-    logger.log('warn: stopping server');
+    log('stopping server');
 
     connections.forEach(connection => connection.destroy());
     connections.length = 0;
@@ -23,7 +23,7 @@ function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
   }
 
   function _handleError(err) {
-    logger.log(`error: ${err}`);
+    log(`error ${err}`);
   }
 
   function handleConnection(handle) {
@@ -44,12 +44,12 @@ function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
 
     connections.push(client);
     emitter.emit('connection', client);
-    logger.log(`log: connection from ${origin.host}:${origin.port}`);
+    log(`connection from ${origin.host}:${origin.port}`);
   }
 
   emitter.on('socket', handleConnection);
   emitter.on('error', _handleError);
-  logger.log(`log: listening on ${params.host}:${params.port}`);
+  log(`listening on ${params.host}:${params.port}`);
   socket.bind();
 
   return Object.assign(emitter, {
@@ -60,7 +60,3 @@ function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
     connections,
   });
 }
-
-/* Exports -------------------------------------------------------------------*/
-
-export default Provider;

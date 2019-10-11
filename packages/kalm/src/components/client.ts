@@ -1,12 +1,12 @@
 /* Requires ------------------------------------------------------------------*/
 
 import { EventEmitter } from 'events';
-import logger from '../utils/logger';
-import parser from '../utils/parser';
+import { log } from '../utils/logger';
+import { serialize, deserialize } from '../utils/parser';
 
 /* Methods -------------------------------------------------------------------*/
 
-function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHandle): Client {
+export function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHandle): Client {
   let connected: number = 1;
   const channels: ChannelList = {};
   const socket: Socket = params.transport(params, emitter);
@@ -22,7 +22,7 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
   }
 
   function _wrap(event: RawFrame): void {
-    const payload: number[] = parser.serialize(event.frameId, event.channel, event.packets);
+    const payload: number[] = serialize(event.frameId, event.channel, event.packets);
     emitter.emit('stats.packetReady');
     socket.send(handle, payload);
   }
@@ -59,22 +59,22 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
 
   function _handleConnect(): void {
     connected = 2;
-    logger.log(`log: connected to ${params.host}:${params.port}`);
+    log(`connected to ${params.host}:${params.port}`);
   }
 
   function _handleError(err: Error): void {
-    logger.log(`error: ${err.message}`);
+    log(`error ${err.message}`);
   }
 
   function _handleRequest(payload: Buffer): void {
     emitter.emit('stats.packetReceived');
-    const frame: RawFrame = parser.deserialize(payload);
+    const frame: RawFrame = deserialize(payload);
     frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i));
   }
 
   function _handleDisconnect() {
     connected = 0;
-    logger.log(`log: lost connection to ${params.host}:${params.port}`);
+    log(`lost connection to ${params.host}:${params.port}`);
   }
 
   function write(channel: string, message: Serializable): void {
@@ -124,7 +124,7 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
   emitter.on('disconnect', _handleDisconnect);
   emitter.on('error', _handleError);
   emitter.on('frame', _handleRequest);
-  if (!handle) logger.log(`log: connecting to ${params.host}:${params.port}`);
+  if (!handle) log(`connecting to ${params.host}:${params.port}`);
   handle = socket.connect(handle);
 
   return Object.assign(emitter, {
@@ -137,7 +137,3 @@ function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHand
     label: params.label,
   });
 }
-
-/* Exports -------------------------------------------------------------------*/
-
-export default Client;
