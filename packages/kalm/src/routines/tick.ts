@@ -1,7 +1,3 @@
-/* Requires ------------------------------------------------------------------*/
-
-import { EventEmitter } from 'events';
-
 /* Methods -------------------------------------------------------------------*/
 
 export function tick(hz: number, seed: number = Date.now()): KalmRoutine {
@@ -16,20 +12,20 @@ export function tick(hz: number, seed: number = Date.now()): KalmRoutine {
     return Math.round(now % (1000 / hz));
   }
 
-  return function queue(channel: string, params: object, emitter: EventEmitter): Queue {
+  return function queue(channel: string, params: object, channelEmitter: NodeJS.EventEmitter, clientEmitter: NodeJS.EventEmitter): Queue {
     let timer: NodeJS.Timer = null;
     const packets: Buffer[] = [];
 
     function _step(): void {
-      emitter.emit('stats.queueRun', { frameId: i, packets: packets.length });
+      clientEmitter.emit(`${channel}.queueRun`, { frameId: i, packets: packets.length });
       clearTimeout(timer);
       timer = null;
-      emitter.emit('runQueue', { frameId: i, channel, packets });
+      channelEmitter.emit('runQueue', { frameId: i, channel, packets });
       packets.length = 0;
     }
 
     function add(packet: Buffer): void {
-      emitter.emit('stats.queueAdd', { frameId: i, packet: packets.length });
+      clientEmitter.emit(`${channel}.queueAdd`, { frameId: i, packet: packets.length });
       if (timer === null) {
         timer = setTimeout(_step, _delta());
       }

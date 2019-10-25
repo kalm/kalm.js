@@ -13,11 +13,11 @@ export function Client(params: ClientConfig, emitter: EventEmitter, handle?: Soc
   emitter.setMaxListeners(50);
 
   function _createChannel(channel: string): Channel {
-    const channelEmitter: EventEmitter = new EventEmitter();
+    const channelEmitter: NodeJS.EventEmitter = new EventEmitter();
 
     return {
       emitter: channelEmitter,
-      queue: params.routine(channel, params, channelEmitter),
+      queue: params.routine(channel, params, channelEmitter, emitter),
     };
   }
 
