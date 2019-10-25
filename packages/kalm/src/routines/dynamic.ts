@@ -1,7 +1,3 @@
-/* Requires ------------------------------------------------------------------*/
-
-import { EventEmitter } from 'events';
-
 /* Methods -------------------------------------------------------------------*/
 
 export function dynamic(hz: number): KalmRoutine {
@@ -9,22 +5,22 @@ export function dynamic(hz: number): KalmRoutine {
     throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
   }
 
-  return function queue(channel: string, params: object, emitter: EventEmitter): Queue {
+  return function queue(channel: string, params: object, channelEmitter: NodeJS.EventEmitter, clientEmitter: NodeJS.EventEmitter): Queue {
     let timer: NodeJS.Timer = null;
     const packets: Buffer[] = [];
     let i: number = 0;
 
     function _step(): void {
-      emitter.emit('stats.queueRun', { frameId: i, packets: packets.length });
+      clientEmitter.emit(`${channel}.queueRun`, { frameId: i, packets: packets.length });
       clearTimeout(timer);
       timer = null;
-      emitter.emit('runQueue', { frameId: i++, channel, packets });
+      channelEmitter.emit('runQueue', { frameId: i++, channel, packets });
       if (i > 255) i = 0;
       packets.length = 0;
     }
 
     function add(packet: Buffer): void {
-      emitter.emit('stats.queueAdd', { frameId: i, packet: packets.length });
+      clientEmitter.emit(`${channel}.queueAdd`, { frameId: i, packet: packets.length });
       if (timer === null) {
         timer = setTimeout(_step, Math.round(1000 / hz));
       }

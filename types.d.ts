@@ -68,14 +68,18 @@ type UDPClientList = {
 
 type SocketHandle = NodeJS.Socket | UDPSocketHandle | WebSocket
 
-interface KalmRoutine { (channel: string, params: any, emitter: NodeJS.EventEmitter): Queue }
+interface KalmRoutine {
+    (channel: string, params: any, channelEmitter: NodeJS.EventEmitter, clientEmitter: NodeJS.EventEmitter): Queue
+}
 interface Queue {
     add: (packet: Buffer) => void
     size: () => number
     flush: () => void
 }
 
-interface KalmTransport { (params: any, emitter: NodeJS.EventEmitter): Socket }
+interface KalmTransport {
+    (params: any, emitter: NodeJS.EventEmitter): Socket
+}
 interface Socket {
     bind: () => void
     remote: (handle: SocketHandle) => Remote
