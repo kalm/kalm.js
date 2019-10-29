@@ -112,6 +112,8 @@ interface WSConfig {
     secure?: boolean
 }
 
+interface WebRTCConfig {}
+
 type RawFrame = {
     frameId: number
     channel: string
