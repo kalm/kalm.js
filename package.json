@@ -12,6 +12,10 @@
     "clean": "yarn workspaces run clean --ci",
     "bench": "node ./scripts/benchmarks"
   },
+  "funding": {
+    "type": "Open Collective",
+    "url": "https://opencollective.com/fredericcharette"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kalm/kalm.js.git"
