@@ -1,0 +1,14 @@
+<head><title>Kalm Peer-to-peer example</title></head>
+
+<script type="module">
+    import * as kalm from '../../packages/kalm/bin/kalm.js';
+    import * as ws from '../../packages/ws/bin/ws.js';
+
+    console.log(kalm, ws)
+    const client = kalm.listen({});
+    client.on('connection', (connection) => {
+        console.log('new connection', connection);
+        client.broadcast('/', 'new peer');
+        connection.subscribe('/', body => console.log('GOT peer message', body));
+    });
+</script>

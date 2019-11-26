@@ -1,6 +1,6 @@
 /* Requires ------------------------------------------------------------------*/
 
-import { EventEmitter } from 'events';
+import EventEmitter from './utils/emitter';
 import { Client } from './components/client';
 import { Provider } from './components/provider';
 
@@ -22,12 +22,21 @@ const defaults = {
 
 const uniqueLabel = () => Math.random().toString(36).substring(7);
 
+function validateOptions(options: ProviderConfig): void {
+  if (options.transport === null || options.transport === undefined) {
+    throw new Error(`Unable to create Kalm client, missing "transport" parameter.
+      You may need to install one. ex: @kalm/tcp`);
+  }
+}
+
 export function listen(options: ProviderConfig): Provider {
-  return Provider({ label: uniqueLabel(), ...defaults, ...options }, new EventEmitter());
+  validateOptions(options);
+  return Provider({ label: uniqueLabel(), ...defaults, ...options }, EventEmitter());
 }
 
 export function connect(options: ClientConfig): Client {
-  return Client({ label: uniqueLabel(), ...defaults, ...options }, new EventEmitter());
+  validateOptions(options);
+  return Client({ label: uniqueLabel(), ...defaults, ...options }, EventEmitter());
 }
 
 export const routines = {

@@ -1,9 +1,14 @@
 /* Methods -------------------------------------------------------------------*/
 
-export function tick(hz: number, seed: number = Date.now()): KalmRoutine {
+export function tick({ hz, seed }): KalmRoutine {
   if (hz <= 0 || hz > 1000) {
     throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
   }
+  if (seed === undefined || seed === null) seed = Date.now();
+  if (Number.isNaN(seed)) {
+    throw new Error(`Unable to set seed value of ${seed}. Must be a Number`);
+  }
+
   let i: number = 0;
 
   function _delta(): number {
@@ -12,7 +17,7 @@ export function tick(hz: number, seed: number = Date.now()): KalmRoutine {
     return Math.round(now % (1000 / hz));
   }
 
-  return function queue(channel: string, params: object, channelEmitter: NodeJS.EventEmitter, clientEmitter: NodeJS.EventEmitter): Queue {
+  return function queue(channel: string, params: object, channelEmitter: EventEmitter, clientEmitter: EventEmitter): Queue {
     let timer: NodeJS.Timer = null;
     const packets: Buffer[] = [];
 

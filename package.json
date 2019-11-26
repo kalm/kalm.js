@@ -1,15 +1,15 @@
 {
   "name": "kalm-monorepo",
   "private": true,
-  "version": "3.2.1",
+  "version": "3.3.0",
   "description": "The socket optimizer",
   "main": "packages/kalm/bin/kalm.js",
   "scripts": {
     "lint": "eslint **/*.ts **/*.spec.ts",
     "lint:fix": "yarn lint --fix",
     "test": "jest ./packages && jest ./tests/integration --forceExit",
-    "build": "yarn workspaces run build --ci",
-    "clean": "yarn workspaces run clean --ci",
+    "build": "yarn workspaces run build",
+    "clean": "yarn workspaces run clean",
     "bench": "node ./scripts/benchmarks"
   },
   "repository": {
@@ -36,17 +36,17 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.17",
-    "@types/node": "^12.7.0",
-    "@typescript-eslint/eslint-plugin": "^2.3.0",
-    "@typescript-eslint/parser": "^2.3.0",
-    "eslint": "^6.5.0",
+    "@types/node": "^12.12.0",
+    "@typescript-eslint/eslint-plugin": "^2.9.0",
+    "@typescript-eslint/parser": "^2.9.0",
+    "eslint": "^6.7.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.0",
-    "husky": "^3.0.8",
+    "husky": "^3.1.0",
     "jest": "^24.9.0",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.6.0"
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.2"
   }
 }

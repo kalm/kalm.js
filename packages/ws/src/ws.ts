@@ -6,7 +6,7 @@ const WS = isBrowser ? WebSocket : require('ws');
 /* Methods -------------------------------------------------------------------*/
 
 function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
+  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
     let listener;
 
     function bind(): void {
@@ -21,7 +21,7 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
       emitter.emit('ready');
     }
 
-    function send(handle: WebSocket, payload: number[]): void {
+    function send(handle: WebSocket & { _queue: number[][] }, payload: number[]): void {
       if (handle && handle.readyState === 1) {
         handle.send(Buffer.from(payload));
       } else {
@@ -35,7 +35,7 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
 
     function connect(handle?: WebSocket): WebSocket {
       const protocol: string = secure === true ? 'wss' : 'ws';
-      const connection: WebSocket = handle || new WS(`${protocol}://${params.host}:${params.port}`);
+      const connection: WebSocket & { _queue: number[][] } = handle || new WS(`${protocol}://${params.host}:${params.port}`);
       connection.binaryType = 'arraybuffer';
       const evtType: string = isBrowser ? 'addEventListener' : 'on';
       connection._queue = [];
@@ -50,7 +50,7 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
       return connection;
     }
 
-    function remote(handle: WebSocket): Remote {
+    function remote(handle: WebSocket & { headers: any, connection: any }): Remote {
       const h = handle.headers;
       return {
         host: (

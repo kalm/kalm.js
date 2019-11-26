@@ -1,6 +1,6 @@
 /* Requires ------------------------------------------------------------------*/
 
-import { EventEmitter } from 'events';
+import EventEmitter from '../utils/emitter';
 import { log } from '../utils/logger';
 import { Client } from './client';
 
@@ -40,7 +40,7 @@ export function Provider(params: ClientConfig, emitter: EventEmitter): Provider 
         label: params.label,
         stop,
       },
-    }, new EventEmitter(), handle);
+    }, EventEmitter(), handle);
 
     connections.push(client);
     emitter.emit('connection', client);

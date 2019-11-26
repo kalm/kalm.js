@@ -1,6 +1,6 @@
 /* Requires ------------------------------------------------------------------*/
 
-import { EventEmitter } from 'events';
+import EventEmitter from '../utils/emitter';
 import { log } from '../utils/logger';
 import { serialize, deserialize } from '../utils/parser';
 
@@ -10,10 +10,9 @@ export function Client(params: ClientConfig, emitter: EventEmitter, handle?: Soc
   let connected: number = 1;
   const channels: ChannelList = {};
   const socket: Socket = params.transport(params, emitter);
-  emitter.setMaxListeners(50);
 
   function _createChannel(channel: string): Channel {
-    const channelEmitter: NodeJS.EventEmitter = new EventEmitter();
+    const channelEmitter: EventEmitter = EventEmitter();
 
     return {
       emitter: channelEmitter,

@@ -20,8 +20,7 @@ export function serialize(frameId: number, channel: string, packets: Buffer[]): 
 
   packets.forEach((packet: Buffer) => {
     if (!(packet instanceof Buffer)) throw new Error(`Cannot send packet ${packet}. Must be of type Buffer`);
-    result.push(..._uint16Size(packet.length));
-    result.push(...packet);
+    result.push(..._uint16Size(packet.length), ...packet);
   });
 
   return result;

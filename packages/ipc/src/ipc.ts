@@ -14,7 +14,7 @@ interface IPCSocket extends net.Socket {
 }
 
 export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
+  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
     let listener: net.Server;
 
     function bind(): void {

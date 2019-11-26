@@ -3,13 +3,13 @@
 import Peer from 'simple-peer';
 
 if (!Peer.WEBRTC_SUPPORT) {
-    throw new Error('Unsupported environement for WebRTC');
+  throw new Error('Unsupported environement for WebRTC');
 }
 
 /* Methods -------------------------------------------------------------------*/
 
-function ws({}: WebRTCConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
+function webrtc(config: WebRTCConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
     let listener;
 
     function bind(): void {
@@ -27,10 +27,11 @@ function ws({}: WebRTCConfig = {}): KalmTransport {
       if (listener) listener.close();
     }
 
-    function connect(handle?: Peer): Peer {
+    function connect(handle?: any): any {
       const connection = handle || new Peer({ initiator: true });
-      connection.on('signal', () => {
+      connection.on('signal', evt => {
         // Todo
+        console.log('signal', evt);
       });
       connection.on('data', evt => emitter.emit('rawFrame', Buffer.from(evt.data || evt)));
       connection.on('error', err => emitter.emit('error', err));
@@ -40,8 +41,8 @@ function ws({}: WebRTCConfig = {}): KalmTransport {
       return connection;
     }
 
-    function remote(handle: Peer): Remote {
-      console.log(handle)
+    function remote(handle: any): Remote {
+      console.log(handle);
       return {
         host: handle,
         port: handle || 0,
@@ -67,4 +68,4 @@ function ws({}: WebRTCConfig = {}): KalmTransport {
 
 /* Exports -------------------------------------------------------------------*/
 
-module.exports = ws;
+module.exports = webrtc;

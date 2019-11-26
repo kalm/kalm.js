@@ -1,5 +1,17 @@
 /* Types ---------------------------------------------------------------------*/
 
+interface EventHandler {
+    (event?: any, event2?: any): void
+}
+
+interface EventEmitter {
+    on(type: string, handler: EventHandler): void
+    off(type: string, handler?: EventHandler): void
+    emit(type: string, evt?: any, evt2?: any): void
+    removeAllListeners(type?: string): void
+    listenerCount(type?: string): number
+}
+
 interface ClientConfig {
     label?: string
     routine?: KalmRoutine
@@ -25,14 +37,14 @@ type Remote = {
     port: number
 }
 
-interface Provider extends NodeJS.EventEmitter {
+interface Provider extends EventEmitter {
     broadcast: (channel: string, message: Serializable) => void
     label: string
     stop: () => void
     connections: Client[]
 }
 
-interface Client extends NodeJS.EventEmitter {
+interface Client extends EventEmitter {
     write: (channel: string, message: Serializable) => void
     destroy: () => void
     subscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
@@ -43,7 +55,7 @@ interface Client extends NodeJS.EventEmitter {
 
 type Channel = {
     queue: Queue
-    emitter: NodeJS.EventEmitter
+    emitter: EventEmitter
 }
 
 type ChannelList = {
@@ -69,8 +81,15 @@ type UDPClientList = {
 type SocketHandle = NodeJS.Socket | UDPSocketHandle | WebSocket
 
 interface KalmRoutine {
-    (channel: string, params: any, channelEmitter: NodeJS.EventEmitter, clientEmitter: NodeJS.EventEmitter): Queue
+    (channel: string, params: any, channelEmitter: EventEmitter, clientEmitter: EventEmitter): Queue
 }
+
+interface KalmRoutineParams {
+    hz: number
+    maxBytes: number
+    seed: number
+}
+
 interface Queue {
     add: (packet: Buffer) => void
     size: () => number
@@ -78,7 +97,7 @@ interface Queue {
 }
 
 interface KalmTransport {
-    (params: any, emitter: NodeJS.EventEmitter): Socket
+    (params: any, emitter: EventEmitter): Socket
 }
 interface Socket {
     bind: () => void

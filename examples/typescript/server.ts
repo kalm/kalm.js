@@ -4,7 +4,7 @@ import ws from '@kalm/ws';
 const provider = kalm.listen({
   transport: ws(),
   port: 3938,
-  routine: kalm.routines.tick(5),
+  routine: kalm.routines.dynamic({ hz: 5, maxBytes: 1400 }),
   host: '0.0.0.0',
 });
 

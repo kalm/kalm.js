@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "module": "none",
-        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "esModuleInterop": false,
         "allowSyntheticDefaultImports": true,
         "noImplicitAny": false,
         "removeComments": true,

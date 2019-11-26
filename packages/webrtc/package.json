@@ -1,11 +1,15 @@
 {
     "name": "@kalm/webrtc",
-    "version": "3.2.1",
+    "version": "3.3.0",
     "description": "WebRTC transport for Kalm",
     "main": "bin/webrtc.js",
     "scripts": {
-      "build": "../../scripts/build.sh ws",
-      "clean": "../../scripts/cleanup.sh"
+      "build": "../../scripts/build.sh webrtc es2015",
+    "clean": "../../scripts/cleanup.sh"
+    },
+    "funding": {
+      "type": "Github",
+      "url": "https://github.com/sponsors/fed135"
     },
     "repository": {
       "type": "git",
@@ -44,7 +48,6 @@
     ],
     "dependencies": {
       "simple-peer": "^9.6.0"
-    },
-    "browser": {}
+    }
   }
   

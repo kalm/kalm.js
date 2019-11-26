@@ -19,7 +19,7 @@ const providers = [
     label: 'external',
     transport: ws(),
     port: 3938,
-    routine: kalm.routines.tick(120, tickSeed),
+    routine: kalm.routines.tick({ hz: 120, seed: tickSeed }),
     host: '0.0.0.0', // Apply local ip
   }),
 ];

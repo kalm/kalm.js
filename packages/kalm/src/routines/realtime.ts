@@ -1,7 +1,7 @@
 /* Methods -------------------------------------------------------------------*/
 
 export function realtime(): KalmRoutine {
-  return function queue(channel: string, params: object, channelEmitter: NodeJS.EventEmitter, clientEmitter: NodeJS.EventEmitter): Queue {
+  return function queue(channel: string, params: object, channelEmitter: EventEmitter, clientEmitter: EventEmitter): Queue {
     let i: number = 0;
 
     function add(packet: Buffer): void {

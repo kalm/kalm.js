@@ -6,7 +6,7 @@ import dgram from 'dgram';
 
 function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTimeout = 30000, connectTimeout = 1000,
 }: UDPConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
+  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
     let listener: dgram.Socket;
     const clientCache: UDPClientList = {};
 
