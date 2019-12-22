@@ -13,7 +13,7 @@
 
 [![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/kalm)
 [![Build Status](https://travis-ci.org/kalm/kalm.js.svg?branch=master)](https://travis-ci.org/kalm/kalm.js)
-
+[![Financial Contributors on Open Collective](https://opencollective.com/kalm/all/badge.svg?label=financial+contributors)](https://opencollective.com/kalm) 
 ---
 
 - **Easy-to-use syntax** unified across protocols
@@ -115,6 +115,28 @@ Kalm offers events to track when packets are processed by routines or when a raw
 ## Contribute
 
 If you think of something that you want, [open an issue](//github.com/kalm/kalm.js/issues/new) or file a pull request, we'll be more than happy to take a look!
+
+## Contributors
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+
+<a href="https://github.com/kalm/kalm.js/graphs/contributors"><img src="https://opencollective.com/kalm/contributors.svg?width=890&button=false" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/kalm/contribute)]
+
+#### Individuals
+
+<a href="https://opencollective.com/kalm"><img src="https://opencollective.com/kalm/individuals.svg?width=890"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/kalm/contribute)]
+
+<a href="https://opencollective.com/kalm/organization/0/website"><img src="https://opencollective.com/kalm/organization/0/avatar.svg"></a>
 
 ## License 
 
