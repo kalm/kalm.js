@@ -18,7 +18,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kalm/kalm.js.git"
+    "url": "ssh://git@github.com/kalm/kalm.js.git",
+    "directory": "packages/kalm"
   },
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
