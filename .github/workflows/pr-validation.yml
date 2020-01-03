@@ -1,0 +1,31 @@
+name: pr-validation
+
+on:
+  pull_request:
+    branches: 
+    - '*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install, build, and test
+      run: |
+        yarn
+        yarn run lint
+        yarn run test
+        yarn run build
+        yarn run bench
+      env:
+        CI: true
