@@ -1,7 +1,7 @@
 {
-  "name": "kalm-monorepo",
+  "name": "kalm",
   "private": true,
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "The socket optimizer",
   "main": "packages/kalm/bin/kalm.js",
   "scripts": {
@@ -41,17 +41,17 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.17",
-    "@types/node": "^12.7.0",
-    "@typescript-eslint/eslint-plugin": "^2.3.0",
-    "@typescript-eslint/parser": "^2.3.0",
-    "eslint": "^6.5.0",
+    "@types/node": "^13.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.0",
-    "husky": "^3.0.8",
+    "eslint-plugin-import": "^2.19.0",
+    "husky": "^3.1.0",
     "jest": "^24.9.0",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.6.0"
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.4"
   }
 }

@@ -140,4 +140,4 @@ Support this project with your organization. Your logo will show up here with a 
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2019 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2020 Frederic Charette
