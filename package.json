@@ -1,7 +1,7 @@
 {
   "name": "kalm-monorepo",
   "private": true,
-  "version": "3.2.2",
+  "version": "3.2.1",
   "description": "The socket optimizer",
   "main": "packages/kalm/bin/kalm.js",
   "scripts": {
