@@ -12,7 +12,7 @@
 <br/>
 
 [![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/kalm)
-[![Build Status](https://travis-ci.org/kalm/kalm.js.svg?branch=master)](https://travis-ci.org/kalm/kalm.js)
+[![Build Status](https://github.com/kalm/kalm.js/workflows/master-status/badge.svg)](https://github.com/kalm/kalm.js/actions?query=workflow%3A+master-status)
 [![Financial Contributors on Open Collective](https://opencollective.com/kalm/all/badge.svg?label=financial+contributors)](https://opencollective.com/kalm) 
 ---
 
