@@ -1,7 +1,7 @@
 {
   "name": "kalm-monorepo",
   "private": true,
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "The socket optimizer",
   "main": "packages/kalm/bin/kalm.js",
   "scripts": {
@@ -18,7 +18,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kalm/kalm.js.git"
+    "url": "ssh://git@github.com/kalm/kalm.js.git",
+    "directory": "packages/kalm"
   },
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
