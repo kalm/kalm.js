@@ -1,6 +1,6 @@
 /* Methods -------------------------------------------------------------------*/
 
-export function dynamic(hz: number): KalmRoutine {
+export function dynamic({ hz, maxPackets = Infinity }: { hz: number, maxPackets?: number }): KalmRoutine {
   if (hz <= 0 || hz > 1000) {
     throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
   }
@@ -21,6 +21,11 @@ export function dynamic(hz: number): KalmRoutine {
 
     function add(packet: Buffer): void {
       clientEmitter.emit(`${channel}.queueAdd`, { frameId: i, packet: packets.length });
+      if (packets.length > maxPackets - 1) {
+        packets.push(packet);
+        _step();
+        return;
+      }
       if (timer === null) {
         timer = setTimeout(_step, Math.round(1000 / hz));
       }

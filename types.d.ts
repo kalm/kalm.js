@@ -134,8 +134,8 @@ declare module "kalm" {
     export var listen: (config: ProviderConfig) => Provider
     export var connect: (config: ClientConfig) => Client
     export var Routines: {
-        tick: (config: KalmRoutineParams) => KalmRoutine
-        dynamic: (config: KalmRoutineParams) => KalmRoutine
-        realtime: (config: KalmRoutineParams) => KalmRoutine
+        tick: (config: { hz: number, seed?: number }) => KalmRoutine
+        dynamic: (config: { hz: number, maxPackets?: number }) => KalmRoutine
+        realtime: () => KalmRoutine
     };
 }
