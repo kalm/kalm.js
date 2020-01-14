@@ -1,7 +1,7 @@
 {
   "name": "kalm",
   "private": true,
-  "version": "3.2.2",
+  "version": "3.2.3",
   "description": "The socket optimizer",
   "main": "packages/kalm/bin/kalm.js",
   "scripts": {
