@@ -130,10 +130,10 @@ type Frame = {
     }
 }
 
-declare module "kalm" {
-    export var listen: (config: ProviderConfig) => Provider
-    export var connect: (config: ClientConfig) => Client
-    export var Routines: {
+declare module 'kalm' {
+    export const listen: (config: ProviderConfig) => Provider;
+    export const connect: (config: ClientConfig) => Client;
+    export const Routines: {
         tick: (config: { hz: number, seed?: number }) => KalmRoutine
         dynamic: (config: { hz: number, maxPackets?: number }) => KalmRoutine
         realtime: () => KalmRoutine
