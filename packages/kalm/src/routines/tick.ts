@@ -1,6 +1,6 @@
 /* Methods -------------------------------------------------------------------*/
 
-export function tick({ hz, seed = Date.now()}: { hz: number, seed?: number }): KalmRoutine {
+export function tick({ hz, seed = Date.now() }: { hz: number, seed?: number }): KalmRoutine {
   if (hz <= 0 || hz > 1000) {
     throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
   }
