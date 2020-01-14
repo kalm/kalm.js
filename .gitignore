@@ -49,10 +49,3 @@ packages/ipc/bin
 packages/tcp/bin
 packages/udp/bin
 packages/ws/bin
-
-# built types reference
-packages/kalm/types.d.ts
-packages/ipc/types.d.ts
-packages/tcp/types.d.ts
-packages/udp/types.d.ts
-packages/ws/types.d.ts
