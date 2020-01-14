@@ -131,5 +131,5 @@ type Frame = {
 }
 
 declare module '@kalm/ws' {
-    export default function ws (config: WSConfig): (config: WSConfig) => Transport;
+    export default function ws(config?: WSConfig): (config?: WSConfig) => Transport;
 }

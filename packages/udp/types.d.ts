@@ -131,5 +131,5 @@ type Frame = {
 }
 
 declare module '@kalm/udp' {
-    export default function udp (config: UDPConfig): (config: UDPConfig) => Transport;
+    export default function udp(config?: UDPConfig): (config?: UDPConfig) => Transport;
 }

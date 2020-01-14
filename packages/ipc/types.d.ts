@@ -131,5 +131,5 @@ type Frame = {
 }
 
 declare module '@kalm/ipc' {
-    export default function ipc (config: IPCConfig): (config: IPCConfig) => Transport;
+    export default function ipc(config?: IPCConfig): (config?: IPCConfig) => Transport;
 }

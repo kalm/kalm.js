@@ -131,5 +131,5 @@ type Frame = {
 }
 
 declare module '@kalm/tcp' {
-    export default function tcp (config: TCPConfig): (config: TCPConfig) => Transport;
+    export default function tcp(config?: TCPConfig): (config?: TCPConfig) => Transport;
 }
