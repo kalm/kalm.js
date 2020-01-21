@@ -50,11 +50,3 @@ packages/tcp/bin
 packages/udp/bin
 packages/ws/bin
 packages/webrtc/bin
-
-# built types reference
-packages/kalm/types.d.ts
-packages/ipc/types.d.ts
-packages/tcp/types.d.ts
-packages/udp/types.d.ts
-packages/ws/types.d.ts
-packages/webrtc/types.d.ts

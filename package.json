@@ -1,5 +1,5 @@
 {
-  "name": "kalm-monorepo",
+  "name": "kalm",
   "private": true,
   "version": "3.3.0",
   "description": "The socket optimizer",
@@ -12,9 +12,14 @@
     "clean": "yarn workspaces run clean",
     "bench": "node ./scripts/benchmarks"
   },
+  "funding": {
+    "type": "Open Collective",
+    "url": "https://opencollective.com/fredericcharette"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kalm/kalm.js.git"
+    "url": "ssh://git@github.com/kalm/kalm.js.git",
+    "directory": "packages/kalm"
   },
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
@@ -36,17 +41,17 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.17",
-    "@types/node": "^12.12.0",
-    "@typescript-eslint/eslint-plugin": "^2.9.0",
-    "@typescript-eslint/parser": "^2.9.0",
-    "eslint": "^6.7.0",
+    "@types/node": "^13.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-import": "^2.19.0",
     "husky": "^3.1.0",
     "jest": "^24.9.0",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "ts-jest": "^24.2.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.4"
   }
 }

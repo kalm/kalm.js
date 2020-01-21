@@ -1,10 +1,10 @@
-import kalm from 'kalm';
+import {connect, Routines} from 'kalm';
 import ws from '@kalm/ws';
 
-const client = kalm.connect({
+const client = connect({
   transport: ws(),
   port: 3938,
-  routine: kalm.routines.realtime(),
+  routine: Routines.realtime(),
 });
 
 type MyCustomPayload = {

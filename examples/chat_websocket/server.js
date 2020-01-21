@@ -5,7 +5,7 @@ const Server = kalm.listen({
   label: 'server',
   port: 8800,
   transport: ws(),
-  routine: kalm.routines.tick({ hz: 5 }), // Hz
+  routine: kalm.routines.tick({ hz: 5 }),
   host: '0.0.0.0',
 });
 

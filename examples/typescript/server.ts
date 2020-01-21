@@ -1,10 +1,10 @@
-import kalm from 'kalm';
+import {listen, Routines} from 'kalm';
 import ws from '@kalm/ws';
 
-const provider = kalm.listen({
+const provider = listen({
   transport: ws(),
   port: 3938,
-  routine: kalm.routines.dynamic({ hz: 5, maxBytes: 1400 }),
+  routine: Routines.tick({ hz: 5 }),
   host: '0.0.0.0',
 });
 

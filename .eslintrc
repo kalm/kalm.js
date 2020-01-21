@@ -11,6 +11,7 @@
       }
     },
     "rules": {
+        "import/extensions": 0,
         "no-bitwise": 0,
         "linebreak-style": 1,
         "no-underscore-dangle": 0,

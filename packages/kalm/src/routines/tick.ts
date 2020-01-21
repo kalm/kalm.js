@@ -1,12 +1,8 @@
 /* Methods -------------------------------------------------------------------*/
 
-export function tick({ hz, seed }): KalmRoutine {
+export function tick({ hz, seed = Date.now() }: { hz: number, seed?: number }): KalmRoutine {
   if (hz <= 0 || hz > 1000) {
     throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
-  }
-  if (seed === undefined || seed === null) seed = Date.now();
-  if (Number.isNaN(seed)) {
-    throw new Error(`Unable to set seed value of ${seed}. Must be a Number`);
   }
 
   let i: number = 0;
