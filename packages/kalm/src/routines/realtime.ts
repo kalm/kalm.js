@@ -5,10 +5,10 @@ export function realtime(): KalmRoutine {
     let i: number = 0;
 
     function add(packet: Buffer): void {
-      clientEmitter.emit(`${channel}.queueAdd`, { frameId: i, packet: 0 });
-      clientEmitter.emit(`${channel}.queueRun`, { frameId: i, packets: 1 });
       channelEmitter.emit('runQueue', { frameId: i++, channel, packets: [packet] });
       if (i > 255) i = 0;
+      clientEmitter.emit(`${channel}.queueAdd`, { frameId: i, packet: 0 });
+      clientEmitter.emit(`${channel}.queueRun`, { frameId: i, packets: 1 });
     }
 
     function size(): number { return 0; }

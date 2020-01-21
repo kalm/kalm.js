@@ -16,13 +16,13 @@ export function dynamic({ hz, maxBytes }: KalmRoutineParams): KalmRoutine {
     let totalBytes: number = 0;
 
     function _step(): void {
-      clientEmitter.emit(`${channel}.queueRun`, { frameId: i, packets: packets.length });
       clearTimeout(timer);
       timer = null;
       channelEmitter.emit('runQueue', { frameId: i++, channel, packets });
       if (i > 255) i = 0;
       packets.length = 0;
       totalBytes = 0;
+      clientEmitter.emit(`${channel}.queueRun`, { frameId: i, packets: packets.length });
     }
 
     function add(packet: Buffer): void {
