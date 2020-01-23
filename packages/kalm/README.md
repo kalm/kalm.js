@@ -70,6 +70,7 @@ const Client = kalm.connect({
 ```
 To see working implementations, check out our [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
 
+- [Peer to peer](https://github.com/kalm/kalm.js/tree/master/examples/browser_peer_to_peer)
 - [Chat via websockets](https://github.com/kalm/kalm.js/tree/master/examples/chat_websocket)
 - [Distributed Pub-Sub](https://github.com/kalm/kalm.js/tree/master/examples/distributed_pub_sub)
 - [Packet compressing](https://github.com/kalm/kalm.js/tree/master/examples/compression)

@@ -1,5 +1,6 @@
 const kalm = require('kalm');
 const ws = require('@kalm/ws');
+const webrtc = require('@kalm/webrtc');
 
 const roomPassword = 'some_random_string';
 
@@ -16,6 +17,7 @@ function createPeer(channel) {
     });
 
     peeringClient.on('connect', () => {
+      peeringClient.write('peering', channel);
       peerListener = listen({ transport: webrtcInstance });
 
       peerListener.on('ready', (offer) => {
