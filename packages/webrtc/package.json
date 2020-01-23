@@ -5,7 +5,7 @@
     "main": "bin/webrtc.js",
     "scripts": {
       "build": "../../scripts/build.sh webrtc es2015",
-    "clean": "../../scripts/cleanup.sh"
+      "clean": "../../scripts/cleanup.sh"
     },
     "funding": {
       "type": "Github",

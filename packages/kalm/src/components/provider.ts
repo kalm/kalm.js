@@ -1,12 +1,12 @@
 /* Requires ------------------------------------------------------------------*/
 
-import EventEmitter from '../utils/emitter';
+import { EventEmitter } from 'events';
 import { log } from '../utils/logger';
 import { Client } from './client';
 
 /* Methods -------------------------------------------------------------------*/
 
-export function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
+export function Provider(params: ClientConfig, emitter: NodeJS.EventEmitter): Provider {
   const connections = [];
   const socket: Socket = params.transport(params, emitter);
 
@@ -40,7 +40,7 @@ export function Provider(params: ClientConfig, emitter: EventEmitter): Provider 
         label: params.label,
         stop,
       },
-    }, EventEmitter(), handle);
+    }, new EventEmitter(), handle);
 
     connections.push(client);
     emitter.emit('connection', client);

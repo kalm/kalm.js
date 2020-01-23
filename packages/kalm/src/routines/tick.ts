@@ -13,7 +13,7 @@ export function tick({ hz, seed = Date.now() }: { hz: number, seed?: number }): 
     return Math.round(now % (1000 / hz));
   }
 
-  return function queue(channel: string, params: object, channelEmitter: EventEmitter, clientEmitter: EventEmitter): Queue {
+  return function queue(channel: string, params: object, channelEmitter: NodeJS.EventEmitter, clientEmitter: NodeJS.EventEmitter): Queue {
     let timer: NodeJS.Timer = null;
     const packets: Buffer[] = [];
 
@@ -26,9 +26,7 @@ export function tick({ hz, seed = Date.now() }: { hz: number, seed?: number }): 
     }
 
     function add(packet: Buffer): void {
-      if (timer === null) {
-        timer = setTimeout(_step, _delta());
-      }
+      if (timer === null) timer = setTimeout(_step, _delta());
       packets.push(packet);
       clientEmitter.emit(`${channel}.queueAdd`, { frameId: i, packet: packets.length });
     }

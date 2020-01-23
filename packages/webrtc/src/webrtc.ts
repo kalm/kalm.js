@@ -2,21 +2,25 @@
 
 import Peer from 'simple-peer';
 
-if (!Peer.WEBRTC_SUPPORT) {
-  throw new Error('Unsupported environement for WebRTC');
-}
+if (!Peer.WEBRTC_SUPPORT) throw new Error('Unsupported environement for WebRTC');
 
 /* Methods -------------------------------------------------------------------*/
 
 function webrtc(config: WebRTCConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener;
 
     function bind(): void {
-      listener = new Peer();
-      listener.on('connect', soc => emitter.emit('socket', soc));
+      listener = new Peer({ initiator: !(config.peers && config.peers.length > 0) });
+      listener.on('signal', (signal) => {
+        if (['offer', 'anwser'].includes(signal.type)) {
+          emitter.emit('ready', signal);
+        }
+      });
+      listener.on('connect', (soc) => emitter.emit('socket', soc));
       listener.on('error', err => emitter.emit('error', err));
-      emitter.emit('ready');
+      
+      if (config.peers) config.peers.forEach(peer => listener.signal(peer));
     }
 
     function send(handle: any, payload: number[]): void {
@@ -27,22 +31,23 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
       if (listener) listener.close();
     }
 
-    function connect(handle?: any): any {
-      const connection = handle || new Peer({ initiator: true });
-      connection.on('signal', evt => {
-        // Todo
-        console.log('signal', evt);
-      });
-      connection.on('data', evt => emitter.emit('rawFrame', Buffer.from(evt.data || evt)));
-      connection.on('error', err => emitter.emit('error', err));
-      connection.on('connect', () => emitter.emit('connect', connection));
-      connection.on('close', () => emitter.emit('disconnect'));
+    function connect(handle: any): any {
+      if (handle) {
+        handle.on('data', evt => emitter.emit('rawFrame', Buffer.from(evt.data || evt)));
+        handle.on('error', err => emitter.emit('error', err));
+        handle.on('connect', () => emitter.emit('connect', handle));
+        handle.on('close', () => emitter.emit('disconnect'));
+      }
+      else {
+          if (!params.peer) throw new Error('No peer configuration provided in `connect`.');
+          if (!listener) throw new Error('No listeners initiated, `listen` needs to be invoked first.');
+          listener.signal(params.peer);
+      }
 
-      return connection;
+      return handle;
     }
 
     function remote(handle: any): Remote {
-      console.log(handle);
       return {
         host: handle,
         port: handle || 0,
@@ -50,9 +55,7 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
     }
 
     function disconnect(handle) {
-      if (handle) {
-        handle.destroy();
-      }
+      if (handle) handle.destroy();
     }
 
     return {

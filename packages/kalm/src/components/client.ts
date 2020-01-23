@@ -1,18 +1,18 @@
 /* Requires ------------------------------------------------------------------*/
 
-import EventEmitter from '../utils/emitter';
+import { EventEmitter } from 'events';
 import { log } from '../utils/logger';
 import { serialize, deserialize } from '../utils/parser';
 
 /* Methods -------------------------------------------------------------------*/
 
-export function Client(params: ClientConfig, emitter: EventEmitter, handle?: SocketHandle): Client {
+export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handle?: SocketHandle): Client {
   let connected: number = 1;
   const channels: ChannelList = {};
   const socket: Socket = params.transport(params, emitter);
 
   function _createChannel(channel: string): Channel {
-    const channelEmitter: EventEmitter = EventEmitter();
+    const channelEmitter: NodeJS.EventEmitter = new EventEmitter();
 
     return {
       emitter: channelEmitter,
@@ -52,6 +52,10 @@ export function Client(params: ClientConfig, emitter: EventEmitter, handle?: Soc
         },
       );
     }
+  }
+
+  function getChannels() {
+    return Object.keys(channels);
   }
 
   function _handleConnect(): void {
@@ -131,5 +135,6 @@ export function Client(params: ClientConfig, emitter: EventEmitter, handle?: Soc
     remote,
     local,
     label: params.label,
+    getChannels,
   });
 }

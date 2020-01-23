@@ -6,7 +6,7 @@ const WS = isBrowser ? WebSocket : require('ws');
 /* Methods -------------------------------------------------------------------*/
 
 function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: EventEmitter): Socket {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener;
 
     function bind(): void {
@@ -22,11 +22,8 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
     }
 
     function send(handle: WebSocket & { _queue: number[][] }, payload: number[]): void {
-      if (handle && handle.readyState === 1) {
-        handle.send(Buffer.from(payload));
-      } else {
-        handle._queue.push(payload);
-      }
+      if (handle && handle.readyState === 1) handle.send(Buffer.from(payload));
+      else handle._queue.push(payload);
     }
 
     function stop(): void {

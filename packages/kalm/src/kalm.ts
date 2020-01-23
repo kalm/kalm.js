@@ -1,6 +1,6 @@
 /* Requires ------------------------------------------------------------------*/
 
-import EventEmitter from './utils/emitter';
+import { EventEmitter } from 'events';
 import { Client } from './components/client';
 import { Provider } from './components/provider';
 
@@ -31,12 +31,12 @@ function validateOptions(options: ProviderConfig): void {
 
 export function listen(options: ProviderConfig): Provider {
   validateOptions(options);
-  return Provider({ label: uniqueLabel(), ...defaults, ...options }, EventEmitter());
+  return Provider({ label: uniqueLabel(), ...defaults, ...options }, new EventEmitter());
 }
 
 export function connect(options: ClientConfig): Client {
   validateOptions(options);
-  return Client({ label: uniqueLabel(), ...defaults, ...options }, EventEmitter());
+  return Client({ label: uniqueLabel(), ...defaults, ...options }, new EventEmitter());
 }
 
 export const routines = {
