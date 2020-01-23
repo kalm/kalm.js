@@ -12,14 +12,14 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
 
     function bind(): void {
       listener = new Peer({ initiator: !(config.peers && config.peers.length > 0) });
-      listener.on('signal', (signal) => {
+      listener.on('signal', signal => {
         if (['offer', 'anwser'].includes(signal.type)) {
           emitter.emit('ready', signal);
         }
       });
-      listener.on('connect', (soc) => emitter.emit('socket', soc));
+      listener.on('connect', soc => emitter.emit('socket', soc));
       listener.on('error', err => emitter.emit('error', err));
-      
+
       if (config.peers) config.peers.forEach(peer => listener.signal(peer));
     }
 
@@ -37,11 +37,10 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
         handle.on('error', err => emitter.emit('error', err));
         handle.on('connect', () => emitter.emit('connect', handle));
         handle.on('close', () => emitter.emit('disconnect'));
-      }
-      else {
-          if (!params.peer) throw new Error('No peer configuration provided in `connect`.');
-          if (!listener) throw new Error('No listeners initiated, `listen` needs to be invoked first.');
-          listener.signal(params.peer);
+      } else {
+        if (!params.peer) throw new Error('No peer configuration provided in `connect`.');
+        if (!listener) throw new Error('No listeners initiated, `listen` needs to be invoked first.');
+        listener.signal(params.peer);
       }
 
       return handle;

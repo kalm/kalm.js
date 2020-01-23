@@ -4,7 +4,7 @@
   "description": "WebSocket transport for Kalm",
   "main": "bin/ws.js",
   "scripts": {
-    "build": "../../scripts/build.sh ws umd",
+    "build": "../../scripts/build.sh ws",
     "clean": "../../scripts/cleanup.sh"
   },
   "funding": {

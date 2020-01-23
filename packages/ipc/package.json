@@ -4,7 +4,7 @@
   "description": "IPC transport for Kalm",
   "main": "bin/ipc.js",
   "scripts": {
-    "build": "../../scripts/build.sh ipc commonjs",
+    "build": "../../scripts/build.sh ipc",
     "clean": "../../scripts/cleanup.sh"
   },
   "funding": {
@@ -47,6 +47,7 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "browser": {
-    "net": false
+    "net": false,
+    "fs": false
   }
 }

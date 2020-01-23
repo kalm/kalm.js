@@ -4,7 +4,7 @@
   "description": "The socket optimizer",
   "main": "bin/kalm.js",
   "scripts": {
-    "build": "../../scripts/build.sh kalm umd",
+    "build": "../../scripts/build.sh kalm",
     "clean": "../../scripts/cleanup.sh"
   },
   "funding": {

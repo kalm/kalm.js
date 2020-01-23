@@ -4,7 +4,7 @@
     "description": "WebRTC transport for Kalm",
     "main": "bin/webrtc.js",
     "scripts": {
-      "build": "../../scripts/build.sh webrtc es2015",
+      "build": "../../scripts/build.sh webrtc",
       "clean": "../../scripts/cleanup.sh"
     },
     "funding": {

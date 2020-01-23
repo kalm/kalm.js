@@ -4,7 +4,7 @@
   "description": "UDP transport for Kalm",
   "main": "bin/udp.js",
   "scripts": {
-    "build": "../../scripts/build.sh udp commonjs",
+    "build": "../../scripts/build.sh udp",
     "clean": "../../scripts/cleanup.sh"
   },
   "funding": {

@@ -1,5 +1,3 @@
-import { serialize, deserialize } from '../../../src/utils/parser';
-
 describe('Parser util', () => {
   describe('serialize', () => {
     it('should serialize single message frames', () => {
