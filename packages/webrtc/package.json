@@ -1,53 +1,53 @@
 {
-    "name": "@kalm/webrtc",
-    "version": "3.3.0",
-    "description": "WebRTC transport for Kalm",
-    "main": "bin/webrtc.js",
-    "scripts": {
-      "build": "../../scripts/build.sh webrtc",
-      "clean": "../../scripts/cleanup.sh"
-    },
-    "funding": {
-      "type": "Github",
-      "url": "https://github.com/sponsors/fed135"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/kalm/kalm-js.git"
-    },
-    "keywords": [
-      "multiplex",
-      "network",
-      "optimize",
-      "socket",
-      "websocket",
-      "client",
-      "server",
-      "service",
-      "peer",
-      "micro",
-      "latency",
-      "messaging",
-      "queue",
-      "nagle",
-      "buffer",
-      "protocol",
-      "web",
-      "ws"
-    ],
-    "files": ["bin", "types.d.ts"],
-    "typings": "./types.d.ts",
-    "author": "frederic charette <fredericcharette@gmail.com>",
-    "license": "Apache-2.0",
-    "bugs": {
-      "url": "https://github.com/kalm/kalm-js/issues"
-    },
-    "homepage": "https://kalm.js.org",
-    "contributors": [
-      "frederic charette <fredericcharette@gmail.com>"
-    ],
-    "dependencies": {
-      "simple-peer": "^9.6.0"
-    }
+  "name": "@kalm/webrtc",
+  "version": "3.3.0",
+  "description": "WebRTC transport for Kalm",
+  "main": "bin/webrtc.js",
+  "scripts": {
+    "build": "../../scripts/build.sh webrtc",
+    "clean": "../../scripts/cleanup.sh"
+  },
+  "funding": {
+    "type": "Open Collective",
+    "url": "https://opencollective.com/kalm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalm/kalm-js.git"
+  },
+  "keywords": [
+    "multiplex",
+    "network",
+    "optimize",
+    "socket",
+    "websocket",
+    "client",
+    "server",
+    "service",
+    "peer",
+    "micro",
+    "latency",
+    "messaging",
+    "queue",
+    "nagle",
+    "buffer",
+    "protocol",
+    "web",
+    "ws"
+  ],
+  "files": ["bin", "types.d.ts"],
+  "typings": "./types.d.ts",
+  "author": "frederic charette <fredericcharette@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/kalm/kalm-js/issues"
+  },
+  "homepage": "https://kalm.js.org",
+  "contributors": [
+    "frederic charette <fredericcharette@gmail.com>"
+  ],
+  "dependencies": {
+    "simple-peer": "^9.6.0"
   }
+}
   

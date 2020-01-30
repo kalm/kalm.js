@@ -34,6 +34,7 @@ export function Provider(params: ClientConfig, emitter: NodeJS.EventEmitter): Pr
       host: origin.host,
       isServer: true,
       port: origin.port,
+      label: `${params.label}.${Math.random().toString(36).substring(7)}`,
       provider: {
         broadcast,
         connections,
@@ -58,5 +59,6 @@ export function Provider(params: ClientConfig, emitter: NodeJS.EventEmitter): Pr
     broadcast,
     stop,
     connections,
+    transport: socket,
   });
 }

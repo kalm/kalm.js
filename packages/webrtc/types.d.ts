@@ -1,14 +1,16 @@
 declare module '@kalm/webrtc' {
     interface WebRTCConfig {
-        peers?: {
-            candidate?: {
-                candidate: string
-                sdpMLineIndex: number
-                sdpMid: string
-            }
-            type?: string
-            sdp?: string
-        }[]
+        peers?: Peer[]
+    }
+
+    type Peer = {
+        candidate?: {
+            candidate: string
+            sdpMLineIndex: number
+            sdpMid: string
+        }
+        type?: 'offer' | 'answer'
+        sdp?: string
     }
 
     interface KalmTransport {
@@ -20,7 +22,7 @@ declare module '@kalm/webrtc' {
         port: number
     }
 
-    type SocketHandle = WebSocket
+    type SocketHandle = any
 
     interface Socket {
         bind: () => void
@@ -29,6 +31,7 @@ declare module '@kalm/webrtc' {
         stop: () => void
         send: (handle: SocketHandle, message: number[] | Buffer) => void
         disconnect: (handle: SocketHandle) => void
+        negociate: (params: { peer: Peer }) => Promise<Peer>
     }
 
     export default function ws(config?: WebRTCConfig): (config?: WebRTCConfig) => Transport;

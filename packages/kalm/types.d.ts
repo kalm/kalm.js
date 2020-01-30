@@ -86,6 +86,7 @@ declare module 'kalm' {
         stop: () => void
         send: (handle: SocketHandle, message: number[] | Buffer) => void
         disconnect: (handle: SocketHandle) => void
+        negociate?: () => any
     }
 
     interface IPCConfig {

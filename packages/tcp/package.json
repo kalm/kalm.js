@@ -8,8 +8,8 @@
     "clean": "../../scripts/cleanup.sh"
   },
   "funding": {
-    "type": "Github",
-    "url": "https://github.com/sponsors/fed135"
+    "type": "Open Collective",
+    "url": "https://opencollective.com/kalm"
   },
   "repository": {
     "type": "git",

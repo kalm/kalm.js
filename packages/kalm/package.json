@@ -8,8 +8,8 @@
     "clean": "../../scripts/cleanup.sh"
   },
   "funding": {
-    "type": "Github",
-    "url": "https://github.com/sponsors/fed135"
+    "type": "Open Collective",
+    "url": "https://opencollective.com/kalm"
   },
   "repository": {
     "type": "git",
@@ -39,7 +39,10 @@
     "ws",
     "core"
   ],
-  "files": ["bin", "types.d.ts"],
+  "files": [
+    "bin",
+    "types.d.ts"
+  ],
   "typings": "./types.d.ts",
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
@@ -49,5 +52,8 @@
   "homepage": "https://kalm.js.org",
   "contributors": [
     "frederic charette <fredericcharette@gmail.com>"
-  ]
+  ],
+  "devDependencies": {
+    "webpack-cli": "^3.3.10"
+  }
 }

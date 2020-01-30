@@ -14,7 +14,7 @@
   },
   "funding": {
     "type": "Open Collective",
-    "url": "https://opencollective.com/fredericcharette"
+    "url": "https://opencollective.com/kalm"
   },
   "repository": {
     "type": "git",
@@ -53,5 +53,9 @@
     "socket.io-client": "^2.3.0",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }

@@ -1,15 +1,10 @@
-const kalm = require('kalm');
-const ws = require('@kalm/ws');
-const webrtc = require('@kalm/webrtc');
-
 const roomPassword = 'some_random_string';
 
 function createPeer(channel) {
   return new Promise((resolve, reject) => {
     let peerListener;
-    let webrtcInstance = webrtc();
     const peeringClient = kalm.connect({
-      label: randomBytes(4).toString('hex'),
+      label: Math.random() * 1024,
       host: '0.0.0.0',
       port: 8800,
       transport: ws(),
@@ -18,14 +13,17 @@ function createPeer(channel) {
 
     peeringClient.on('connect', () => {
       peeringClient.write('peering', channel);
-      peerListener = listen({ transport: webrtcInstance });
+      peerListener = kalm.listen({ transport: webrtc() });
 
       peerListener.on('ready', (offer) => {
         peeringClient.write(`${channel}.peering`, offer);
       });
 
-      peeringClient.subscribe(`${channel}.peering`, (answer) => {
-        kalm.connect({ transport: webrtcInstance, peer: answer });
+      peeringClient.subscribe(`${channel}.peering`, (offer) => {
+        peerListener.transport.negociate({ peer: offer })
+          .then((answer) => {
+            peeringClient.write(`${channel}.peering`, answer);
+          });
       });
 
       resolve(peerListener);
@@ -41,6 +39,6 @@ function createPeer(channel) {
   client.on('connection', (connection) => {
     console.log('new connection', connection);
     client.broadcast('/', 'new peer');
-    connection.subscribe('/', body => console.log('GOT peer message', body));
+    connection.subscribe('/', body => console.log(`Got peer message: "${body}"`));
   });
 })();

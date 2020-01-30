@@ -1,5 +1,5 @@
-const kalm = require('kalm');
-const ws = require('@kalm/ws');
+const kalm = require('../kalm.js/packages/kalm');
+const ws = require('../kalm.js/packages/ws');
 
 const Server = kalm.listen({
   label: 'server',
@@ -14,10 +14,10 @@ Server.on('connection', (client) => {
     client.subscribe(`${channel}.peering`, (body, frame) => {
       Server.connections
           .filter((connection) => {
-              return (connection.label !== client.label && connection.getChannels().includes(`${channel}.peering`));
+            return (connection.label !== client.label && connection.getChannels().includes(`${channel}.peering`));
           })
           .forEach((connection) => {
-              connection.write(`${channel}.peering`, body);
+            connection.write(`${channel}.peering`, body);
           });
     });
   });

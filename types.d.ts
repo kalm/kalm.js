@@ -112,16 +112,18 @@ interface WSConfig {
     secure?: boolean
 }
 
+type Peer = {
+    candidate?: {
+        candidate: string
+        sdpMLineIndex: number
+        sdpMid: string
+    }
+    type?: 'offer' | 'answer'
+    sdp?: string
+}
+
 interface WebRTCConfig {
-    peers?: {
-        candidate?: {
-            candidate: string
-            sdpMLineIndex: number
-            sdpMid: string
-        }
-        type?: string
-        sdp?: string
-    }[]
+    peers?: Peer[]
 }
 
 type RawFrame = {
