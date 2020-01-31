@@ -24,6 +24,8 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
       activeNode.on('signal', signal => {
         if (signal.type === 'offer') emitter.emit('ready', signal);
       });
+
+      if (config.peers) config.peers.forEach(peer => negociate({ peer }));
     }
 
     function negociate(event: any) {
@@ -71,8 +73,6 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
     function disconnect(handle) {
       if (handle) handle.destroy();
     }
-
-    if (config.peers) config.peers.forEach(peer => negociate({ peer }));
 
     return {
       bind,
