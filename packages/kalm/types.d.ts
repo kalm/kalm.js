@@ -86,6 +86,7 @@ declare module 'kalm' {
         stop: () => void
         send: (handle: SocketHandle, message: number[] | Buffer) => void
         disconnect: (handle: SocketHandle) => void
+        negociate?: () => any
     }
 
     interface IPCConfig {
@@ -131,7 +132,7 @@ declare module 'kalm' {
 
     export const listen: (config: ProviderConfig) => Provider;
     export const connect: (config: ClientConfig) => Client;
-    export const Routines: {
+    export const routines: {
         tick: (config: { hz: number, seed?: number }) => KalmRoutine
         dynamic: (config: { hz: number, maxPackets?: number }) => KalmRoutine
         realtime: () => KalmRoutine

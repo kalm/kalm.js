@@ -1,6 +1,21 @@
-import { serialize, deserialize } from '../../../src/utils/parser';
-
 describe('Parser util', () => {
-  it('TODO', () => { expect(serialize).not.toBeUndefined(); });
-  it('TODO', () => { expect(deserialize).not.toBeUndefined(); });
+  describe('serialize', () => {
+    it('should serialize single message frames', () => {
+
+    });
+
+    it('should serialize multi message frames', () => {
+
+    });
+  });
+
+  describe('deserialize', () => {
+    it('should deserialize single message frames', () => {
+
+    });
+
+    it('should deserialize multi message frames', () => {
+
+    });
+  });
 });

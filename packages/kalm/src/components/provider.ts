@@ -6,7 +6,7 @@ import { Client } from './client';
 
 /* Methods -------------------------------------------------------------------*/
 
-export function Provider(params: ClientConfig, emitter: EventEmitter): Provider {
+export function Provider(params: ClientConfig, emitter: NodeJS.EventEmitter): Provider {
   const connections = [];
   const socket: Socket = params.transport(params, emitter);
 
@@ -34,6 +34,7 @@ export function Provider(params: ClientConfig, emitter: EventEmitter): Provider 
       host: origin.host,
       isServer: true,
       port: origin.port,
+      label: `${params.label}.${Math.random().toString(36).substring(7)}`,
       provider: {
         broadcast,
         connections,
@@ -58,5 +59,6 @@ export function Provider(params: ClientConfig, emitter: EventEmitter): Provider 
     broadcast,
     stop,
     connections,
+    transport: socket,
   });
 }

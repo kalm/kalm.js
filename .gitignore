@@ -49,3 +49,4 @@ packages/ipc/bin
 packages/tcp/bin
 packages/udp/bin
 packages/ws/bin
+packages/webrtc/bin

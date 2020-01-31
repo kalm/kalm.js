@@ -112,6 +112,20 @@ interface WSConfig {
     secure?: boolean
 }
 
+type Peer = {
+    candidate?: {
+        candidate: string
+        sdpMLineIndex: number
+        sdpMid: string
+    }
+    type?: 'offer' | 'answer'
+    sdp?: string
+}
+
+interface WebRTCConfig {
+    peers?: Peer[]
+}
+
 type RawFrame = {
     frameId: number
     channel: string
@@ -133,7 +147,7 @@ type Frame = {
 declare module 'kalm' {
     export const listen: (config: ProviderConfig) => Provider;
     export const connect: (config: ClientConfig) => Client;
-    export const Routines: {
+    export const routines: {
         tick: (config: { hz: number, seed?: number }) => KalmRoutine
         dynamic: (config: { hz: number, maxPackets?: number }) => KalmRoutine
         realtime: () => KalmRoutine

@@ -18,19 +18,17 @@ export function tick({ hz, seed = Date.now() }: { hz: number, seed?: number }): 
     const packets: Buffer[] = [];
 
     function _step(): void {
-      clientEmitter.emit(`${channel}.queueRun`, { frameId: i, packets: packets.length });
       clearTimeout(timer);
       timer = null;
       channelEmitter.emit('runQueue', { frameId: i, channel, packets });
       packets.length = 0;
+      clientEmitter.emit(`${channel}.queueRun`, { frameId: i, packets: packets.length });
     }
 
     function add(packet: Buffer): void {
-      clientEmitter.emit(`${channel}.queueAdd`, { frameId: i, packet: packets.length });
-      if (timer === null) {
-        timer = setTimeout(_step, _delta());
-      }
+      if (timer === null) timer = setTimeout(_step, _delta());
       packets.push(packet);
+      clientEmitter.emit(`${channel}.queueAdd`, { frameId: i, packet: packets.length });
     }
 
     function size(): number { return packets.length; }

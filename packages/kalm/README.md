@@ -25,7 +25,7 @@
 
 ## Performance
 
-<img align="center" alt="perf" src="https://kalm.js.org/images/kalmv3chart.png" />
+<img align="center" alt="perf" src="https://kalm.js.org/images/kalmv3_3chart.png" />
 
 The performance gain comes from buffering packets before sending them- eventually sending batches instead of individual packages. The more traffic getting processed, the better the improvement. Many strategies are offered as routines. You can read more about the packet buffering algorithm [here](https://en.wikipedia.org/wiki/Nagle%27s_algorithm)
 
@@ -70,6 +70,7 @@ const Client = kalm.connect({
 ```
 To see working implementations, check out our [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
 
+- [Peer to peer](https://github.com/kalm/kalm.js/tree/master/examples/browser_peer_to_peer)
 - [Chat via websockets](https://github.com/kalm/kalm.js/tree/master/examples/chat_websocket)
 - [Distributed Pub-Sub](https://github.com/kalm/kalm.js/tree/master/examples/distributed_pub_sub)
 - [Packet compressing](https://github.com/kalm/kalm.js/tree/master/examples/compression)

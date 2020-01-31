@@ -1,20 +1,20 @@
 {
   "name": "kalm",
   "private": true,
-  "version": "3.2.3",
+  "version": "3.3.0",
   "description": "The socket optimizer",
   "main": "packages/kalm/bin/kalm.js",
   "scripts": {
     "lint": "eslint **/*.ts **/*.spec.ts",
     "lint:fix": "yarn lint --fix",
     "test": "jest ./packages && jest ./tests/integration --forceExit",
-    "build": "yarn workspaces run build --ci",
-    "clean": "yarn workspaces run clean --ci",
+    "build": "yarn workspaces run build",
+    "clean": "yarn workspaces run clean",
     "bench": "node ./scripts/benchmarks"
   },
   "funding": {
     "type": "Open Collective",
-    "url": "https://opencollective.com/fredericcharette"
+    "url": "https://opencollective.com/kalm"
   },
   "repository": {
     "type": "git",
@@ -53,5 +53,9 @@
     "socket.io-client": "^2.3.0",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }

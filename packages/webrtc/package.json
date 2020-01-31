@@ -1,10 +1,10 @@
 {
-  "name": "@kalm/ws",
+  "name": "@kalm/webrtc",
   "version": "3.3.0",
-  "description": "WebSocket transport for Kalm",
-  "main": "bin/ws.js",
+  "description": "WebRTC transport for Kalm",
+  "main": "bin/webrtc.js",
   "scripts": {
-    "build": "../../scripts/build.sh ws",
+    "build": "../../scripts/build.sh webrtc",
     "clean": "../../scripts/cleanup.sh"
   },
   "funding": {
@@ -47,10 +47,7 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "dependencies": {
-    "ws": "^7.2.0"
-  },
-  "browser": {
-    "http": false,
-    "https": false
+    "simple-peer": "^9.6.0"
   }
 }
+  

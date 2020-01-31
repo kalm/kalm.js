@@ -1,11 +1,15 @@
 {
   "name": "@kalm/udp",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "description": "UDP transport for Kalm",
   "main": "bin/udp.js",
   "scripts": {
     "build": "../../scripts/build.sh udp",
     "clean": "../../scripts/cleanup.sh"
+  },
+  "funding": {
+    "type": "Open Collective",
+    "url": "https://opencollective.com/kalm"
   },
   "repository": {
     "type": "git",
