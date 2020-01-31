@@ -18,16 +18,6 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
       return node;
     }
 
-    function bind(): void {
-      activeNode = createNode(true);
-      passiveNode = createNode(false);
-      activeNode.on('signal', signal => {
-        if (signal.type === 'offer') emitter.emit('ready', signal);
-      });
-
-      if (config.peers) config.peers.forEach(peer => negociate({ peer }));
-    }
-
     function negociate(event: any) {
       return new Promise(resolve => {
         if (!event.peer) throw new Error('No peer configuration provided in `connect`.');
@@ -41,6 +31,16 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
           passiveNode.signal(event.peer);
         }
       });
+    }
+
+    function bind(): void {
+      activeNode = createNode(true);
+      passiveNode = createNode(false);
+      activeNode.on('signal', signal => {
+        if (signal.type === 'offer') emitter.emit('ready', signal);
+      });
+
+      if (config.peers) config.peers.forEach(peer => negociate({ peer }));
     }
 
     function send(handle: any, payload: number[]): void {
