@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "eslint **/*.ts **/*.spec.ts",
     "lint:fix": "yarn lint --fix",
-    "test": "jest ./packages && jest ./tests/integration --forceExit",
+    "test": "yarn workspaces run test && jest ./tests/integration --forceExit",
     "build": "yarn workspaces run build",
     "clean": "yarn workspaces run clean",
     "bench": "node ./scripts/benchmarks"
@@ -37,6 +37,16 @@
   "husky": {
     "hooks": {
       "pre-commit": "yarn lint"
+    }
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false,
+        "isolatedModules": true
+      }
     }
   },
   "devDependencies": {

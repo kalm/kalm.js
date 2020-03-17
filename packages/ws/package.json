@@ -5,7 +5,8 @@
   "main": "bin/ws.js",
   "scripts": {
     "build": "../../scripts/build.sh ws",
-    "clean": "../../scripts/cleanup.sh"
+    "clean": "../../scripts/cleanup.sh",
+    "test": "jest ./tests"
   },
   "funding": {
     "type": "Open Collective",
@@ -52,5 +53,15 @@
   "browser": {
     "http": false,
     "https": false
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false,
+        "isolatedModules": true
+      }
+    }
   }
 }

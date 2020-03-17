@@ -5,7 +5,8 @@
   "main": "bin/webrtc.js",
   "scripts": {
     "build": "../../scripts/build.sh webrtc",
-    "clean": "../../scripts/cleanup.sh"
+    "clean": "../../scripts/cleanup.sh",
+    "test": "jest ./tests"
   },
   "funding": {
     "type": "Open Collective",
@@ -48,6 +49,16 @@
   ],
   "dependencies": {
     "simple-peer": "^9.6.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false,
+        "isolatedModules": true
+      }
+    }
   }
 }
   
