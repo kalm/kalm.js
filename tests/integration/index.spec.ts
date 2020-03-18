@@ -41,8 +41,33 @@ describe('Integration tests', () => {
             done();
           });
         });
+        server.on('error', e => {
+          throw new Error(e);
+        });
 
         const client = connect({ transport: soc });
+        client.on('error', e => {
+          throw new Error(e);
+        });
+        client.write('test', payload);
+      });
+
+      it(`should handle foreign characters with ${transport}`, done => {
+        const payload = { foo: '한자' };
+        server.on('connection', c => {
+          c.subscribe('test', data => {
+            expect(data).toEqual(payload);
+            done();
+          });
+        });
+        server.on('error', e => {
+          throw new Error(e);
+        });
+
+        const client = connect({ transport: soc });
+        client.on('error', e => {
+          throw new Error(e);
+        });
         client.write('test', payload);
       });
 
@@ -58,8 +83,14 @@ describe('Integration tests', () => {
             done();
           });
         });
+        server.on('error', e => {
+          throw new Error(e);
+        });
 
         const client = connect({ transport: soc });
+        client.on('error', e => {
+          throw new Error(e);
+        });
         client.write('test.large', largePayload);
       });
 
@@ -74,8 +105,14 @@ describe('Integration tests', () => {
 
           c.unsubscribe('test');
         });
+        server.on('error', e => {
+          throw new Error(e);
+        });
 
         const client = connect({ transport: soc });
+        client.on('error', e => {
+          throw new Error(e);
+        });
         setTimeout(() => client.write('test', payload), 100);
         setTimeout(() => done(), 200);
       });

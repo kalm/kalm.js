@@ -29,12 +29,17 @@ function setup(resolve) {
   server = Kalm.listen({
     port: settings.port,
     json: true,
+    framing: settings.framing,
     transport: transports[settings.transport](),
     routine: Kalm.routines[settings.routine[0]](settings.routine[1]),
   });
 
   server.on('connection', (c) => {
     c.subscribe(settings.testChannel, (msg) => c.write(settings.testChannel, msg));
+  });
+
+  server.on('error', (e) => {
+    console.error('Server error:', e);
   });
 
   handbreak = false;
@@ -59,10 +64,15 @@ function step(resolve) {
     client = Kalm.connect({
       port: settings.port,
       json: true,
+      framing: settings.framing,
       transport: transports[settings.transport](),
       routine: Kalm.routines.realtime(),
     });
     client.subscribe(settings.testChannel, () => count++);
+
+    client.on('error', (e) => {
+      console.error('Client error:', e);
+    });
   }
 
   client.write(settings.testChannel, settings.testPayload);

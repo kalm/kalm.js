@@ -29,7 +29,12 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   function _wrap(event: RawFrame): void {
     const payload: Buffer = params.framing === 'kalm'
       ? serializeLegacy(event.frameId, channels[event.channel], event.packets)
-      : Buffer.from(JSON.stringify({ frameId: event.frameId, channel: event.channel, packets: event.packets }));
+      : Buffer.from(JSON.stringify({
+        frameId: event.frameId,
+        channel: event.channel,
+        packets: event.packets.map(packet => packet.toString()),
+      }));
+
     socket.send(handle, payload);
   }
 
@@ -43,8 +48,16 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
 
   function _handlePackets(frame: RawFrame, packet: Buffer, index: number): Promise<void> {
     if (packet.length === 0) return;
-    const decodedPacket = (params.json === true) ? JSON.parse(packet.toString()) : packet;
-    if (channels[frame.channel]) {
+
+    let decodedPacket;
+
+    try {
+      decodedPacket = (params.json === true) ? JSON.parse(packet.toString()) : packet;
+    } catch (e) {
+      emitter.emit('error', `Error decoding packet: ${e}`);
+    }
+
+    if (decodedPacket && channels[frame.channel]) {
       channels[frame.channel].emitter.emit(
         'message',
         decodedPacket,
@@ -76,9 +89,14 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   }
 
   function _handleRequest(payload: Buffer): void {
-    const frame: RawFrame = params.framing === 'kalm' ? deserializeLegacy(payload) : JSON.parse(payload.toString());
-    emitter.emit('frame', frame);
-    frame.packets.forEach((packet, i) => _handlePackets(frame, packet, i));
+    let frame: RawFrame;
+    try {
+      frame = params.framing === 'kalm' ? deserializeLegacy(payload) : JSON.parse(payload.toString());
+    } catch (e) {
+      emitter.emit(`Error decoding frame: ${e}`);
+    }
+    emitter.emit('frame', frame || payload.toString());
+    if (frame && frame.packets) frame.packets.forEach((packet, i) => _handlePackets(frame, Buffer.from(packet), i));
   }
 
   function _handleDisconnect() {
@@ -87,6 +105,9 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   }
 
   function write(channel: string, message: Serializable): void {
+    if (params.json !== true && !Buffer.isBuffer(message)) {
+      throw new Error(`Unable to serialize message: ${message}, expected type Buffer`);
+    }
     return _resolveChannel(channel)
       .queue.add(params.json === true ? Buffer.from(JSON.stringify(message)) : message as Buffer);
   }

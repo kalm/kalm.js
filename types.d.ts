@@ -153,7 +153,7 @@ declare module 'kalm' {
     export const connect: (config: ClientConfig) => Client;
     export const routines: {
         tick: (config: { hz: number, seed?: number }) => KalmRoutine
-        dynamic: (config: { hz: number, maxPackets?: number }) => KalmRoutine
+        dynamic: (config: { hz: number, maxPackets?: number, maxBytes?: number }) => KalmRoutine
         realtime: () => KalmRoutine
     };
 }

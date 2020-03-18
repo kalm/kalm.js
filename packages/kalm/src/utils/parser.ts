@@ -1,14 +1,23 @@
+/* Local variables -----------------------------------------------------------*/
+
+const singleIndiceCache = {};
+const doubleIndiceCache = {};
+
 /* Methods -------------------------------------------------------------------*/
 
-export function doubleIndiceBuffer(num) {
-  const buf = Buffer.allocUnsafe(2);
-  buf.writeUInt16BE(num, 0);
+export function indiceBuffer(num): Buffer {
+  if (singleIndiceCache[`${num}`]) return singleIndiceCache[`${num}`];
+  const buf = Buffer.allocUnsafe(1);
+  buf.writeUInt8(num, 0);
+  singleIndiceCache[`${num}`] = buf;
   return buf;
 }
 
-export function indiceBuffer(num) {
-  const buf = Buffer.allocUnsafe(1);
-  buf.writeUInt8(num, 0);
+export function doubleIndiceBuffer(num): Buffer {
+  if (doubleIndiceCache[`${num}`]) return doubleIndiceCache[`${num}`];
+  const buf = Buffer.allocUnsafe(2);
+  buf.writeUInt16BE(num, 0);
+  doubleIndiceCache[`${num}`] = buf;
   return buf;
 }
 
@@ -17,14 +26,17 @@ function _numericSize(bytes: Buffer, index: number): number {
 }
 
 export function serializeLegacy(frameId: number, channel: Channel, packets: Buffer[]): Buffer {
+  const serializedPackets = packets.reduce((acc, curr) => {
+    acc.push(doubleIndiceBuffer(curr.length));
+    acc.push(curr);
+    return acc;
+  }, []);
+
   return Buffer.concat([
     indiceBuffer(frameId % 255),
     channel.channelBuffer,
     doubleIndiceBuffer(packets.length),
-    ...packets.map((packet: Buffer) => {
-      if (!(packet instanceof Buffer)) throw new Error(`Cannot send packet ${packet}. Must be of type Buffer`);
-      return Buffer.concat([doubleIndiceBuffer(packet.length), packet]);
-    }),
+    ...serializedPackets,
   ]);
 }
 
@@ -36,7 +48,7 @@ export function deserializeLegacy(payload: Buffer): RawFrame {
   function _parseFramePacket(): Buffer[] {
     const packets: Buffer[] = [];
     for (let p = 0; p < totalPackets; p++) {
-      if (caret >= payload.length) continue;
+      if (caret >= payload.length) break;
       const packetLength = _numericSize(payload, caret);
       packets.push(payload.slice(2 + caret, 2 + packetLength + caret));
       caret = 2 + caret + packetLength;
