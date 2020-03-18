@@ -24,7 +24,7 @@ export function serializeLegacy(frameId: number, channel: Channel, packets: Buff
     ...packets.map((packet: Buffer) => {
       if (!(packet instanceof Buffer)) throw new Error(`Cannot send packet ${packet}. Must be of type Buffer`);
       return Buffer.concat([doubleIndiceBuffer(packet.length), packet]);
-    })
+    }),
   ]);
 }
 

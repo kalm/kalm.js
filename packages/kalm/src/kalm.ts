@@ -38,7 +38,9 @@ function validateOptions(options: ProviderConfig): void {
       throw new Error(`Routine is not a function (${options.routine}), see: https://github.com/kalm/kalm.js#documentation`);
     }
     const testChannel = options.routine('test', {}, {}, {});
-    if (!testChannel.add) throw new Error('Routine is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
+    if (!testChannel.add) {
+      throw new Error('Routine is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
+    }
   }
 }
 

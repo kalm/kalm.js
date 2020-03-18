@@ -11,7 +11,9 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   const channels: ChannelList = {};
   const socket: Socket = params.transport(params, emitter);
 
-  if (!socket.connect) throw new Error('Transport is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
+  if (!socket.connect) {
+    throw new Error('Transport is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
+  }
 
   function _createChannel(channel: string): Channel {
     const channelEmitter: NodeJS.EventEmitter = new EventEmitter();
@@ -25,7 +27,9 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   }
 
   function _wrap(event: RawFrame): void {
-    const payload: Buffer = params.framing === 'kalm' ? serializeLegacy(event.frameId, channels[event.channel], event.packets) : Buffer.from(JSON.stringify({ frameId: event.frameId, channel: event.channel, packets: event.packets }));
+    const payload: Buffer = params.framing === 'kalm'
+      ? serializeLegacy(event.frameId, channels[event.channel], event.packets)
+      : Buffer.from(JSON.stringify({ frameId: event.frameId, channel: event.channel, packets: event.packets }));
     socket.send(handle, payload);
   }
 
