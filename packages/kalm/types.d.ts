@@ -8,6 +8,7 @@ declare module 'kalm' {
         host?: string
         isServer?: boolean
         provider?: any
+        framing?: 'kalm'
     }
 
     interface ProviderConfig {
@@ -17,6 +18,7 @@ declare module 'kalm' {
         transport?: KalmTransport
         port?: number
         host?: string
+        framing?: 'kalm'
     }
 
     type Remote = {

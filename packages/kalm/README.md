@@ -47,11 +47,19 @@ Install the transport layer ('tcp' for example)
 const kalm = require('kalm');
 const ws = require('@kalm/ws');
 
-const Server = kalm.listen({
+const server = kalm.listen({
   port: 8800,
   transport: ws(),
   routine: kalm.routines.tick({ hz: 5 }), // Sends packets at a frequency of 5 Hz (200ms)
   host: '0.0.0.0',
+});
+
+server.on('connection', (client) => {
+  client.subscribe('my-channel', (body, frame) => {
+    // Handle messages here
+  });
+
+  server.broadcast('my-other-channel', 'some message');
 });
 ```
 
@@ -61,12 +69,21 @@ const Server = kalm.listen({
 const kalm = require('kalm');
 const ws = require('@kalm/ws');
 
-const Client = kalm.connect({
+const client = kalm.connect({
   host: '0.0.0.0',
   port: 8800,
   transport: ws(),
   routine: kalm.routines.realtime(),
 });
+
+client.on('connect', () => {
+  client.subscribe('my-other-channel', (body, frame) => {
+    // Handle messages here
+  });
+
+  client.write('my-channel', 'hello world');
+});
+
 ```
 To see working implementations, check out our [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
 

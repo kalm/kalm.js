@@ -1,32 +1,34 @@
 /* Methods -------------------------------------------------------------------*/
 
-function _uint16Size(value: number): number[] {
-  return [value >>> 8, value & 0xff];
+export function doubleIndiceBuffer(num) {
+  const buf = Buffer.allocUnsafe(2);
+  buf.writeUInt16BE(num, 0);
+  return buf;
+}
+
+export function indiceBuffer(num) {
+  const buf = Buffer.allocUnsafe(1);
+  buf.writeUInt8(num, 0);
+  return buf;
 }
 
 function _numericSize(bytes: Buffer, index: number): number {
   return (bytes[index] << 8) | bytes[index + 1];
 }
 
-export function serialize(frameId: number, channel: string, packets: Buffer[]): number[] {
-  const channelLen: number = channel.length;
-  const result: number[] = [frameId % 255, channelLen];
-
-  for (let letter = 0; letter < channelLen; letter++) {
-    result.push(channel.charCodeAt(letter));
-  }
-
-  result.push(..._uint16Size(packets.length));
-
-  packets.forEach((packet: Buffer) => {
-    if (!(packet instanceof Buffer)) throw new Error(`Cannot send packet ${packet}. Must be of type Buffer`);
-    result.push(..._uint16Size(packet.length), ...packet);
-  });
-
-  return result;
+export function serializeLegacy(frameId: number, channel: Channel, packets: Buffer[]): Buffer {
+  return Buffer.concat([
+    indiceBuffer(frameId % 255),
+    channel.channelBuffer,
+    doubleIndiceBuffer(packets.length),
+    ...packets.map((packet: Buffer) => {
+      if (!(packet instanceof Buffer)) throw new Error(`Cannot send packet ${packet}. Must be of type Buffer`);
+      return Buffer.concat([doubleIndiceBuffer(packet.length), packet]);
+    })
+  ]);
 }
 
-export function deserialize(payload: Buffer): RawFrame {
+export function deserializeLegacy(payload: Buffer): RawFrame {
   const channelLength = payload[1];
   let caret = 4 + channelLength;
   const totalPackets = _numericSize(payload, 2 + channelLength);

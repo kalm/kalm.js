@@ -17,28 +17,17 @@
     "url": "git+https://github.com/kalm/kalm-js.git"
   },
   "keywords": [
-    "multiplex",
+    "framework",
     "network",
-    "optimize",
+    "realtime",
     "socket",
-    "websocket",
-    "client",
-    "server",
-    "service",
-    "peer",
-    "micro",
-    "latency",
-    "messaging",
-    "queue",
     "nagle",
-    "buffer",
-    "protocol",
-    "web",
     "ipc",
     "tcp",
     "udp",
-    "ws",
-    "core"
+    "websocket",
+    "webrtc",
+    "peer"
   ],
   "files": [
     "bin",
@@ -54,9 +43,6 @@
   "contributors": [
     "frederic charette <fredericcharette@gmail.com>"
   ],
-  "devDependencies": {
-    "webpack-cli": "^3.3.10"
-  },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
