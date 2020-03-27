@@ -65,10 +65,7 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
     }
 
     function remote(handle: any): Remote {
-      return {
-        host: handle,
-        port: handle || 0,
-      };
+      return handle || { host: null, port: null };
     }
 
     function disconnect(handle) {

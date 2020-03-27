@@ -6,7 +6,8 @@
   "scripts": {
     "build": "../../scripts/build.sh webrtc",
     "clean": "../../scripts/cleanup.sh",
-    "test": "jest ./tests"
+    "test": "jest ./tests",
+    "prepublish": "cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
   },
   "funding": {
     "type": "Open Collective",

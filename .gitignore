@@ -50,3 +50,18 @@ packages/tcp/bin
 packages/udp/bin
 packages/ws/bin
 packages/webrtc/bin
+
+# publish-only files
+packages/kalm/LICENSE
+packages/ipc/LICENSE
+packages/tcp/LICENSE
+packages/udp/LICENSE
+packages/ws/LICENSE
+packages/webrtc/LICENSE
+
+packages/kalm/CHANGELOG.md
+packages/ipc/CHANGELOG.md
+packages/tcp/CHANGELOG.md
+packages/udp/CHANGELOG.md
+packages/ws/CHANGELOG.md
+packages/webrtc/CHANGELOG.md
