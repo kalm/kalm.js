@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ipc",
-  "version": "3.3.0",
+  "version": "4.0.0",
   "description": "IPC transport for Kalm",
   "main": "bin/ipc.js",
   "scripts": {

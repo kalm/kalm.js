@@ -1,12 +1,24 @@
 # Changelog
 
+## [v4.0.0] - 2020-03-28
+
+commit: [731491d](https://github.com/kalm/kalm.js/commit/731491d7b98f3116e0491905c99f9ece29d24d65)
+
+## Breaking changes
+- Changed default packet framing to be a pure json object
+
+## Added
+- Added more error messages
+- Added tests for transport packages
+- Added CHANGELOG and LICENSE to all packages
+
 ## [v3.3.0] - 2020-01-30
 
 commit: [af46059](https://github.com/kalm/kalm.js/commit/af4605958c567b5243887f911850a3c0eb6c6659)
 
 ### Added
-- Adds webrtc package and examples
-- Adds the getChannels method on Client
+- Added webrtc package and examples
+- Added the getChannels method on Client
 
 ### Removed
 - Removed home implementation of EventEmitter in favor of Node's

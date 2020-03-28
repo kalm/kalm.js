@@ -1,6 +1,6 @@
 {
   "name": "@kalm/webrtc",
-  "version": "3.3.0",
+  "version": "4.0.0",
   "description": "WebRTC transport for Kalm",
   "main": "bin/webrtc.js",
   "scripts": {
