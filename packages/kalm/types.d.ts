@@ -8,6 +8,7 @@ declare module 'kalm' {
         host?: string
         isServer?: boolean
         provider?: any
+        framing?: 'kalm'
     }
 
     interface ProviderConfig {
@@ -17,6 +18,7 @@ declare module 'kalm' {
         transport?: KalmTransport
         port?: number
         host?: string
+        framing?: 'kalm'
     }
 
     type Remote = {
@@ -134,7 +136,7 @@ declare module 'kalm' {
     export const connect: (config: ClientConfig) => Client;
     export const routines: {
         tick: (config: { hz: number, seed?: number }) => KalmRoutine
-        dynamic: (config: { hz: number, maxPackets?: number }) => KalmRoutine
+        dynamic: (config: { hz: number, maxPackets?: number, maxBytes?: number }) => KalmRoutine
         realtime: () => KalmRoutine
     };
 }

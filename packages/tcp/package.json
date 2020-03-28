@@ -5,7 +5,9 @@
   "main": "bin/tcp.js",
   "scripts": {
     "build": "../../scripts/build.sh tcp",
-    "clean": "../../scripts/cleanup.sh"
+    "clean": "../../scripts/cleanup.sh",
+    "test": "jest ./tests",
+    "prepublish": "cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
   },
   "funding": {
     "type": "Open Collective",
@@ -16,23 +18,11 @@
     "url": "git+https://github.com/kalm/kalm-js.git"
   },
   "keywords": [
-    "multiplex",
+    "framework",
     "network",
-    "optimize",
+    "realtime",
     "socket",
-    "websocket",
-    "client",
-    "server",
-    "service",
-    "peer",
-    "micro",
-    "latency",
-    "messaging",
-    "queue",
     "nagle",
-    "buffer",
-    "protocol",
-    "web",
     "tcp"
   ],
   "files": ["bin", "types.d.ts"],
@@ -48,5 +38,15 @@
   ],
   "browser": {
     "net": false
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false,
+        "isolatedModules": true
+      }
+    }
   }
 }

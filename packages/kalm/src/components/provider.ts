@@ -10,6 +10,10 @@ export function Provider(params: ClientConfig, emitter: NodeJS.EventEmitter): Pr
   const connections = [];
   const socket: Socket = params.transport(params, emitter);
 
+  if (!socket.bind) {
+    throw new Error('Transport is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
+  }
+
   function broadcast(channel: string, payload: Serializable): void {
     connections.forEach(c => c.write(channel, payload));
   }

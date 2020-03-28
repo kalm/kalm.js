@@ -4,7 +4,7 @@ import net from 'net';
 
 /* Methods -------------------------------------------------------------------*/
 
-export function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
+function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
@@ -16,8 +16,8 @@ export function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
 
     function remote(handle: net.Socket): Remote {
       return {
-        host: handle.remoteAddress,
-        port: handle.remotePort,
+        host: handle && handle.remoteAddress || null,
+        port: handle && handle.remotePort || null,
       };
     }
 

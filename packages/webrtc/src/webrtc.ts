@@ -2,7 +2,8 @@
 
 import Peer from 'simple-peer';
 
-if (!Peer.WEBRTC_SUPPORT) throw new Error('Unsupported environement for WebRTC');
+const isNode = (typeof process !== 'undefined');
+if (!Peer.WEBRTC_SUPPORT && !(isNode && process.env.JEST_WORKER_ID)) throw new Error('Unsupported environement for WebRTC');
 
 /* Methods -------------------------------------------------------------------*/
 
@@ -64,10 +65,7 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
     }
 
     function remote(handle: any): Remote {
-      return {
-        host: handle,
-        port: handle || 0,
-      };
+      return handle || { host: null, port: null };
     }
 
     function disconnect(handle) {

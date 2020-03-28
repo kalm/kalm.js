@@ -5,7 +5,9 @@
   "main": "bin/kalm.js",
   "scripts": {
     "build": "../../scripts/build.sh kalm",
-    "clean": "../../scripts/cleanup.sh"
+    "clean": "../../scripts/cleanup.sh",
+    "test": "jest ./tests",
+    "prepublish": "cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
   },
   "funding": {
     "type": "Open Collective",
@@ -16,28 +18,17 @@
     "url": "git+https://github.com/kalm/kalm-js.git"
   },
   "keywords": [
-    "multiplex",
+    "framework",
     "network",
-    "optimize",
+    "realtime",
     "socket",
-    "websocket",
-    "client",
-    "server",
-    "service",
-    "peer",
-    "micro",
-    "latency",
-    "messaging",
-    "queue",
     "nagle",
-    "buffer",
-    "protocol",
-    "web",
     "ipc",
     "tcp",
     "udp",
-    "ws",
-    "core"
+    "websocket",
+    "webrtc",
+    "peer"
   ],
   "files": [
     "bin",
@@ -53,7 +44,14 @@
   "contributors": [
     "frederic charette <fredericcharette@gmail.com>"
   ],
-  "devDependencies": {
-    "webpack-cli": "^3.3.10"
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false,
+        "isolatedModules": true
+      }
+    }
   }
 }

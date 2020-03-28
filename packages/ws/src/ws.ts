@@ -48,13 +48,13 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
     }
 
     function remote(handle: WebSocket & { headers: any, connection: any }): Remote {
-      const h = handle.headers;
+      const h = handle && handle.headers || {};
       return {
         host: (
           (h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0])
-          || (handle.connection && handle.connection.remoteAddress || '0.0.0.0')
+          || (handle && handle.connection && handle.connection.remoteAddress || null)
         ),
-        port: handle.connection && handle.connection.remotePort || 0,
+        port: handle && handle.connection && handle.connection.remotePort || null,
       };
     }
 

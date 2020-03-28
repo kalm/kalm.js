@@ -13,7 +13,7 @@ interface IPCSocket extends net.Socket {
   }
 }
 
-export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
+function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
@@ -25,8 +25,8 @@ export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCCon
 
     function remote(handle: IPCSocket): Remote {
       return {
-        host: handle._server._pipeName,
-        port: handle._handle.fd,
+        host: handle && handle._server && handle._server._pipeName || null,
+        port: handle && handle._handle && handle._handle.fd || null,
       };
     }
 

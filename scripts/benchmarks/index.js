@@ -98,6 +98,8 @@ adpts.forEach((i) => {
 
 tests.push(_postResults);
 
+console.log(`Launching benchmarks for ${settings.testDuration/1000} second(s) -- MAKE SURE THAT YOU BUILD THE CODE FIRST --`)
+
 tests.reduce(
   (c, n) => c.then((resolve) => new Promise(n).then(resolve, _errorHandler), _errorHandler),
   Promise.resolve(),

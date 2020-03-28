@@ -26,7 +26,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     }
 
     function remote(handle: SocketHandle): Remote {
-      return handle as Remote;
+      return handle || { host: null, port: null } as Remote;
     }
 
     function send(handle: UDPSocketHandle, payload: Buffer | number[]): void {
