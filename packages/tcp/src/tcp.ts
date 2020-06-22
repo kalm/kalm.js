@@ -30,7 +30,13 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
 
     function connect(handle: net.Socket): net.Socket {
       const connection: net.Socket = handle || net.connect(params.port, params.host);
-      connection.on('data', req => emitter.emit('rawFrame', req));
+      connection.on('data', req => {
+        const chunks = req.toString().split('\n\n');
+        for (let i = 0; i < chunks.length; i++) {
+          if (chunks[i][0] !== '{' || chunks[i][chunks.length - 1] !== '}') continue;
+          emitter.emit('frame', JSON.parse(chunks[i]), req.length);
+        }
+      });
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
       connection.on('close', () => emitter.emit('disconnect'));
@@ -42,8 +48,8 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
       if (listener) listener.close();
     }
 
-    function send(handle: net.Socket, payload: number[]): void {
-      if (handle) handle.write(Buffer.from(payload));
+    function send(handle: net.Socket, payload: RawFrame): void {
+      if (handle) handle.write(`${JSON.stringify(payload)}\n\n`);
     }
 
     return {

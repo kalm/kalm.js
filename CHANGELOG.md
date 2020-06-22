@@ -1,16 +1,30 @@
 # Changelog
 
-## [v4.0.0] - 2020-03-28
+## [v5.0.0] - 2020-06-23
 
-commit: [731491d](https://github.com/kalm/kalm.js/commit/731491d7b98f3116e0491905c99f9ece29d24d65)
+commit: [#](https://github.com/kalm/kalm.js/commits)
 
 ## Breaking changes
 - Changed default packet framing to be a pure json object
+- Removed custom framing
+- Added packet message cap
+- Fixed multiplexing
 
 ## Added
 - Added more error messages
 - Added tests for transport packages
 - Added CHANGELOG and LICENSE to all packages
+
+## [v4.0.0] - 2020-03-28
+
+commit: [731491d](https://github.com/kalm/kalm.js/commit/731491d7b98f3116e0491905c99f9ece29d24d65)
+
+## Added
+- Added more error messages
+- Added tests for transport packages
+- Added CHANGELOG and LICENSE to all packages
+- Added 'framing' option to set packet framing to be a pure json object
+
 
 ## [v3.3.0] - 2020-01-30
 

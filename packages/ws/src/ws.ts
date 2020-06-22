@@ -21,8 +21,8 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
       emitter.emit('ready');
     }
 
-    function send(handle: WebSocket & { _queue: number[][] }, payload: number[]): void {
-      if (handle && handle.readyState === 1) handle.send(Buffer.from(payload));
+    function send(handle: WebSocket & { _queue: RawFrame[] }, payload: RawFrame): void {
+      if (handle && handle.readyState === 1) handle.send(JSON.stringify(payload));
       else handle._queue.push(payload);
     }
 
@@ -32,11 +32,10 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
 
     function connect(handle?: WebSocket): WebSocket {
       const protocol: string = secure === true ? 'wss' : 'ws';
-      const connection: WebSocket & { _queue: number[][] } = handle || new WS(`${protocol}://${params.host}:${params.port}`);
-      connection.binaryType = 'arraybuffer';
+      const connection: WebSocket & { _queue: RawFrame[] } = handle || new WS(`${protocol}://${params.host}:${params.port}`);
       const evtType: string = isBrowser ? 'addEventListener' : 'on';
       connection._queue = [];
-      connection[evtType]('message', evt => emitter.emit('rawFrame', Buffer.from(evt.data || evt)));
+      connection[evtType]('message', evt => emitter.emit('frame', JSON.parse(evt.data || evt), (evt.data || evt).length));
       connection[evtType]('error', err => emitter.emit('error', err));
       connection[evtType]('close', () => emitter.emit('disconnect'));
       connection[evtType]('open', () => {

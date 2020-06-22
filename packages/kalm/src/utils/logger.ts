@@ -3,7 +3,7 @@
 declare const window: any;
 
 let enabled: boolean = null;
-const prefix = `KALM ${typeof process === 'object' && process.pid}`;
+const prefix = `KALM${typeof process === 'object' && ` (pid:${process.pid})`}`;
 
 /* Methods -------------------------------------------------------------------*/
 

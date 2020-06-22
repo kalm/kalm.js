@@ -44,8 +44,8 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
       if (config.peers) config.peers.forEach(peer => negociate({ peer }));
     }
 
-    function send(handle: any, payload: number[]): void {
-      handle.send(Buffer.from(payload));
+    function send(handle: any, payload: RawFrame): void {
+      handle.send(JSON.stringify(payload));
     }
 
     function stop(): void {
@@ -55,7 +55,7 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
     function connect(handle: any): any {
       if (handle) {
         emitter.emit('connect', handle);
-        handle.on('data', evt => emitter.emit('rawFrame', Buffer.from(evt.data || evt)));
+        handle.on('data', evt => emitter.emit('frame', JSON.parse(evt.data || evt), (evt.data || evt).length));
         handle.on('close', () => emitter.emit('disconnect'));
       } else {
         throw new Error('Do not use `connect` for webrtc, use `Client.transport.negociate()` instead.');
