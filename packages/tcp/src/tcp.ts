@@ -33,7 +33,7 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
       connection.on('data', req => {
         const chunks = req.toString().split('\n\n');
         for (let i = 0; i < chunks.length; i++) {
-          if (chunks[i][0] !== '{' || chunks[i][chunks.length - 1] !== '}') continue;
+          if (chunks[i][0] !== '{' || chunks[i][chunks[i].length - 1] !== '}') continue;
           emitter.emit('frame', JSON.parse(chunks[i]), req.length);
         }
       });

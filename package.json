@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "eslint **/*.ts **/*.spec.ts",
     "lint:fix": "yarn lint --fix",
-    "test": "yarn workspaces run test && jest ./tests/integration --forceExit",
+    "test": "yarn workspaces run test && yarn run test:integration",
+    "test:integration": "jest ./tests/integration --forceExit",
     "build": "yarn workspaces run build",
     "clean": "yarn workspaces run clean",
     "bench": "node ./scripts/benchmarks"

@@ -50,19 +50,21 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
     if (frame && frame.channels) {
       Object.keys(frame.channels).forEach(channelName => {
         frame.channels[channelName].forEach((packet, messageIndex) => {
-          channels[channelName].handlers.forEach(handler => handler(
-            packet,
-            {
-              client: params,
-              frame: {
-                channel: channelName,
-                id: frame.frameId,
-                messageIndex,
-                payloadBytes,
-                payloadMessages: frame.channels[channelName].length,
+          if (channelName in channels) {
+            channels[channelName].handlers.forEach(handler => handler(
+              packet,
+              {
+                client: params,
+                frame: {
+                  channel: channelName,
+                  id: frame.frameId,
+                  messageIndex,
+                  payloadBytes,
+                  payloadMessages: frame.channels[channelName].length,
+                },
               },
-            },
-          ));
+            ));
+          }
         });
       });
     }

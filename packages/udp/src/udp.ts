@@ -30,8 +30,8 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     }
 
     function send(handle: UDPSocketHandle, payload: RawFrame | string): void {
-      if (handle && handle.socket && listener != null) {
-        handle.socket.send(Buffer.from(JSON.stringify(payload)), handle.port, handle.host);
+      if (handle && handle.socket) {
+        handle.socket.send(JSON.stringify(payload), handle.port, handle.host);
       }
     }
 
