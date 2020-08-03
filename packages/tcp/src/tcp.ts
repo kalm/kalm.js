@@ -30,11 +30,19 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
 
     function connect(handle: net.Socket): net.Socket {
       const connection: net.Socket = handle || net.connect(params.port, params.host);
+      let buffer = '';
       connection.on('data', req => {
-        const chunks = req.toString().split('\n\n');
+        buffer += req.toString();
+        const chunks = buffer.split('\n\n');
+        if (buffer.substring(buffer.length - 2) !== '\n\n') {
+          buffer = chunks[chunks.length - 1];
+          chunks.pop();
+        } else {
+          buffer = '';
+        }
+
         for (let i = 0; i < chunks.length; i++) {
-          if (chunks[i][0] !== '{' || chunks[i][chunks[i].length - 1] !== '}') continue;
-          emitter.emit('frame', JSON.parse(chunks[i]), req.length);
+          if (chunks[i] !== '') emitter.emit('frame', JSON.parse(chunks[i]), req.length);
         }
       });
       connection.on('error', err => emitter.emit('error', err));

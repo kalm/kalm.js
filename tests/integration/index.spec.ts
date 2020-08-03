@@ -2,7 +2,6 @@
  * Kalm integration test suite
  */
 
-
 /* Requires ------------------------------------------------------------------*/
 
 import { connect, listen } from '../../packages/kalm/src/kalm';
