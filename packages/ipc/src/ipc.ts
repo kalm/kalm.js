@@ -39,7 +39,21 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
 
     function connect(handle: net.Socket): net.Socket {
       const connection: net.Socket = handle || net.connect(`${path}${params.port}`);
-      connection.on('data', req => emitter.emit('rawFrame', req));
+      let buffer = '';
+      connection.on('data', req => {
+        buffer += req.toString();
+        const chunks = buffer.split('\n\n');
+        if (buffer.substring(buffer.length - 2) !== '\n\n') {
+          buffer = chunks[chunks.length - 1];
+          chunks.pop();
+        } else {
+          buffer = '';
+        }
+
+        for (let i = 0; i < chunks.length; i++) {
+          if (chunks[i] !== '') emitter.emit('frame', JSON.parse(chunks[i]), req.length);
+        }
+      });
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
       connection.on('close', () => emitter.emit('disconnect'));
@@ -51,8 +65,8 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
       if (listener) listener.close();
     }
 
-    function send(handle: net.Socket, payload: number[]): void {
-      if (handle) handle.write(Buffer.from(payload));
+    function send(handle: net.Socket, payload: RawFrame): void {
+      if (handle) handle.write(`${JSON.stringify(payload)}\n\n`);
     }
 
     return {

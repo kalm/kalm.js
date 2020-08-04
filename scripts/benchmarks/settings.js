@@ -5,5 +5,4 @@ module.exports = {
   testDuration: 1000 * 10,
   testPayload: { foo: 'bar' },
   testChannel: 'test',
-  framing: null,
 };

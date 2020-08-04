@@ -16,7 +16,6 @@ const defaults: ProviderConfig = {
   port: 3000,
   routine: realtime(),
   transport: null,
-  framing: 'kalm',
 };
 
 /* Methods -------------------------------------------------------------------*/
@@ -33,11 +32,15 @@ function validateOptions(options: ProviderConfig): void {
     throw new Error(`Transport is not a function (${options.transport}), see: https://github.com/kalm/kalm.js#documentation`);
   }
 
+  if (!options.transport({}, {}).bind) {
+    throw new Error('Transport is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
+  }
+
   if (options.routine) {
     if (typeof options.transport !== 'function') {
       throw new Error(`Routine is not a function (${options.routine}), see: https://github.com/kalm/kalm.js#documentation`);
     }
-    const testChannel = options.routine('test', {}, {}, {});
+    const testChannel = options.routine({}, {});
     if (!testChannel.add) {
       throw new Error('Routine is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
     }

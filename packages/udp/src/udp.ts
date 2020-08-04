@@ -20,7 +20,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       clientCache[key].timeout = setTimeout(client.destroy, socketTimeout);
 
       for (let i = 0; i < clientCache[key].data.length; i++) {
-        clientCache[key].client.emit('frame', clientCache[key].data[i]);
+        clientCache[key].client.emit('frame', JSON.parse(clientCache[key].data[i].toString()), clientCache[key].data[i].length);
       }
       clientCache[key].data.length = 0;
     }
@@ -29,14 +29,15 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       return handle || { host: null, port: null } as Remote;
     }
 
-    function send(handle: UDPSocketHandle, payload: Buffer | number[]): void {
-      if (handle) {
-        handle.socket.send(Buffer.from(payload as number[]), handle.port, handle.host);
+    function send(handle: UDPSocketHandle, payload: RawFrame | string): void {
+      if (handle && handle.socket) {
+        handle.socket.send(JSON.stringify(payload), handle.port, handle.host);
       }
     }
 
     function stop(): void {
       listener.close();
+      listener = null;
     }
 
     function disconnect(handle?: UDPSocketHandle): void {
@@ -54,7 +55,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
         if (req[0] === 65 && req[1] === 67 && req[2] === 75) {
           clearTimeout(timeout);
           emitter.emit('connect', connection);
-        } else emitter.emit('rawFrame', req);
+        } else emitter.emit('frame', JSON.parse(req.toString()), req.length);
       });
       connection.bind(null, localAddr);
 
@@ -65,7 +66,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       };
 
       // Ping test
-      send(res, Buffer.from('SYN'));
+      send(res, 'SYN');
       timeout = setTimeout(() => disconnect(res), connectTimeout);
 
       return res;
@@ -81,7 +82,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
 
       // Handle SYN
       if (data[0] === 83 && data[1] === 89 && data[2] === 78) {
-        send(handle, Buffer.from('ACK'));
+        send(handle, 'ACK');
         isSynPacket = true;
       }
 
@@ -98,7 +99,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       }
 
       if (data && !isSynPacket) {
-        if (clientCache[key].client) clientCache[key].client.emit('rawFrame', data);
+        if (clientCache[key].client) clientCache[key].client.emit('frame', JSON.parse(data.toString()));
         else clientCache[key].data.push(data);
       }
     }
@@ -111,7 +112,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       emitter.emit('ready');
     }
 
-    emitter.on('connection', addClient);
+    if (emitter && typeof emitter.on === 'function') emitter.on('connection', addClient);
 
     return {
       bind,

@@ -2,81 +2,39 @@
 
 import { EventEmitter } from 'events';
 import { log } from '../utils/logger';
-import { serializeLegacy, deserializeLegacy, indiceBuffer } from '../utils/parser';
 
 /* Methods -------------------------------------------------------------------*/
 
 export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handle?: SocketHandle): Client {
   let connected: number = 1;
-  const channels: ChannelList = {};
+  const channels: {[channel: string]: Channel } = {};
+  const routine = params.routine(params, new EventEmitter());
   const socket: Socket = params.transport(params, emitter);
+  let totalMessages = 0;
 
-  if (!socket.connect) {
-    throw new Error('Transport is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
-  }
-
-  function _createChannel(channel: string): Channel {
-    const channelEmitter: NodeJS.EventEmitter = new EventEmitter();
-
-    return {
-      name: channel,
-      emitter: channelEmitter,
-      queue: params.routine(channel, params, channelEmitter, emitter),
-      channelBuffer: Buffer.concat([indiceBuffer(channel.length), Buffer.from(channel)]),
-    };
-  }
-
-  function _wrap(event: RawFrame): void {
-    const payload: Buffer = params.framing === 'kalm'
-      ? serializeLegacy(event.frameId, channels[event.channel], event.packets)
-      : Buffer.from(JSON.stringify({
-        frameId: event.frameId,
-        channel: event.channel,
-        packets: event.packets.map(packet => packet.toString()),
-      }));
-
-    socket.send(handle, payload);
-  }
-
-  function _resolveChannel(channel: string): Channel {
-    if (!(channel in channels)) {
-      channels[channel] = _createChannel(channel);
-      channels[channel].emitter.on('runQueue', _wrap);
+  function _resolveChannel(channelName: string): Channel {
+    if (!(channelName in channels)) {
+      channels[channelName] = {
+        name: channelName,
+        packets: [],
+        handlers: [],
+      };
     }
-    return channels[channel];
-  }
-
-  function _handlePackets(frame: RawFrame, packet: Buffer, index: number): Promise<void> {
-    if (packet.length === 0) return;
-
-    let decodedPacket;
-
-    try {
-      decodedPacket = (params.json === true) ? JSON.parse(packet.toString()) : packet;
-    } catch (e) {
-      emitter.emit('error', `Error decoding packet: ${e}`);
-    }
-
-    if (decodedPacket && channels[frame.channel]) {
-      channels[frame.channel].emitter.emit(
-        'message',
-        decodedPacket,
-        {
-          client: params,
-          frame: {
-            channel: frame.channel,
-            id: frame.frameId,
-            messageIndex: index,
-            payloadBytes: frame.payloadBytes,
-            payloadMessages: frame.packets.length,
-          },
-        },
-      );
-    }
+    return channels[channelName];
   }
 
   function getChannels() {
     return Object.keys(channels);
+  }
+
+  function _wrap(event: any): void {
+    socket.send(handle, getChannels().reduce((frame, channelName) => {
+      frame.channels[channelName] = channels[channelName].packets;
+      return frame;
+    }, { frameId: event.frameId, channels: {} }));
+
+    getChannels().forEach(channelName => { channels[channelName].packets.length = 0; });
+    totalMessages = 0;
   }
 
   function _handleConnect(): void {
@@ -88,15 +46,28 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
     log(`error ${err.message}`);
   }
 
-  function _handleRequest(payload: Buffer): void {
-    let frame: RawFrame;
-    try {
-      frame = params.framing === 'kalm' ? deserializeLegacy(payload) : JSON.parse(payload.toString());
-    } catch (e) {
-      emitter.emit(`Error decoding frame: ${e}`);
+  function _handleRequest(frame: RawFrame, payloadBytes: number): void {
+    if (frame && frame.channels) {
+      Object.keys(frame.channels).forEach(channelName => {
+        frame.channels[channelName].forEach((packet, messageIndex) => {
+          if (channelName in channels) {
+            channels[channelName].handlers.forEach(handler => handler(
+              packet,
+              {
+                client: params,
+                frame: {
+                  channel: channelName,
+                  id: frame.frameId,
+                  messageIndex,
+                  payloadBytes,
+                  payloadMessages: frame.channels[channelName].length,
+                },
+              },
+            ));
+          }
+        });
+      });
     }
-    emitter.emit('frame', frame || payload.toString());
-    if (frame && frame.packets) frame.packets.forEach((packet, i) => _handlePackets(frame, Buffer.from(packet), i));
   }
 
   function _handleDisconnect() {
@@ -104,31 +75,34 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
     log(`lost connection to ${params.host}:${params.port}`);
   }
 
-  function write(channel: string, message: Serializable): void {
+  function write(channelName: string, message: Serializable): void {
     if (params.json !== true && !Buffer.isBuffer(message)) {
       throw new Error(`Unable to serialize message: ${message}, expected type Buffer`);
     }
-    return _resolveChannel(channel)
-      .queue.add(params.json === true ? Buffer.from(JSON.stringify(message)) : message as Buffer);
+    _resolveChannel(channelName).packets.push(message);
+    if (++totalMessages >= 0xff) {
+      log('Buffer saturated, flushing messages to transport');
+      routine.flush();
+    } else routine.add(message);
   }
 
   function destroy(): void {
-    Object.keys(channels).forEach(channel => channels[channel].queue.flush());
+    routine.flush();
     if (connected > 1) setTimeout(() => socket.disconnect(handle), 0);
   }
 
   function subscribe(channel: string, handler: (msg: any, frame: Frame) => void): void {
-    _resolveChannel(channel).emitter.on('message', handler);
+    _resolveChannel(channel).handlers.push(handler);
   }
 
-  function unsubscribe(channel: string, handler?: (msg: any, frame: Frame) => void): void {
-    if (!(channel in channels)) return;
-    if (handler) channels[channel].emitter.off('message', handler);
-    else channels[channel].emitter.removeAllListeners('message');
-    if (channels[channel].emitter.listenerCount('message') === 0) {
-      channels[channel].queue.flush();
-      delete channels[channel];
-    }
+  function unsubscribe(channelName: string, handler?: (msg: any, frame: Frame) => void): void {
+    if (!(channelName in channels)) return;
+    if (handler) {
+      const index = channels[channelName].handlers.indexOf(handler);
+      if (index > -1) channels[channelName].handlers.splice(index, 1);
+    } else channels[channelName].handlers = [];
+
+    if (channels[channelName].handlers.length === 0 && channels[channelName].packets.length === 0) delete channels[channelName];
   }
 
   function remote(): Remote {
@@ -149,10 +123,11 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
     return null;
   }
 
+  routine.emitter.on('runQueue', _wrap);
   emitter.on('connect', _handleConnect);
   emitter.on('disconnect', _handleDisconnect);
   emitter.on('error', _handleError);
-  emitter.on('rawFrame', _handleRequest);
+  emitter.on('frame', _handleRequest);
   if (!handle) log(`connecting to ${params.host}:${params.port}`);
   handle = socket.connect(handle);
 

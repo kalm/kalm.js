@@ -21,6 +21,7 @@ let server;
 let client;
 
 let count = 0;
+let accDensity = 0;
 let handbreak = true;
 
 /* Methods -------------------------------------------------------------------*/
@@ -29,7 +30,6 @@ function setup(resolve) {
   server = Kalm.listen({
     port: settings.port,
     json: true,
-    framing: settings.framing,
     transport: transports[settings.transport](),
     routine: Kalm.routines[settings.routine[0]](settings.routine[1]),
   });
@@ -64,11 +64,13 @@ function step(resolve) {
     client = Kalm.connect({
       port: settings.port,
       json: true,
-      framing: settings.framing,
       transport: transports[settings.transport](),
       routine: Kalm.routines.realtime(),
     });
-    client.subscribe(settings.testChannel, () => count++);
+    client.subscribe(settings.testChannel, (body, frame) => {
+      //console.log('got it', frame)
+      count++;
+    });
 
     client.on('error', (e) => {
       console.error('Client error:', e);

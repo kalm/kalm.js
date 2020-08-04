@@ -9,7 +9,6 @@ interface ClientConfig {
     host?: string
     isServer?: boolean
     provider?: any
-    framing?: 'kalm'
 }
 
 interface ProviderConfig {
@@ -19,7 +18,6 @@ interface ProviderConfig {
     transport?: KalmTransport
     port?: number
     host?: string
-    framing?: 'kalm'
 }
 
 type Remote = {
@@ -45,9 +43,8 @@ interface Client extends NodeJS.EventEmitter {
 
 type Channel = {
     name: string
-    queue: Queue
-    emitter: NodeJS.EventEmitter
-    channelBuffer: Buffer
+    packets: any[]
+    handlers: Function[]
 }
 
 type ChannelList = {
@@ -73,12 +70,12 @@ type UDPClientList = {
 type SocketHandle = NodeJS.Socket | UDPSocketHandle | WebSocket
 
 interface KalmRoutine {
-    (channel: string, params: any, channelEmitter: NodeJS.EventEmitter, clientEmitter: NodeJS.EventEmitter): Queue
+    (params: any, routineEmitter: NodeJS.EventEmitter): Queue
 }
 interface Queue {
-    add: (packet: Buffer) => void
-    size: () => number
+    add: (packet: any) => void
     flush: () => void
+    emitter: NodeJS.EventEmitter
 }
 
 interface KalmTransport {
@@ -89,7 +86,7 @@ interface Socket {
     remote: (handle: SocketHandle) => Remote
     connect: (handle?: SocketHandle) => SocketHandle
     stop: () => void
-    send: (handle: SocketHandle, message: number[] | Buffer) => void
+    send: (handle: SocketHandle, message: RawFrame) => void
     disconnect: (handle: SocketHandle) => void
 }
 
@@ -132,9 +129,7 @@ interface WebRTCConfig {
 
 type RawFrame = {
     frameId: number
-    channel: string
-    packets: Buffer[]
-    payloadBytes: number
+    channels: { [channelName: string]: Buffer[] }
 }
 
 type Frame = {
