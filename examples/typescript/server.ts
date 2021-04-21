@@ -1,5 +1,5 @@
 import {listen, routines} from 'kalm';
-import ws from '@kalm/ws';
+import * as ws from '@kalm/ws';
 
 const provider = listen({
   transport: ws(),
