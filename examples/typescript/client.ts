@@ -1,10 +1,10 @@
-import {connect, Routines} from 'kalm';
-import ws from '@kalm/ws';
+import {connect, routines} from 'kalm';
+import * as ws from '@kalm/ws';
 
 const client = connect({
   transport: ws(),
   port: 3938,
-  routine: Routines.realtime(),
+  routine: routines.realtime(),
 });
 
 type MyCustomPayload = {
