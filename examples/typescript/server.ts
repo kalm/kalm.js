@@ -1,10 +1,10 @@
-import {listen, Routines} from 'kalm';
+import {listen, routines} from 'kalm';
 import ws from '@kalm/ws';
 
 const provider = listen({
   transport: ws(),
   port: 3938,
-  routine: Routines.tick({ hz: 5 }),
+  routine: routines.tick({ hz: 5 }),
   host: '0.0.0.0',
 });
 
