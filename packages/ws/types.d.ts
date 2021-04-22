@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 declare module '@kalm/ws' {
     interface WSConfig {
         cert?: string

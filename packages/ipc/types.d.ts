@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 declare module '@kalm/ipc' {
     interface IPCConfig {
         socketTimeout?: number

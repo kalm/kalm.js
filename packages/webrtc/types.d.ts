@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 declare module '@kalm/webrtc' {
     interface WebRTCConfig {
         peers?: Peer[]

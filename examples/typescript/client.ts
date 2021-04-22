@@ -1,5 +1,5 @@
 import {connect, routines} from 'kalm';
-import * as ws from '@kalm/ws';
+import ws from '@kalm/ws';
 
 const client = connect({
   transport: ws(),

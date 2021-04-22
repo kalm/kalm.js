@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ws",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "WebSocket transport for Kalm",
   "main": "bin/ws.js",
   "scripts": {

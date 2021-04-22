@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 declare module '@kalm/tcp' {
     interface TCPConfig {
         socketTimeout?: number

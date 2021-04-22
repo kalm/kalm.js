@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 declare module 'kalm' {
     interface ClientConfig {
         label?: string

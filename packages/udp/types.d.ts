@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 declare module '@kalm/udp' {
     interface UDPConfig {
         type?: string
