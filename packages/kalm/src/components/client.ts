@@ -12,6 +12,9 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   const socket: Socket = params.transport(params, emitter);
   let totalMessages = 0;
   let instance;
+  
+  const remote: Remote = (params.isServer) ? socket.remote(handle) : { host: params.host, port: params.port };
+  const local: Remote = (params.isServer) ? { host: params.host, port: params.port } : null;
 
   function _resolveChannel(channelName: string): Channel {
     if (!(channelName in channels)) {
@@ -104,24 +107,6 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
     } else channels[channelName].handlers = [];
 
     if (channels[channelName].handlers.length === 0 && channels[channelName].packets.length === 0) delete channels[channelName];
-  }
-
-  function remote(): Remote {
-    if (params.isServer) return socket.remote(handle);
-    return {
-      host: params.host,
-      port: params.port,
-    };
-  }
-
-  function local(): Remote {
-    if (params.isServer) {
-      return {
-        host: params.host,
-        port: params.port,
-      };
-    }
-    return null;
   }
 
   routine.emitter.on('runQueue', _wrap);
