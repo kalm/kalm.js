@@ -5,6 +5,9 @@ import net from 'net';
 /* Methods -------------------------------------------------------------------*/
 
 interface IPCSocket extends net.Socket {
+  server: {
+    _connectionKey: string
+  }
   _server: {
     _pipeName: string
   }
@@ -25,8 +28,8 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
 
     function remote(handle: IPCSocket): Remote {
       return {
-        host: handle && handle._server && handle._server._pipeName || null,
-        port: handle && handle._handle && handle._handle.fd || null,
+        host: handle?._server?._pipeName || handle?.server?._connectionKey || null,
+        port: handle?._handle?.fd || null,
       };
     }
 

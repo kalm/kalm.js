@@ -4,6 +4,13 @@ import net from 'net';
 
 /* Methods -------------------------------------------------------------------*/
 
+interface TCPSocket extends net.Socket {
+  _peername: {
+    address: string
+    port: number
+  }
+}
+
 function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
@@ -14,10 +21,10 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
       listener.listen(params.port, () => emitter.emit('ready'));
     }
 
-    function remote(handle: net.Socket): Remote {
+    function remote(handle: TCPSocket): Remote {
       return {
-        host: handle && handle.remoteAddress || null,
-        port: handle && handle.remotePort || null,
+        host: handle?.remoteAddress || handle?._peername?.address || null,
+        port: handle?.remotePort || handle?._peername?.port || null,
       };
     }
 

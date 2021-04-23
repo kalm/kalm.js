@@ -75,12 +75,12 @@ const adpts = Object.keys(Suite).map((k) => ({
 
 adpts.forEach((i) => {
   tests.push((resolve) => {
-    // console.log('Configuring ' + i.transport);
+    console.log('Configuring ' + i.transport);
     _updateSettings(i.settings, resolve);
   });
 
   tests.push((resolve) => {
-    // console.log('Measuring raw ' + i.transport);
+    console.log('Measuring raw ' + i.transport);
     _measure(i.raw, (total) => {
       results[`raw_${i.transport}`] = total;
       resolve();
@@ -88,7 +88,7 @@ adpts.forEach((i) => {
   });
 
   tests.push((resolve) => {
-    // console.log('Measuring Kalm ' + i.transport);
+    console.log('Measuring Kalm ' + i.transport);
     _measure(i.kalm, (total) => {
       results[`kalm_${i.transport}`] = total;
       resolve();

@@ -36,6 +36,8 @@ function validateOptions(options: ProviderConfig): void {
     throw new Error('Transport is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
   }
 
+  if (options.port && !isNaN(options.port)) options.port = +options.port;
+
   if (options.routine) {
     if (typeof options.transport !== 'function') {
       throw new Error(`Routine is not a function (${options.routine}), see: https://github.com/kalm/kalm.js#documentation`);

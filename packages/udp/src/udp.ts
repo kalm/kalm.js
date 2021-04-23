@@ -25,8 +25,11 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       clientCache[key].data.length = 0;
     }
 
-    function remote(handle: SocketHandle): Remote {
-      return handle || { host: null, port: null } as Remote;
+    function remote(handle: UDPSocketHandle): Remote {
+      return {
+        host: handle?.host || null,
+        port: handle?.port || null
+      };
     }
 
     function send(handle: UDPSocketHandle, payload: RawFrame | string): void {
@@ -87,7 +90,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       }
 
       const key: string = `${origin.address}.${origin.port}`;
-      clearTimeout(clientCache[key] && clientCache[key].timeout);
+      clearTimeout(clientCache[key]?.timeout);
 
       if (!clientCache[key]) {
         clientCache[key] = {
