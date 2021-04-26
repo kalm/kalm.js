@@ -1,10 +1,12 @@
+/* eslint-disable */
+
 declare module 'kalm' {
     interface ClientConfig {
         label?: string
         routine?: KalmRoutine
         json?: Boolean
         transport?: KalmTransport
-        port?: number
+        port?: number|string
         host?: string
         isServer?: boolean
         provider?: any
@@ -36,8 +38,8 @@ declare module 'kalm' {
         destroy: () => void
         subscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
         unsubscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
-        local: () => Remote
-        remote: () => Remote
+        local: Remote
+        remote: Remote
     }
 
     type Channel = {

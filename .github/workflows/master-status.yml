@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.x, 16.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -23,9 +23,9 @@ jobs:
     - name: npm install, build, and test
       run: |
         yarn
+        yarn run build
         yarn run lint
         yarn run test
-        yarn run build
         yarn run bench
       env:
         CI: true

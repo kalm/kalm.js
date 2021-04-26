@@ -47,14 +47,14 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
       return connection;
     }
 
-    function remote(handle: WebSocket & { headers: any, connection: any }): Remote {
+    function remote(handle: WebSocket & { headers: any, connection: any, _socket: any }): Remote {
       const h = handle && handle.headers || {};
+      const headerHost = h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0];
+      const remoteHost = handle?.connection?.remoteAddress;
+      const socketHost = handle?._socket?.server?._connectionKey;
       return {
-        host: (
-          (h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0])
-          || (handle && handle.connection && handle.connection.remoteAddress || null)
-        ),
-        port: handle && handle.connection && handle.connection.remotePort || null,
+        host: headerHost || remoteHost || socketHost || null,
+        port: handle?.connection?.remotePort || null,
       };
     }
 

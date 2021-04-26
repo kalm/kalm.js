@@ -1,4 +1,4 @@
-/* Types ---------------------------------------------------------------------*/
+/* eslint-disable */
 
 interface ClientConfig {
     label?: string
@@ -37,8 +37,8 @@ interface Client extends NodeJS.EventEmitter {
     destroy: () => void
     subscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
     unsubscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
-    local: () => Remote
-    remote: () => Remote
+    local: Remote
+    remote: Remote
 }
 
 type Channel = {

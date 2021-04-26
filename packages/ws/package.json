@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ws",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "WebSocket transport for Kalm",
   "main": "bin/ws.js",
   "scripts": {
@@ -12,6 +12,9 @@
   "funding": {
     "type": "Open Collective",
     "url": "https://opencollective.com/kalm"
+  },
+  "engines": {
+    "node": ">=14"
   },
   "repository": {
     "type": "git",
@@ -37,7 +40,7 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "dependencies": {
-    "ws": "^7.2.0"
+    "ws": "^7.4.0"
   },
   "browser": {
     "http": false,

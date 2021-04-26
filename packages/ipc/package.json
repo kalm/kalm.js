@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ipc",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "IPC transport for Kalm",
   "main": "bin/ipc.js",
   "scripts": {
@@ -8,6 +8,9 @@
     "clean": "../../scripts/cleanup.sh",
     "test": "jest ./tests",
     "prepublish": "cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
+  },
+  "engines": {
+    "node": ">=14"
   },
   "funding": {
     "type": "Open Collective",

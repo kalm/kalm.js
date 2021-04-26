@@ -1,6 +1,6 @@
 {
   "name": "@kalm/webrtc",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "WebRTC transport for Kalm",
   "main": "bin/webrtc.js",
   "scripts": {
@@ -12,6 +12,9 @@
   "funding": {
     "type": "Open Collective",
     "url": "https://opencollective.com/kalm"
+  },
+  "engines": {
+    "node": ">=14"
   },
   "repository": {
     "type": "git",

@@ -1,16 +1,38 @@
 # Changelog
 
-## [v5.0.0] - 2020-06-23
+## [v6.0.0] - 2021-04-26
 
 commit: [#](https://github.com/kalm/kalm.js/commits)
 
-## Breaking changes
+### Breaking changes
+
+- Client.remote is now a const instead of a function (breaking change)
+- Client.local is now a const instead of a function (breaking change)
+- Engines config in package.json now only allows node >=14
+
+### Added
+
+- Client reference in subscribe callback is now fully featured instead of a shallow config object.
+- Bumped `ws` version
+- Added integration tests
+
+### Bug fixes
+
+- Fixed importing when using typescript (breaking change)
+- Fixed socket remote info
+- Fixed multiple types, including opening `port` value to be a string 
+
+## [v5.0.0] - 2020-06-23
+
+commit: [#](https://github.com/kalm/kalm.js/commit/527a245e4855f6ab7678ef4fe1ee9e7cd2ff3cb8)
+
+### Breaking changes
 - Changed default packet framing to be a pure json object
 - Removed custom framing
 - Added packet message cap
 - Fixed multiplexing
 
-## Added
+### Added
 - Added more error messages
 - Added tests for transport packages
 - Added CHANGELOG and LICENSE to all packages
@@ -19,7 +41,7 @@ commit: [#](https://github.com/kalm/kalm.js/commits)
 
 commit: [731491d](https://github.com/kalm/kalm.js/commit/731491d7b98f3116e0491905c99f9ece29d24d65)
 
-## Added
+### Added
 - Added more error messages
 - Added tests for transport packages
 - Added CHANGELOG and LICENSE to all packages

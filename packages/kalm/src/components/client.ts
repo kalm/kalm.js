@@ -11,6 +11,10 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   const routine = params.routine(params, new EventEmitter());
   const socket: Socket = params.transport(params, emitter);
   let totalMessages = 0;
+  let instance;
+  
+  const remote: Remote = (params.isServer) ? socket.remote(handle) : { host: params.host, port: params.port };
+  const local: Remote = (params.isServer) ? { host: params.host, port: params.port } : null;
 
   function _resolveChannel(channelName: string): Channel {
     if (!(channelName in channels)) {
@@ -54,7 +58,7 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
             channels[channelName].handlers.forEach(handler => handler(
               packet,
               {
-                client: params,
+                client: instance,
                 frame: {
                   channel: channelName,
                   id: frame.frameId,
@@ -105,24 +109,6 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
     if (channels[channelName].handlers.length === 0 && channels[channelName].packets.length === 0) delete channels[channelName];
   }
 
-  function remote(): Remote {
-    if (params.isServer) return socket.remote(handle);
-    return {
-      host: params.host,
-      port: params.port,
-    };
-  }
-
-  function local(): Remote {
-    if (params.isServer) {
-      return {
-        host: params.host,
-        port: params.port,
-      };
-    }
-    return null;
-  }
-
   routine.emitter.on('runQueue', _wrap);
   emitter.on('connect', _handleConnect);
   emitter.on('disconnect', _handleDisconnect);
@@ -131,7 +117,7 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   if (!handle) log(`connecting to ${params.host}:${params.port}`);
   handle = socket.connect(handle);
 
-  return Object.assign(emitter, {
+  instance = Object.assign(emitter, {
     write,
     destroy,
     subscribe,
@@ -141,4 +127,5 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
     label: params.label,
     getChannels,
   });
+  return instance;
 }
