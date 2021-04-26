@@ -24,8 +24,8 @@ jobs:
       run: |
         yarn
         yarn run lint
-        yarn run test
         yarn run build
+        yarn run test
         yarn run bench
       env:
         CI: true
