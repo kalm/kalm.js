@@ -31,7 +31,8 @@
             "error", 
             { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
         ],
-        "import/no-extraneous-dependencies": 0
+        "import/no-extraneous-dependencies": 0,
+        "import/no-unresolved": 1
     },
     "env": {
         "browser": true,
