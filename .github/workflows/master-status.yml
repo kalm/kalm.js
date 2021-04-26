@@ -23,8 +23,8 @@ jobs:
     - name: npm install, build, and test
       run: |
         yarn
-        yarn run lint
         yarn run build
+        yarn run lint
         yarn run test
         yarn run bench
       env:
