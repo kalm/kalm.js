@@ -22,7 +22,7 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
     }
 
     function send(handle: WebSocket & { _queue: string[] }, payload: RawFrame | string): void {
-      if (handle && handle.readyState === 1) handle.send(typeof payload === 'string' ? payload : JSON.stringify(payload));
+      if (handle?.readyState === 1) handle.send(typeof payload === 'string' ? payload : JSON.stringify(payload));
       else handle._queue.push(JSON.stringify(payload));
     }
 
@@ -48,13 +48,14 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
     }
 
     function remote(handle: WebSocket & { headers: any, connection: any }): Remote {
-      const h = handle && handle.headers || {};
+      const h = handle?.headers || {};
       return {
         host: (
           (h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0])
-          || (handle && handle.connection && handle.connection.remoteAddress || null)
+          || handle?.connection?.remoteAddress
+          || null
         ),
-        port: handle && handle.connection && handle.connection.remotePort || null,
+        port: handle?.connection?.remotePort || null,
       };
     }
 

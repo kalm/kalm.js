@@ -16,8 +16,8 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
 
     function remote(handle: net.Socket): Remote {
       return {
-        host: handle && handle.remoteAddress || null,
-        port: handle && handle.remotePort || null,
+        host: handle?.remoteAddress || null,
+        port: handle?.remotePort || null,
       };
     }
 

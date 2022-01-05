@@ -11,7 +11,7 @@
 </h3>
 <br/>
 
-[![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/@kalm/udp)
+[![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/@kalm/quic)
 [![Build Status](https://github.com/kalm/kalm.js/workflows/master-status/badge.svg)](https://github.com/kalm/kalm.js/actions?query=workflow%3A+master-status)
 ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/kalm/kalm.js)
 [![Financial Contributors on Open Collective](https://opencollective.com/kalm/all/badge.svg?label=financial+contributors)](https://opencollective.com/kalm)
@@ -19,17 +19,13 @@
 
 ## Installing
 
-`npm install @kalm/udp`
+`npm install @kalm/quic`
 
 ## Options
 
 ```
 {
-    type: 'udp4',
-    localAddr: '0.0.0.0',
-    reuseAddr: true,
-    socketTimeout: 30000,
-    connectTimeout: 1000,
+    socketTimeout: 30000
 }
 ```
 

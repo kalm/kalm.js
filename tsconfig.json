@@ -8,16 +8,20 @@
         "preserveConstEnums": true,
         "sourceMap": false,
         "allowJs": true,
-        "target": "es2019",
-        "outDir": "dist"
+        "target": "es2020",
+        "outDir": "dist",
+        "types": [
+            "jest",
+            "node"
+        ]
     },
     "include": [
-        "./packages",
-        "./src",
+        "./packages/**/*.ts",
         "./types.d.ts"
     ],
     "exclude": [
+        "./tests/**/*.ts",
+        "**/*.spec.ts",
         "node_modules",
-        "**/*.js"
     ]
 }

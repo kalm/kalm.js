@@ -9,7 +9,7 @@ import { connect, listen } from '../../packages/kalm/src/kalm';
 /* Suite --------------------------------------------------------------------*/
 
 describe('Integration tests', () => {
-  ['ipc', 'tcp', 'udp', 'ws'].forEach(transport => {
+  ['ipc', 'tcp', 'udp', 'ws', 'quic'].forEach(transport => {
     describe(`Testing ${transport} transport`, () => {
       let server;
       const soc = require(`../../packages/${transport}/src/${transport}`)(); /* eslint-disable-line */

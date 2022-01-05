@@ -23,5 +23,5 @@ declare module '@kalm/tcp' {
         disconnect: (handle: SocketHandle) => void
     }
 
-    export default function tcp(config?: TCPConfig): (config?: TCPConfig) => Transport;
+    export default function tcp(config?: TCPConfig): (config?: TCPConfig) => KalmTransport;
 }

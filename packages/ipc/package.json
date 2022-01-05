@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ipc",
-  "version": "5.0.0",
+  "version": "6.1.0",
   "description": "IPC transport for Kalm",
   "main": "bin/ipc.js",
   "scripts": {
@@ -18,8 +18,6 @@
     "url": "git+https://github.com/kalm/kalm-js.git"
   },
   "keywords": [
-    "framework",
-    "network",
     "realtime",
     "socket",
     "nagle",

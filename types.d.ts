@@ -99,6 +99,10 @@ interface TCPConfig {
     socketTimeout?: number
 }
 
+interface QUICConfig {
+    socketTimeout?: number
+}
+
 interface UDPConfig {
   type?: string
   localAddr?: string

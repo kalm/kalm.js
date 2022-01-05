@@ -42,10 +42,12 @@ docs
 yarn.lock
 package-lock.json
 .vscode
+.DS_Store
 
 # built code
 packages/kalm/bin
 packages/ipc/bin
+packages/quic/bin
 packages/tcp/bin
 packages/udp/bin
 packages/ws/bin
@@ -54,6 +56,7 @@ packages/webrtc/bin
 # publish-only files
 packages/kalm/LICENSE
 packages/ipc/LICENSE
+packages/quic/LICENSE
 packages/tcp/LICENSE
 packages/udp/LICENSE
 packages/ws/LICENSE
@@ -61,6 +64,7 @@ packages/webrtc/LICENSE
 
 packages/kalm/CHANGELOG.md
 packages/ipc/CHANGELOG.md
+packages/quic/CHANGELOG.md
 packages/tcp/CHANGELOG.md
 packages/udp/CHANGELOG.md
 packages/ws/CHANGELOG.md

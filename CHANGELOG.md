@@ -1,16 +1,41 @@
 # Changelog
 
+## [v6.1.0] - 2022
+
+commit: [#]()
+
+### Added
+
+- New module for QUIC + WebTransport support
+
+## [v6.0.0] - 2021-04-27
+
+commit: [47b810d](https://github.com/kalm/kalm.js/commit/47b810d5ab212686c3194d53e781e1728bd735f9)
+
+### Changed
+
+- Client reference in subscribe callback is now fully featured instead of a shallow config object.
+- Client.remote is now a const instead of a function (breaking change)
+- Client.local is now a const instead of a function (breaking change)
+- Bumped `ws` version
+
+### Bug fixes
+
+- Fixed importing when using typescript (breaking change)
+- Fixed socket remote info
+- Fixed multiple types, including opening `port` value to be a string 
+
 ## [v5.0.0] - 2020-06-23
 
-commit: [#](https://github.com/kalm/kalm.js/commits)
+commit: [527a245](https://github.com/kalm/kalm.js/commit/527a245e4855f6ab7678ef4fe1ee9e7cd2ff3cb8)
 
-## Breaking changes
+### Breaking changes
 - Changed default packet framing to be a pure json object
 - Removed custom framing
 - Added packet message cap
 - Fixed multiplexing
 
-## Added
+### Added
 - Added more error messages
 - Added tests for transport packages
 - Added CHANGELOG and LICENSE to all packages
@@ -19,7 +44,7 @@ commit: [#](https://github.com/kalm/kalm.js/commits)
 
 commit: [731491d](https://github.com/kalm/kalm.js/commit/731491d7b98f3116e0491905c99f9ece29d24d65)
 
-## Added
+### Added
 - Added more error messages
 - Added tests for transport packages
 - Added CHANGELOG and LICENSE to all packages

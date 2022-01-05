@@ -34,5 +34,5 @@ declare module '@kalm/webrtc' {
         negociate: (params: { peer: Peer }) => Promise<Peer>
     }
 
-    export default function ws(config?: WebRTCConfig): (config?: WebRTCConfig) => Transport;
+    export default function ws(config?: WebRTCConfig): (config?: WebRTCConfig) => KalmTransport;
 }

@@ -1,6 +1,6 @@
 {
   "name": "kalm",
-  "version": "5.0.0",
+  "version": "6.1.0",
   "description": "The socket optimizer",
   "main": "bin/kalm.js",
   "scripts": {
@@ -18,16 +18,16 @@
     "url": "git+https://github.com/kalm/kalm-js.git"
   },
   "keywords": [
-    "framework",
-    "network",
     "realtime",
     "socket",
     "nagle",
     "ipc",
+    "quic",
     "tcp",
     "udp",
     "websocket",
     "webrtc",
+    "webtransport",
     "peer"
   ],
   "files": [

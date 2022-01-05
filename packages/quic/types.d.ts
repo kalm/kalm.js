@@ -1,8 +1,6 @@
-declare module '@kalm/ws' {
-    interface WSConfig {
-        cert?: string
-        key?: string
-        secure?: boolean
+declare module '@kalm/quic' {
+    interface QUICConfig {
+        socketTimeout?: number
     }
 
     interface KalmTransport {
@@ -14,7 +12,7 @@ declare module '@kalm/ws' {
         port: number
     }
 
-    type SocketHandle = WebSocket
+    type SocketHandle = Socket
 
     interface Socket {
         bind: () => void
@@ -25,5 +23,5 @@ declare module '@kalm/ws' {
         disconnect: (handle: SocketHandle) => void
     }
 
-    export default function ws(config?: WSConfig): (config?: WSConfig) => KalmTransport;
+    export default function quic(config?: QUICConfig): (config?: QUICConfig) => KalmTransport;
 }

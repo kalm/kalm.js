@@ -24,5 +24,5 @@ declare module '@kalm/ipc' {
         disconnect: (handle: SocketHandle) => void
     }
 
-    export default function ipc(config?: IPCConfig): (config?: IPCConfig) => Transport;
+    export default function ipc(config?: IPCConfig): (config?: IPCConfig) => KalmTransport;
 }

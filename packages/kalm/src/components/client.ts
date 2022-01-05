@@ -3,10 +3,18 @@
 import { EventEmitter } from 'events';
 import { log } from '../utils/logger';
 
+/* Constants -----------------------------------------------------------------*/
+
+const ConnectionStatus = {
+  SHUTTING_DOWN: 0,
+  NOT_READY: 1,
+  READY: 2
+};
+
 /* Methods -------------------------------------------------------------------*/
 
 export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handle?: SocketHandle): Client {
-  let connected: number = 1;
+  let connected: number = ConnectionStatus.NOT_READY;
   const channels: {[channel: string]: Channel } = {};
   const routine = params.routine(params, new EventEmitter());
   const socket: Socket = params.transport(params, emitter);
@@ -38,7 +46,7 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   }
 
   function _handleConnect(): void {
-    connected = 2;
+    connected = ConnectionStatus.READY;
     log(`connected to ${params.host}:${params.port}`);
   }
 
@@ -71,7 +79,7 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   }
 
   function _handleDisconnect() {
-    connected = 0;
+    connected = ConnectionStatus.SHUTTING_DOWN;
     log(`lost connection to ${params.host}:${params.port}`);
   }
 
@@ -88,7 +96,7 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
 
   function destroy(): void {
     routine.flush();
-    if (connected > 1) setTimeout(() => socket.disconnect(handle), 0);
+    if (connected > ConnectionStatus.NOT_READY) setTimeout(() => socket.disconnect(handle), 0);
   }
 
   function subscribe(channel: string, handler: (msg: any, frame: Frame) => void): void {

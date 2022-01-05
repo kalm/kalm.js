@@ -5,7 +5,7 @@
     "settings": {
       "import/resolver": {
         "node": {
-          "paths": ["packages"],
+          "paths": ["packages", "tests"],
           "extensions": [".ts", ".spec.ts"]
         }
       }
