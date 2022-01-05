@@ -5,7 +5,7 @@ const nodeInstance = !isBrowser && require('net').createQuicStream;
 
 /* Methods -------------------------------------------------------------------*/
 
-function ws({ secure, path }: WSConfig = {}): KalmTransport {
+function quic({ secure, path }: WSConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener;
 

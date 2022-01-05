@@ -16,7 +16,8 @@
         ]
     },
     "include": [
-        "./packages/**/*.ts",
+        "./packages",
+        "./src",
         "./types.d.ts"
     ],
     "exclude": [
