@@ -1,6 +1,6 @@
 {
   "name": "@kalm/webrtc",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "WebRTC transport for Kalm",
   "main": "bin/webrtc.js",
   "scripts": {
@@ -40,16 +40,17 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "dependencies": {
-    "simple-peer": "^9.6.0"
+    "simple-peer": "^9.11.0"
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "globals": {
-      "ts-jest": {
+    "transform": {
+      "^.+\\.tsx?$": [
+      "ts-jest", {
         "diagnostics": false,
         "isolatedModules": true
-      }
+      }]
     }
   }
 }

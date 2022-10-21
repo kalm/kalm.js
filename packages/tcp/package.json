@@ -1,6 +1,6 @@
 {
   "name": "@kalm/tcp",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "TCP transport for Kalm",
   "main": "bin/tcp.js",
   "scripts": {
@@ -45,11 +45,12 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "globals": {
-      "ts-jest": {
+    "transform": {
+      "^.+\\.tsx?$": [
+      "ts-jest", {
         "diagnostics": false,
         "isolatedModules": true
-      }
+      }]
     }
   }
 }

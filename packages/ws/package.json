@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ws",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "WebSocket transport for Kalm",
   "main": "bin/ws.js",
   "scripts": {
@@ -40,7 +40,7 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "dependencies": {
-    "ws": "^7.4.0"
+    "ws": "^8.9.0"
   },
   "browser": {
     "http": false,
@@ -49,11 +49,12 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "globals": {
-      "ts-jest": {
+    "transform": {
+      "^.+\\.tsx?$": [
+      "ts-jest", {
         "diagnostics": false,
         "isolatedModules": true
-      }
+      }]
     }
   }
 }

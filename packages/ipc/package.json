@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ipc",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "IPC transport for Kalm",
   "main": "bin/ipc.js",
   "scripts": {
@@ -46,11 +46,12 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "globals": {
-      "ts-jest": {
+    "transform": {
+      "^.+\\.tsx?$": [
+      "ts-jest", {
         "diagnostics": false,
         "isolatedModules": true
-      }
+      }]
     }
   }
 }

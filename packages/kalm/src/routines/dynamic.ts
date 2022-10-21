@@ -9,7 +9,7 @@ export function dynamic({
     throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
   }
 
-  return function queue(params: any, routineEmitter: NodeJS.EventEmitter): Queue {
+  return function queue(params: any, routineEmitter: (frameId: number) => any): Queue {
     let timer: NodeJS.Timer = null;
     let numPackets = 0;
     let totalBytes = 0;
@@ -18,7 +18,7 @@ export function dynamic({
     function _step(): void {
       clearTimeout(timer);
       timer = null;
-      routineEmitter.emit('runQueue', { frameId, numPackets });
+      routineEmitter(frameId);
       if (++frameId > 0xffff) frameId = 0;
       numPackets = 0;
       totalBytes = 0;
@@ -56,6 +56,6 @@ export function dynamic({
       _add(packet);
     }
 
-    return { add, flush: _step, emitter: routineEmitter };
+    return { add, flush: _step, size: () => numPackets };
   };
 }

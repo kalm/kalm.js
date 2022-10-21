@@ -130,8 +130,6 @@ Kalm offers events to track when packets are processed by routines or when a raw
 | `connect` | [Client](./types.d.ts#L35) | (client) Indicates that a client has successfuly connected |
 | `disconnect` | void | (client) Indicates that a client has disconnected |
 | `frame` | [RawFrame](./types.d.ts#L111) | (client) Triggered when recieving a parsed full frame. |
-| `<channel>.queueAdd` | ```{ frameId: number, packets: number}``` | (client) Indicates that a packet was queued to a frame. |
-| `<channel>.queueRun` | ```{ frameId: number, packets: number}``` | (client) Indicates that a frame is being sent. |
 
 ## Testing
 
@@ -168,4 +166,4 @@ Support this project with your organization. Your logo will show up here with a 
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2020 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2022 Frederic Charette

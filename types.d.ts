@@ -70,12 +70,12 @@ type UDPClientList = {
 type SocketHandle = NodeJS.Socket | UDPSocketHandle | WebSocket
 
 interface KalmRoutine {
-    (params: any, routineEmitter: NodeJS.EventEmitter): Queue
+    (params: any, routineEmitter: (frameId: number) => any): Queue
 }
 interface Queue {
     add: (packet: any) => void
+    size: () => number
     flush: () => void
-    emitter: NodeJS.EventEmitter
 }
 
 interface KalmTransport {
