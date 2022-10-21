@@ -38,7 +38,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
         return;
       }
       if (handle && handle.socket) {
-        handle.socket.send(JSON.stringify(payload), handle.port, handle.host);
+        handle.socket.send(payloadBytes, handle.port, handle.host);
       }
     }
 
