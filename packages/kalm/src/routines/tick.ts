@@ -7,18 +7,21 @@ export function tick({ hz, seed = 0 }: { hz: number, seed?: number }): KalmRouti
 
   let frameId: number = seed || 0;
 
-  return function queue(params: object, routineEmitter: NodeJS.EventEmitter): Queue {
+  return function queue(params: object, routineEmitter: (frameId: number) => any): Queue {
     let timer: NodeJS.Timer = null;
+    let numPackets: number = 0;
 
     function _step(): void {
       frameId++;
-      routineEmitter.emit('runQueue', { frameId });
+      routineEmitter(frameId);
+      numPackets = 0;
     }
 
     function add(): void {
+      numPackets++;
       if (timer === null) timer = setInterval(_step, 1000 / hz);
     }
 
-    return { add, flush: _step, emitter: routineEmitter };
+    return { add, flush: _step, size: () => numPackets };
   };
 }

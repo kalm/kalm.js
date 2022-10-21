@@ -4,7 +4,7 @@ import dgram from 'dgram';
 
 /* Methods -------------------------------------------------------------------*/
 
-function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTimeout = 30000, connectTimeout = 1000,
+function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000, connectTimeout = 1000,
 }: UDPConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: dgram.Socket;
@@ -17,7 +17,6 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
       // Client connection - skip
       if (local.host === params.host && local.port === params.port) return;
       clientCache[key].client = client;
-      clientCache[key].timeout = setTimeout(client.destroy, socketTimeout);
 
       for (let i = 0; i < clientCache[key].data.length; i++) {
         clientCache[key].client.emit('frame', JSON.parse(clientCache[key].data[i].toString()), clientCache[key].data[i].length);
@@ -33,6 +32,11 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     }
 
     function send(handle: UDPSocketHandle, payload: RawFrame | string): void {
+      const payloadBytes = JSON.stringify(payload);
+      if (Buffer.byteLength(payloadBytes, 'utf-8') >= 16384) {
+        emitter.emit('error', new Error(`UDP Cannot send packets larger than 16384 bytes, tried to send ${Buffer.byteLength(payloadBytes, 'utf-8')} bytes`));
+        return;
+      }
       if (handle && handle.socket) {
         handle.socket.send(JSON.stringify(payload), handle.port, handle.host);
       }
@@ -51,14 +55,11 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
     function connect(handle?: SocketHandle): SocketHandle {
       if (handle) return handle;
       const connection = dgram.createSocket(type as dgram.SocketType);
-      let timeout: NodeJS.Timeout;
+      
       connection.on('error', err => emitter.emit('error', err));
       connection.on('message', req => {
-        // Handle ACK
-        if (req[0] === 65 && req[1] === 67 && req[2] === 75) {
-          clearTimeout(timeout);
-          emitter.emit('connect', connection);
-        } else emitter.emit('frame', JSON.parse(req.toString()), req.length);
+        emitter.emit('connect', connection);
+        emitter.emit('frame', JSON.parse(req.toString()), req.length);
       });
       connection.bind(null, localAddr);
 
@@ -67,10 +68,6 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
         port: params.port,
         socket: connection,
       };
-
-      // Ping test
-      send(res, 'SYN');
-      timeout = setTimeout(() => disconnect(res), connectTimeout);
 
       return res;
     }
@@ -81,27 +78,18 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = true, socketTim
         port: origin.port,
         socket: listener,
       };
-      let isSynPacket = false;
-
-      // Handle SYN
-      if (data[0] === 83 && data[1] === 89 && data[2] === 78) {
-        send(handle, 'ACK');
-        isSynPacket = true;
-      }
-
+      
       const key: string = `${origin.address}.${origin.port}`;
-      clearTimeout(clientCache[key]?.timeout);
 
       if (!clientCache[key]) {
         clientCache[key] = {
           client: null,
           data: [],
-          timeout: null,
         } as UDPClient;
         emitter.emit('socket', handle);
       }
 
-      if (data && !isSynPacket) {
+      if (data) {
         if (clientCache[key].client) clientCache[key].client.emit('frame', JSON.parse(data.toString()));
         else clientCache[key].data.push(data);
       }

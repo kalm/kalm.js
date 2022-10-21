@@ -1,7 +1,7 @@
 {
   "name": "kalm",
   "private": true,
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "The socket optimizer",
   "main": "packages/kalm/bin/kalm.js",
   "scripts": {
@@ -51,18 +51,18 @@
     }
   },
   "devDependencies": {
-    "@types/jest": "^26.0.0",
-    "@types/node": "^14.14.0",
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
-    "eslint": "^7.24.0",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.0",
-    "husky": "^6.0.0",
-    "jest": "^26.6.0",
-    "socket.io": "^4.0.0",
-    "socket.io-client": "^4.0.0",
-    "ts-jest": "^26.5.0",
-    "typescript": "^4.2.0"
+    "@types/jest": "^29.2.0",
+    "@types/node": "^18.11.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "husky": "^8.0.0",
+    "jest": "^29.2.0",
+    "socket.io": "^4.5.0",
+    "socket.io-client": "^4.5.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^4.8.0"
   }
 }

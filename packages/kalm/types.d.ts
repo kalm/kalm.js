@@ -70,7 +70,7 @@ declare module 'kalm' {
     type SocketHandle = NodeJS.Socket | UDPSocketHandle | WebSocket
 
     interface KalmRoutine {
-        (channel: string, params: any, channelEmitter: NodeJS.EventEmitter, clientEmitter: NodeJS.EventEmitter): Queue
+        (channel: string, params: any, channelEmitter: (frameId: number) => any): Queue
     }
     interface Queue {
         add: (packet: Buffer) => void

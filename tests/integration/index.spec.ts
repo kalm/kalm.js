@@ -71,7 +71,7 @@ describe('Integration tests', () => {
       });
 
       it(`should handle large payloads with ${transport}`, done => {
-        const largePayload = [];
+        const largePayload: { foo: string }[] = [];
         while (largePayload.length < 2048) {
           largePayload.push({ foo: 'bar' });
         }
@@ -88,6 +88,10 @@ describe('Integration tests', () => {
 
         const client = connect({ transport: soc });
         client.on('error', e => {
+          if (transport === 'udp') {
+            expect(e.message).toEqual('UDP Cannot send packets larger than 16384 bytes, tried to send 28715 bytes');
+            return done();
+          }
           throw new Error(e);
         });
         client.write('test.large', largePayload);
