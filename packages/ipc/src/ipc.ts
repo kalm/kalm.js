@@ -1,8 +1,4 @@
-/* Requires ------------------------------------------------------------------*/
-
 import net from 'net';
-
-/* Methods -------------------------------------------------------------------*/
 
 interface IPCSocket extends net.Socket {
   server: {
@@ -16,7 +12,7 @@ interface IPCSocket extends net.Socket {
   }
 }
 
-function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
+export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
@@ -82,7 +78,3 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
     };
   };
 }
-
-/* Exports -------------------------------------------------------------------*/
-
-module.exports = ipc;

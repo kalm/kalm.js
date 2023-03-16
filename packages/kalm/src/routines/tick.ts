@@ -1,5 +1,3 @@
-/* Methods -------------------------------------------------------------------*/
-
 export function tick({ hz, seed = 0 }: { hz: number, seed?: number }): KalmRoutine {
   if (hz <= 0 || hz > 1000) {
     throw new Error(`Unable to set Hertz value of ${hz}. Must be between 0.1e13 and 1000`);
@@ -8,7 +6,7 @@ export function tick({ hz, seed = 0 }: { hz: number, seed?: number }): KalmRouti
   let frameId: number = seed || 0;
 
   return function queue(params: object, routineEmitter: (frameId: number) => any): Queue {
-    let timer: NodeJS.Timer = null;
+    let timer: ReturnType<typeof setTimeout> = null;
     let numPackets: number = 0;
 
     function _step(): void {

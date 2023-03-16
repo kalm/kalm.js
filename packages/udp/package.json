@@ -1,6 +1,6 @@
 {
   "name": "@kalm/udp",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "description": "UDP transport for Kalm",
   "main": "bin/udp.js",
   "scripts": {

@@ -1,18 +1,21 @@
-/* Requires ------------------------------------------------------------------*/
-
 import { EventEmitter } from 'events';
 import { log } from '../utils/logger';
 
-/* Methods -------------------------------------------------------------------*/
-
-export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handle?: SocketHandle): Client {
+export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any): Client {
   let connected: number = 1;
+
+  type Channel = {
+    name: string
+    packets: any[]
+    handlers: Function[]
+  }
+
   const channels: {[channel: string]: Channel } = {};
   const routine = params.routine(params, _wrap);
-  const socket: Socket = params.transport(params, emitter);
+  const transport: Socket<any> = params.transport(params, emitter);
   let instance;
   
-  const remote: Remote = (params.isServer) ? socket.remote(handle) : { host: params.host, port: params.port };
+  const remote: Remote = (params.isServer) ? transport.remote(socket) : { host: params.host, port: params.port };
   const local: Remote = (params.isServer) ? { host: params.host, port: params.port } : null;
 
   function _resolveChannel(channelName: string): Channel {
@@ -31,7 +34,7 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   }
 
   function _wrap(frameId: number): void {
-    socket.send(handle, getChannels().reduce((frame, channelName) => {
+    transport.send(socket, getChannels().reduce((frame, channelName) => {
       frame.channels[channelName] = channels[channelName].packets;
       return frame;
     }, { frameId, channels: {} }));
@@ -87,7 +90,7 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
 
   function destroy(): void {
     routine.flush();
-    if (connected > 1) setTimeout(() => socket.disconnect(handle), 0);
+    if (connected > 1) setTimeout(() => transport.disconnect(socket), 0);
   }
 
   function subscribe(channel: string, handler: (msg: any, frame: Frame) => void): void {
@@ -108,8 +111,8 @@ export function Client(params: ClientConfig, emitter: NodeJS.EventEmitter, handl
   emitter.on('disconnect', _handleDisconnect);
   emitter.on('error', _handleError);
   emitter.on('frame', _handleRequest);
-  if (!handle) log(`connecting to ${params.host}:${params.port}`);
-  handle = socket.connect(handle);
+  if (!socket) log(`connecting to ${params.host}:${params.port}`);
+  socket = transport.connect(socket);
 
   instance = Object.assign(emitter, {
     write,

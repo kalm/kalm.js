@@ -124,9 +124,9 @@ Kalm offers events to track when packets are processed by routines or when a raw
 
 | Event | Payload | Description |
 | --- | --- | --- |
-| `error` | Error | (provider, client) Emits on errors. |
-| `ready` | void | (provider) Indicates that the provider is now actively listeneing for new connections |
-| `connection` | [Client](./types.d.ts#L35) | (provider) Indicates that a client has successfuly connected |
+| `error` | Error | (server, client) Emits on errors. |
+| `ready` | void | (server) Indicates that the server is now actively listeneing for new connections |
+| `connection` | [Client](./types.d.ts#L35) | (server) Indicates that a client has successfuly connected |
 | `connect` | [Client](./types.d.ts#L35) | (client) Indicates that a client has successfuly connected |
 | `disconnect` | void | (client) Indicates that a client has disconnected |
 | `frame` | [RawFrame](./types.d.ts#L111) | (client) Triggered when recieving a parsed full frame. |

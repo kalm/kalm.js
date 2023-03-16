@@ -1,5 +1,5 @@
-import { Provider } from '../../../src/components/provider';
+import { Server } from '../../../src/components/server';
 
 describe('Provider', () => {
-  it('TODO', () => { expect(Provider).not.toBeUndefined(); });
+  it('TODO', () => { expect(Server).not.toBeUndefined(); });
 });

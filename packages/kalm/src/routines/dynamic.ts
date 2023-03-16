@@ -1,5 +1,3 @@
-/* Methods -------------------------------------------------------------------*/
-
 export function dynamic({
   hz,
   maxPackets = Infinity,
@@ -10,7 +8,7 @@ export function dynamic({
   }
 
   return function queue(params: any, routineEmitter: (frameId: number) => any): Queue {
-    let timer: NodeJS.Timer = null;
+    let timer: ReturnType<typeof setTimeout> = null;
     let numPackets = 0;
     let totalBytes = 0;
     let frameId: number = 0;

@@ -1,12 +1,15 @@
-/* Requires ------------------------------------------------------------------*/
-
 const isBrowser = (typeof WebSocket !== 'undefined');
 const WS = isBrowser ? WebSocket : require('ws');
 
-/* Methods -------------------------------------------------------------------*/
+type WSConfig = {
+  cert?: string
+  key?: string
+  agent?: any
+  socketTimeout?: number
+}
 
-function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
+export function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTransport<WebSocket> {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket<WebSocket> {
     let listener;
 
     function bind(): void {
@@ -24,6 +27,7 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
     function send(handle: WebSocket & { _queue: string[] }, payload: RawFrame | string): void {
       if (handle && handle.readyState === 1) handle.send(typeof payload === 'string' ? payload : JSON.stringify(payload));
       else handle._queue.push(JSON.stringify(payload));
+      resetTimeout(handle);
     }
 
     function stop(): void {
@@ -31,20 +35,33 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
     }
 
     function connect(handle?: WebSocket): WebSocket {
-      const protocol: string = secure === true ? 'wss' : 'ws';
-      const connection: WebSocket & { _queue: string[] } = handle || new WS(`${protocol}://${params.host}:${params.port}`);
+      const protocol: string = (!!cert && !!key) === true ? 'wss' : 'ws';
+      const connection: WebSocket & { _queue: string[], _timer: ReturnType<typeof setTimeout> } = handle || new WS(`${protocol}://${params.host}:${params.port}`, { ...(agent ? {agent} : {})});
       connection.binaryType = 'arraybuffer';
       const evtType: string = isBrowser ? 'addEventListener' : 'on';
       connection._queue = [];
-      connection[evtType]('message', evt => emitter.emit('frame', JSON.parse(evt.data || evt), (evt.data || evt).length));
+      connection._timer = null;
+      connection[evtType]('message', evt => {
+        emitter.emit('frame', JSON.parse(evt.data || evt), (evt.data || evt).length);
+        resetTimeout(connection);
+      });
       connection[evtType]('error', err => emitter.emit('error', err));
       connection[evtType]('close', () => emitter.emit('disconnect'));
       connection[evtType]('open', () => {
         emitter.emit('connect', connection);
         connection._queue.forEach(payload => send(connection, payload));
+
+        resetTimeout(connection);
       });
 
       return connection;
+    }
+
+    function resetTimeout(handle) {
+      clearTimeout(handle._timer);
+      handle._timer = setTimeout(() => {
+        disconnect(handle);
+      }, socketTimeout);
     }
 
     function remote(handle: WebSocket & { headers: any, connection: any, _socket: any }): Remote {
@@ -60,6 +77,7 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
 
     function disconnect(handle) {
       if (handle) {
+        clearTimeout(handle._timer);
         handle.end();
         handle.close();
       }
@@ -75,7 +93,3 @@ function ws({ cert, key, secure }: WSConfig = {}): KalmTransport {
     };
   };
 }
-
-/* Exports -------------------------------------------------------------------*/
-
-module.exports = ws;

@@ -1,14 +1,10 @@
-/* Requires ------------------------------------------------------------------*/
-
 import { EventEmitter } from 'events';
 import { log } from '../utils/logger';
 import { Client } from './client';
 
-/* Methods -------------------------------------------------------------------*/
-
-export function Provider(params: ClientConfig, emitter: NodeJS.EventEmitter): Provider {
+export function Server(params: ClientConfig, emitter: NodeJS.EventEmitter): Server {
   const connections = [];
-  const socket: Socket = params.transport(params, emitter);
+  const socket: Socket<any> = params.transport(params, emitter);
 
   function broadcast(channel: string, payload: Serializable): void {
     connections.forEach(c => c.write(channel, payload));
@@ -35,7 +31,7 @@ export function Provider(params: ClientConfig, emitter: NodeJS.EventEmitter): Pr
       isServer: true,
       port: origin.port,
       label: `${params.label}.${Math.random().toString(36).substring(7)}`,
-      provider: {
+      server: {
         broadcast,
         connections,
         label: params.label,

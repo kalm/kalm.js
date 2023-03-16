@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ws",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "description": "WebSocket transport for Kalm",
   "main": "bin/ws.js",
   "scripts": {
@@ -40,7 +40,7 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "dependencies": {
-    "ws": "^8.9.0"
+    "ws": "^8.13.0"
   },
   "browser": {
     "http": false,

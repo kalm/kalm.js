@@ -1,14 +1,25 @@
-/* Requires ------------------------------------------------------------------*/
-
 import dgram from 'dgram';
 
-/* Methods -------------------------------------------------------------------*/
+type UDPSocketHandle = {
+  socket: dgram.Socket
+  port: number
+  host: string
+}
 
-function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000, connectTimeout = 1000,
-}: UDPConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
+type UDPConfig = {
+  type?: dgram.SocketType
+  localAddr?: string
+  reuseAddr?: boolean
+  socketTimeout?: number
+  connectTimeout?: number
+}
+
+export function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000, connectTimeout = 1000,
+}: UDPConfig = {}): KalmTransport<UDPSocketHandle> {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket<UDPSocketHandle> {
+
     let listener: dgram.Socket;
-    const clientCache: UDPClientList = {};
+    const clientCache = {};
 
     function addClient(client: Client): void {
       const local: Remote = client.local;
@@ -52,7 +63,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
       emitter.emit('disconnect');
     }
 
-    function connect(handle?: SocketHandle): SocketHandle {
+    function connect(handle?: UDPSocketHandle): UDPSocketHandle {
       if (handle) return handle;
       const connection = dgram.createSocket(type as dgram.SocketType);
       
@@ -85,7 +96,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
         clientCache[key] = {
           client: null,
           data: [],
-        } as UDPClient;
+        };
         emitter.emit('socket', handle);
       }
 
@@ -115,7 +126,3 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
     };
   };
 }
-
-/* Exports -------------------------------------------------------------------*/
-
-module.exports = udp;

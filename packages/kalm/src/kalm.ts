@@ -1,16 +1,12 @@
-/* Requires ------------------------------------------------------------------*/
-
 import { EventEmitter } from 'events';
 import { Client } from './components/client';
-import { Provider } from './components/provider';
+import { Server } from './components/server';
 
 import { dynamic } from './routines/dynamic';
 import { realtime } from './routines/realtime';
 import { tick } from './routines/tick';
 
-/* Local variables -----------------------------------------------------------*/
-
-const defaults: ProviderConfig = {
+const defaults: ServerConfig = {
   host: '0.0.0.0',
   json: true,
   port: 3000,
@@ -18,11 +14,9 @@ const defaults: ProviderConfig = {
   transport: null,
 };
 
-/* Methods -------------------------------------------------------------------*/
-
 const uniqueLabel = () => Math.random().toString(36).substring(7);
 
-function validateOptions(options: ProviderConfig): void {
+function validateOptions(options: ServerConfig): void {
   if (options.transport === null || options.transport === undefined) {
     throw new Error(`Unable to create Kalm client, missing "transport" parameter.
       You may need to install one. ex: @kalm/tcp`);
@@ -42,16 +36,16 @@ function validateOptions(options: ProviderConfig): void {
     if (typeof options.transport !== 'function') {
       throw new Error(`Routine is not a function (${options.routine}), see: https://github.com/kalm/kalm.js#documentation`);
     }
-    const testChannel = options.routine({}, {});
+    const testChannel = options.routine({}, () => 0);
     if (!testChannel.add) {
       throw new Error('Routine is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
     }
   }
 }
 
-export function listen(options: ProviderConfig): Provider {
+export function listen(options: ServerConfig): Server {
   validateOptions(options);
-  return Provider({ label: uniqueLabel(), ...defaults, ...options }, new EventEmitter());
+  return Server({ label: uniqueLabel(), ...defaults, ...options }, new EventEmitter());
 }
 
 export function connect(options: ClientConfig): Client {
