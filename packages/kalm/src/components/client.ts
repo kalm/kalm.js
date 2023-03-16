@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { log } from '../utils/logger';
 
 export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any): Client {
-  let connected: number = 1;
+  let connected = 1;
 
   type Channel = {
     name: string
@@ -12,8 +12,8 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
 
   const channels: {[channel: string]: Channel } = {};
   const routine = params.routine(params, _wrap);
-  const transport: Socket<any> = params.transport(params, emitter);
-  let instance;
+  const transport: Socket = params.transport(params, emitter);
+  let instance = null;
   
   const remote: Remote = (params.isServer) ? transport.remote(socket) : { host: params.host, port: params.port };
   const local: Remote = (params.isServer) ? { host: params.host, port: params.port } : null;

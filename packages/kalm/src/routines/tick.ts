@@ -7,7 +7,7 @@ export function tick({ hz, seed = 0 }: { hz: number, seed?: number }): KalmRouti
 
   return function queue(params: object, routineEmitter: (frameId: number) => any): Queue {
     let timer: ReturnType<typeof setTimeout> = null;
-    let numPackets: number = 0;
+    let numPackets = 0;
 
     function _step(): void {
       frameId++;

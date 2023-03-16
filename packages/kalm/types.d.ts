@@ -2,7 +2,7 @@ interface ClientConfig {
     label?: string
     routine?: KalmRoutine
     json?: Boolean
-    transport?: KalmTransport<any>
+    transport?: KalmTransport
     port?: number
     host?: string
     isServer?: boolean
@@ -13,7 +13,7 @@ interface ServerConfig {
     label?: string
     routine?: KalmRoutine
     json?: Boolean
-    transport?: KalmTransport<any>
+    transport?: KalmTransport
     port?: number
     host?: string
 }
@@ -74,8 +74,8 @@ interface Queue {
     flush: () => void
 }
 
-interface KalmTransport<TransportSocket> {
-    (params: ClientConfig, emitter: any): Socket<TransportSocket>
+interface KalmTransport {
+    (params: any, emitter: any): Socket
 }
 
 type Peer = {
@@ -88,13 +88,13 @@ type Peer = {
     sdp?: string
 }
 
-interface Socket<TransportSocket> {
+interface Socket {
     bind: () => void
-    remote: (handle: TransportSocket) => Remote
-    connect: (handle?: TransportSocket) => TransportSocket
+    remote: (handle: any) => Remote
+    connect: (handle?: any) => any
     stop: () => void
-    send: (handle: TransportSocket, message: RawFrame) => void
-    disconnect: (handle: TransportSocket) => void
+    send: (handle: any, message: RawFrame) => void
+    disconnect: (handle: any) => void
     negociate?: (params: { peer: Peer }) => Promise<Peer>
 }
 

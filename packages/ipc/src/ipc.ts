@@ -1,18 +1,23 @@
 import net from 'net';
 
 interface IPCSocket extends net.Socket {
-  server: {
+  server?: {
     _connectionKey: string
   }
-  _server: {
+  _server?: {
     _pipeName: string
   }
-  _handle: {
+  _handle?: {
     fd: number
   }
 }
 
-export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
+type IPCConfig = {
+  socketTimeout?: number
+  path?: string
+}
+
+function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
@@ -36,7 +41,7 @@ export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCCon
       }
     }
 
-    function connect(handle: net.Socket): net.Socket {
+    function connect(handle: IPCSocket): IPCSocket {
       const connection: net.Socket = handle || net.connect(`${path}${params.port}`);
       let buffer = '';
       connection.on('data', req => {
@@ -78,3 +83,6 @@ export function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCCon
     };
   };
 }
+
+// Ensures support for modules and requires
+module.exports = ipc;

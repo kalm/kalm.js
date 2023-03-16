@@ -1,11 +1,17 @@
 declare module '@kalm/udp' {
     interface UDPConfig {
-        type?: string
+        /** The udp socket family (default: udp4) */
+        type?: 'udp4' | 'udp6'
+        /** The ip address that shows up when calling `local()` */
         localAddr?: string
+        /** UDP reuse Address seting */
         reuseAddr?: boolean
+        /** The maximum idle time for the connection before it hangs up */
         socketTimeout?: number
-        connectTimeout?: number
     }
 
+    /**
+     * Creates a UDP Transport
+     */
     export default function udp(config?: UDPConfig): (config?: UDPConfig) => any;
 }

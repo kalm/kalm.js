@@ -44,7 +44,8 @@
   },
   "browser": {
     "http": false,
-    "https": false
+    "https": false,
+    "events": false
   },
   "jest": {
     "preset": "ts-jest",

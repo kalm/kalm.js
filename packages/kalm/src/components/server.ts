@@ -4,7 +4,7 @@ import { Client } from './client';
 
 export function Server(params: ClientConfig, emitter: NodeJS.EventEmitter): Server {
   const connections = [];
-  const socket: Socket<any> = params.transport(params, emitter);
+  const socket: Socket = params.transport(params, emitter);
 
   function broadcast(channel: string, payload: Serializable): void {
     connections.forEach(c => c.write(channel, payload));

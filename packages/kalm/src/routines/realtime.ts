@@ -1,6 +1,6 @@
 export function realtime(): KalmRoutine {
   return function queue(params: { deferred: boolean }, routineEmitter: (frameId: number) => any): Queue {
-    let frameId: number = 0;
+    let frameId = 0;
 
     function add(): void {
       if (params.deferred == true) {

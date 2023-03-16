@@ -11,7 +11,7 @@ export function dynamic({
     let timer: ReturnType<typeof setTimeout> = null;
     let numPackets = 0;
     let totalBytes = 0;
-    let frameId: number = 0;
+    let frameId = 0;
 
     function _step(): void {
       clearTimeout(timer);

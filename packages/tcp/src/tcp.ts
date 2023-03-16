@@ -12,8 +12,8 @@ interface TCPConfig {
   socketTimeout?: number
 }
 
-export function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport<TCPSocket> {
-  return function socket(params: ClientConfig, emitter: events.EventEmitter): Socket<TCPSocket> {
+function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: events.EventEmitter): Socket {
     let listener: net.Server;
 
     function bind(): void {
@@ -78,3 +78,6 @@ export function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport<TC
     };
   };
 }
+
+// Ensures support for modules and requires
+module.exports = tcp;

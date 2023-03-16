@@ -7,8 +7,8 @@ type WebRTCConfig = {
   peers?: Peer[]
 }
 
-export function webrtc(config: WebRTCConfig = {}): KalmTransport<any> {
-  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket<any> {
+function webrtc(config: WebRTCConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let activeNode;
     let passiveNode;
 
@@ -83,3 +83,6 @@ export function webrtc(config: WebRTCConfig = {}): KalmTransport<any> {
     };
   };
 }
+
+// Ensures support for modules and requires
+module.exports = webrtc;

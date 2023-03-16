@@ -1,3 +1,6 @@
+import events from 'events';
+import {createServer} from 'https';
+
 const isBrowser = (typeof WebSocket !== 'undefined');
 const WS = isBrowser ? WebSocket : require('ws');
 
@@ -8,13 +11,22 @@ type WSConfig = {
   socketTimeout?: number
 }
 
-export function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTransport<WebSocket> {
-  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket<WebSocket> {
+type WSHandle = WebSocket & {
+  _queue: string[],
+  _timer: ReturnType<typeof setTimeout>
+  headers?: any
+  connection?: any
+  _socket?: any
+}
+
+
+function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: events.EventEmitter): Socket {
     let listener;
 
     function bind(): void {
       if (cert && key) {
-        const server = require('https').createServer({ key, cert }, req => req.socket.end());
+        const server = createServer({ key, cert }, req => req.socket.end());
         listener = new WS.Server({ port: params.port, server });
       } else {
         listener = new WS.Server({ port: params.port });
@@ -24,7 +36,7 @@ export function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): 
       emitter.emit('ready');
     }
 
-    function send(handle: WebSocket & { _queue: string[] }, payload: RawFrame | string): void {
+    function send(handle: WSHandle & { _queue: string[] }, payload: RawFrame | string): void {
       if (handle && handle.readyState === 1) handle.send(typeof payload === 'string' ? payload : JSON.stringify(payload));
       else handle._queue.push(JSON.stringify(payload));
       resetTimeout(handle);
@@ -34,9 +46,9 @@ export function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): 
       if (listener) listener.close();
     }
 
-    function connect(handle?: WebSocket): WebSocket {
+    function connect(handle?: WSHandle): WSHandle {
       const protocol: string = (!!cert && !!key) === true ? 'wss' : 'ws';
-      const connection: WebSocket & { _queue: string[], _timer: ReturnType<typeof setTimeout> } = handle || new WS(`${protocol}://${params.host}:${params.port}`, { ...(agent ? {agent} : {})});
+      const connection: WSHandle = handle || new WS(`${protocol}://${params.host}:${params.port}`, { ...(agent ? {agent} : {})});
       connection.binaryType = 'arraybuffer';
       const evtType: string = isBrowser ? 'addEventListener' : 'on';
       connection._queue = [];
@@ -64,7 +76,7 @@ export function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): 
       }, socketTimeout);
     }
 
-    function remote(handle: WebSocket & { headers: any, connection: any, _socket: any }): Remote {
+    function remote(handle: WSHandle): Remote {
       const h = handle && handle.headers || {};
       const headerHost = h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0];
       const remoteHost = handle?.connection?.remoteAddress;
@@ -93,3 +105,6 @@ export function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): 
     };
   };
 }
+
+// Ensures support for modules and requires
+module.exports = ws;
