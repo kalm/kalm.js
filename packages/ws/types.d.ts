@@ -6,7 +6,7 @@ declare module '@kalm/ws' {
         key?: string
         /** A custom agent for the http connection, can be used to set proxies or other connection behaviours */
         agent?: any
-        /** The maximum idle time for the connection before it hangs up */
+        /** The maximum idle time for the connection before it hangs up (default: 30000) */
         socketTimeout?: number
     }
 

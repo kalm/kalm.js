@@ -23,11 +23,16 @@
 
 ## Options
 
-```
+```typescript
 {
-    cert: null,
-    key: null,
-    secure: false
+    /** The certificate file content for a secure socket connection, both this and `key` must be set */
+    cert?: string
+    /** The key file content for a secure socket connection, both this and `cert` must be set */
+    key?: string
+    /** A custom agent for the http connection, can be used to set proxies or other connection behaviours */
+    agent?: any
+    /** The maximum idle time for the connection before it hangs up (default: 30000) */
+    socketTimeout: number
 }
 ```
 
@@ -39,4 +44,4 @@ If you think of something that you want, [open an issue](//github.com/kalm/kalm.
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2022 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2023 Frederic Charette

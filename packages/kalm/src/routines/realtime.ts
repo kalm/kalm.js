@@ -1,5 +1,5 @@
 export function realtime(): KalmRoutine {
-  return function queue(params: { deferred: boolean }, routineEmitter: (frameId: number) => any): Queue {
+  return function queue(params: { deferred: boolean } = { deferred: false }, routineEmitter: (frameId: number) => any): Queue {
     let frameId = 0;
 
     function add(): void {
@@ -13,7 +13,7 @@ export function realtime(): KalmRoutine {
 
     function _step() {
       routineEmitter(frameId);
-      if (++frameId > 0xffff) frameId = 0;
+      if (++frameId > 0xffffffff) frameId = 0;
     }
 
     function flush(): void {}

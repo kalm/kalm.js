@@ -1,6 +1,6 @@
 declare module '@kalm/tcp' {
     interface TCPConfig {
-        /** The maximum idle time for the connection before it hangs up */
+        /** The maximum idle time for the connection before it hangs up (default: 30000) */
         socketTimeout?: number
     }
 
