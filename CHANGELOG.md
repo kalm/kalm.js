@@ -1,8 +1,41 @@
 # Changelog
 
+## [v7.0.0] - 2023-03-17
+
+commit [#](https://github.com/kalm/kalm.js/commits)
+
+### Major changes
+
+- Standardized parameter names and expected behavior
+  - Removed `secure` WS option, instead checking if `cert` and `key` are set
+  - Routines.dynamic option `hz` is now `maxInterval` and is measured in milliseconds
+  - Renamed `provider` internally to `server` for easier understanding
+  - Removed previously deprecated UDP `connectTimeout` option
+- Added UDP idle timeout behavior
+- Added WS idle timeout behavior
+- Added WS Agent option for proxying
+- frameId counter now goes up to 0xffffffff before cycling instead of 0xffff
+
+### Bug fixes
+
+- Fixed an issue in Routines.tick where all queues shared the same frameId counter
+- Routines.tick option `seed` now correctly sets the `frameId` and starts the counter to match the expected pace
+- Fixed references to Node modules in TS definitions
+
+## [v6.1.0] - 2022-09-21
+
+commit [a0e88e3](https://github.com/kalm/kalm.js/commit/a0e88e310d98646b53fbcc56f6efeea4db5e87d8)
+
+### Major changes
+
+- Removed SYN/ACK UDP handshake, which removes the socket timeout behaviour for that transport
+- Added error event for UDP packet over the safe limit (16384 bytes), previous behaviour was to crash silently
+- Routines are no longer event emitters, but have a size function
+
+
 ## [v6.0.0] - 2021-04-26
 
-commit: [#](https://github.com/kalm/kalm.js/commits)
+commit: [47b810d](https://github.com/kalm/kalm.js/commit/47b810d5ab212686c3194d53e781e1728bd735f9)
 
 ### Breaking changes
 

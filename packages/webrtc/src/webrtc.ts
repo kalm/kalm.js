@@ -1,11 +1,11 @@
-/* Requires ------------------------------------------------------------------*/
-
 import Peer from 'simple-peer';
 
 const isNode = (typeof process !== 'undefined');
 if (!Peer.WEBRTC_SUPPORT && !(isNode && process.env.JEST_WORKER_ID)) throw new Error('Unsupported environement for WebRTC');
 
-/* Methods -------------------------------------------------------------------*/
+type WebRTCConfig = {
+  peers?: Peer[]
+}
 
 function webrtc(config: WebRTCConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
@@ -84,6 +84,5 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
   };
 }
 
-/* Exports -------------------------------------------------------------------*/
-
+// Ensures support for modules and requires
 module.exports = webrtc;

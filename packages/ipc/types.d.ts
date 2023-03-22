@@ -1,30 +1,13 @@
-/* eslint-disable */
-
 declare module '@kalm/ipc' {
-    interface IPCConfig {
+interface IPCConfig {
+        /** The maximum idle time for the connection before it hangs up */
         socketTimeout?: number
+        /** The unique path for the IPC file descriptor (Unix only) */
         path?: string
     }
 
-    interface KalmTransport {
-        (params: any, emitter: NodeJS.EventEmitter): Socket
-    }
-
-    type Remote = {
-        host: string
-        port: number
-    }
-
-    type SocketHandle = NodeJS.Socket
-
-    interface Socket {
-        bind: () => void
-        remote: (handle: SocketHandle) => Remote
-        connect: (handle?: SocketHandle) => SocketHandle
-        stop: () => void
-        send: (handle: SocketHandle, message: number[] | Buffer) => void
-        disconnect: (handle: SocketHandle) => void
-    }
-
-    export default function ipc(config?: IPCConfig): (config?: IPCConfig) => Transport;
+    /**
+     * Creates an IPC Transport
+     */
+    export default function ipc(config?: IPCConfig): (config?: IPCConfig) => any;
 }

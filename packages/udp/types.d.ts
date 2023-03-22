@@ -1,37 +1,17 @@
-/* eslint-disable */
-
 declare module '@kalm/udp' {
     interface UDPConfig {
-        type?: string
+        /** The udp socket family (default: udp4) */
+        type?: 'udp4' | 'udp6'
+        /** The ip address that shows up when calling `local()` (default: '0.0.0.0') */
         localAddr?: string
+        /** UDP reuse Address seting (default: false) */
         reuseAddr?: boolean
+        /** The maximum idle time for the connection before it hangs up (default: 30000) */
         socketTimeout?: number
-        connectTimeout?: number
     }
 
-    interface KalmTransport {
-        (params: any, emitter: NodeJS.EventEmitter): Socket
-    }
-
-    type Remote = {
-        host: string
-        port: number
-    }
-
-    type SocketHandle = {
-        socket: any
-        port: number
-        host: string
-    }
-
-    interface Socket {
-        bind: () => void
-        remote: (handle: SocketHandle) => Remote
-        connect: (handle?: SocketHandle) => SocketHandle
-        stop: () => void
-        send: (handle: SocketHandle, message: number[] | Buffer) => void
-        disconnect: (handle: SocketHandle) => void
-    }
-
-    export default function udp(config?: UDPConfig): (config?: UDPConfig) => Transport;
+    /**
+     * Creates a UDP Transport
+     */
+    export default function udp(config?: UDPConfig): (config?: UDPConfig) => any;
 }

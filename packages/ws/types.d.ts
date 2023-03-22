@@ -1,31 +1,17 @@
-/* eslint-disable */
-
 declare module '@kalm/ws' {
     interface WSConfig {
+        /** The certificate file content for a secure socket connection, both this and `key` must be set */
         cert?: string
+        /** The key file content for a secure socket connection, both this and `cert` must be set */
         key?: string
-        secure?: boolean
+        /** A custom agent for the http connection, can be used to set proxies or other connection behaviours */
+        agent?: any
+        /** The maximum idle time for the connection before it hangs up (default: 30000) */
+        socketTimeout?: number
     }
 
-    interface KalmTransport {
-        (params: any, emitter: NodeJS.EventEmitter): Socket
-    }
-
-    type Remote = {
-        host: string
-        port: number
-    }
-
-    type SocketHandle = WebSocket
-
-    interface Socket {
-        bind: () => void
-        remote: (handle: SocketHandle) => Remote
-        connect: (handle?: SocketHandle) => SocketHandle
-        stop: () => void
-        send: (handle: SocketHandle, message: number[] | Buffer) => void
-        disconnect: (handle: SocketHandle) => void
-    }
-
-    export default function ws(config?: WSConfig): (config?: WSConfig) => Transport;
+    /**
+     * Creates a websocket Transport
+     */
+    export default function ws(config?: WSConfig): (config?: WSConfig) => any;
 }

@@ -8,9 +8,15 @@ describe('Testing module loading patterns', () => {
     expect(typeof ipc).toBe('function');
   });
 
-  it('Should support require syntax', () => {
+  it('Should support require syntax for kalm core', () => {
     expect(typeof require('../../packages/kalm/bin/kalm').connect).toBe('function');
+  });
+
+  it('Should support require syntax for kalm routines', () => {
     expect(require('../../packages/kalm/bin/kalm').routines).toHaveProperty('realtime');
+  });
+
+  it('Should support require syntax for kalm transports', () => {
     expect(typeof require('../../packages/ipc/bin/ipc')).toBe('function');
   });
 });

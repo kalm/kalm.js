@@ -1,11 +1,7 @@
-/* Local variables ------------------------------------------------------------*/
-
 declare const window: any;
 
 let enabled: boolean = null;
 const prefix = `KALM${typeof process === 'object' && ` (pid:${process.pid})`}`;
-
-/* Methods -------------------------------------------------------------------*/
 
 export function log(msg: string): void {
   if (enabled === null) {

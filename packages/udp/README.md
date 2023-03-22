@@ -23,13 +23,16 @@
 
 ## Options
 
-```
+```typescript
 {
-    type: 'udp4',
-    localAddr: '0.0.0.0',
-    reuseAddr: true,
-    socketTimeout: 30000,
-    connectTimeout: 1000,
+    /** The udp socket family (default: udp4) */
+    type?: 'udp4' | 'udp6'
+    /** The ip address that shows up when calling `local()` (default: '0.0.0.0') */
+    localAddr?: string
+    /** UDP reuse Address seting (default: false) */
+    reuseAddr?: boolean
+    /** The maximum idle time for the connection before it hangs up (default: 30000) */
+    socketTimeout?: number
 }
 ```
 
@@ -41,4 +44,4 @@ If you think of something that you want, [open an issue](//github.com/kalm/kalm.
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2022 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2023 Frederic Charette

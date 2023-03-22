@@ -1,16 +1,16 @@
 {
-    "extends": "airbnb-base",
-    "parser": "@typescript-eslint/parser",
-    "plugins": [ "import", "@typescript-eslint" ],
-    "settings": {
-      "import/resolver": {
-        "node": {
-          "paths": ["packages"],
-          "extensions": [".ts", ".spec.ts"]
-        }
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [ "@typescript-eslint" ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts"],
+        "moduleDirectory": ["node_modules", "packages/"]
       }
-    },
-    "rules": {
+    }
+  },
+  "rules": {
         "import/extensions": 0,
         "no-bitwise": 0,
         "linebreak-style": 1,
@@ -26,13 +26,14 @@
         "no-continue": 0,
         "no-unused-vars": 0,
         "global-require": 0,
-        "max-len": [1, 140],
+        "max-len": [1, 180],
         "@typescript-eslint/no-unused-vars": [
             "error", 
             { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
         ],
-        "import/no-extraneous-dependencies": 0,
-        "import/no-unresolved": 1
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/ban-types": 0,
+        "@typescript-eslint/no-empty-function": 0
     },
     "env": {
         "browser": true,

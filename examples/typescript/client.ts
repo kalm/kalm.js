@@ -2,7 +2,7 @@ import {connect, routines} from 'kalm';
 import ws from '@kalm/ws';
 
 const client = connect({
-  transport: ws(),
+  transport: ws({}),
   port: 3938,
   routine: routines.realtime(),
 });

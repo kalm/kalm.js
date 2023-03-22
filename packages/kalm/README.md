@@ -19,7 +19,7 @@
 ---
 
 - **Easy-to-use syntax** unified across protocols
-- Flexible and extensible, load your own transports and routines
+- Flexible and extensible, create your own transports and buffering strategies
 - Can be used between servers or in the **browser**
 - Lower resource footprint and **better throughtput** than plain sockets
 - **Zero dependencies** and can be bundled down to ~5kb!
@@ -124,9 +124,9 @@ Kalm offers events to track when packets are processed by routines or when a raw
 
 | Event | Payload | Description |
 | --- | --- | --- |
-| `error` | Error | (provider, client) Emits on errors. |
-| `ready` | void | (provider) Indicates that the provider is now actively listeneing for new connections |
-| `connection` | [Client](./types.d.ts#L35) | (provider) Indicates that a client has successfuly connected |
+| `error` | Error | (server, client) Emits on errors. |
+| `ready` | void | (server) Indicates that the server is now actively listeneing for new connections |
+| `connection` | [Client](./types.d.ts#L35) | (server) Indicates that a client has successfuly connected |
 | `connect` | [Client](./types.d.ts#L35) | (client) Indicates that a client has successfuly connected |
 | `disconnect` | void | (client) Indicates that a client has disconnected |
 | `frame` | [RawFrame](./types.d.ts#L111) | (client) Triggered when recieving a parsed full frame. |
@@ -166,4 +166,4 @@ Support this project with your organization. Your logo will show up here with a 
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2022 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2023 Frederic Charette

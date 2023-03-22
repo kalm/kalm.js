@@ -1,7 +1,6 @@
-/* eslint-disable */
-
 declare module '@kalm/webrtc' {
     interface WebRTCConfig {
+        /** The list of peers to connect with */
         peers?: Peer[]
     }
 
@@ -15,26 +14,12 @@ declare module '@kalm/webrtc' {
         sdp?: string
     }
 
-    interface KalmTransport {
-        (params: any, emitter: NodeJS.EventEmitter): Socket
-    }
-
-    type Remote = {
-        host: string
-        port: number
-    }
-
-    type SocketHandle = any
-
     interface Socket {
-        bind: () => void
-        remote: (handle: SocketHandle) => Remote
-        connect: (handle?: SocketHandle) => SocketHandle
-        stop: () => void
-        send: (handle: SocketHandle, message: number[] | Buffer) => void
-        disconnect: (handle: SocketHandle) => void
         negociate: (params: { peer: Peer }) => Promise<Peer>
     }
 
-    export default function ws(config?: WebRTCConfig): (config?: WebRTCConfig) => Transport;
+    /**
+     * Creates a WebRTC Transport
+     */
+    export default function ws(config?: WebRTCConfig): (config?: WebRTCConfig) => any;
 }

@@ -1,8 +1,5 @@
-/* Requires ------------------------------------------------------------------*/
-
 import net from 'net';
-
-/* Methods -------------------------------------------------------------------*/
+import events from 'events';
 
 interface TCPSocket extends net.Socket {
   _peername: {
@@ -11,8 +8,12 @@ interface TCPSocket extends net.Socket {
   }
 }
 
+interface TCPConfig {
+  socketTimeout?: number
+}
+
 function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
+  return function socket(params: ClientConfig, emitter: events.EventEmitter): Socket {
     let listener: net.Server;
 
     function bind(): void {
@@ -35,7 +36,7 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
       }
     }
 
-    function connect(handle: net.Socket): net.Socket {
+    function connect(handle: TCPSocket): TCPSocket {
       const connection: net.Socket = handle || net.connect(params.port, params.host);
       let buffer = '';
       connection.on('data', req => {
@@ -56,7 +57,7 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
       connection.on('connect', () => emitter.emit('connect', connection));
       connection.on('close', () => emitter.emit('disconnect'));
       connection.setTimeout(socketTimeout, () => disconnect(handle));
-      return connection;
+      return connection as TCPSocket;
     }
 
     function stop(): void {
@@ -78,6 +79,5 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
   };
 }
 
-/* Exports -------------------------------------------------------------------*/
-
+// Ensures support for modules and requires
 module.exports = tcp;
