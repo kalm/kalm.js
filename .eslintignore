@@ -1,6 +1,0 @@
-*.js
-examples
-node_modules
-scripts
-*.d.ts
-tests

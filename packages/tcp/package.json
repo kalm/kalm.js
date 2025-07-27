@@ -7,7 +7,7 @@
     "build": "../../scripts/build.sh tcp",
     "clean": "../../scripts/cleanup.sh",
     "test": "jest ./tests",
-    "prepublish": "cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
+    "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
   },
   "engines": {
     "node": ">=14"

@@ -39,13 +39,14 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
     function connect(handle: TCPSocket): TCPSocket {
       const connection: net.Socket = handle || net.connect(params.port, params.host);
       let buffer = '';
-      connection.on('data', req => {
+      connection.on('data', (req) => {
         buffer += req.toString();
         const chunks = buffer.split('\n\n');
         if (buffer.substring(buffer.length - 2) !== '\n\n') {
           buffer = chunks[chunks.length - 1];
           chunks.pop();
-        } else {
+        }
+        else {
           buffer = '';
         }
 

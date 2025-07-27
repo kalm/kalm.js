@@ -2,8 +2,7 @@
  * KALM Benchmark
  */
 
-
-/* Requires ------------------------------------------------------------------*/
+/* Requires ------------------------------------------------------------------ */
 
 const io = require('socket.io');
 const http = require('http');
@@ -11,7 +10,7 @@ const ioclient = require('socket.io-client');
 
 const settings = require('../settings');
 
-/* Local variables -----------------------------------------------------------*/
+/* Local variables ----------------------------------------------------------- */
 
 let server;
 let client;
@@ -19,7 +18,7 @@ let client;
 let count = 0;
 let handbreak = true;
 
-/* Methods -------------------------------------------------------------------*/
+/* Methods ------------------------------------------------------------------- */
 
 function _absorb(err) {
   console.log(err); /* eslint-disable-line */
@@ -65,7 +64,7 @@ function step(resolve) {
   resolve();
 }
 
-/* Exports -------------------------------------------------------------------*/
+/* Exports ------------------------------------------------------------------- */
 
 module.exports = {
   setup,

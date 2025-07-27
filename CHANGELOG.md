@@ -1,8 +1,17 @@
 # Changelog
 
-## [v7.0.0] - 2023-03-17
+## [v7.1.0] - 2025-07-26
 
 commit [#](https://github.com/kalm/kalm.js/commits)
+
+### Minor changes
+
+- Added support for the new native WS APIs in Node 22 and later
+- Removed yarn from the toolchain. There's no reason to keep it now that NPM workspaces are more mature.
+
+## [v7.0.0] - 2023-03-17
+
+commit [99a3ab9](https://github.com/kalm/kalm.js/commit/99a3ab9c495f6f50d7d4b4a0f478a213cc0ce484)
 
 ### Major changes
 

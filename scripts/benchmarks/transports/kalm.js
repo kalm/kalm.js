@@ -2,8 +2,7 @@
  * KALM Benchmark
  */
 
-
-/* Requires ------------------------------------------------------------------*/
+/* Requires ------------------------------------------------------------------ */
 
 const settings = require('../settings');
 const Kalm = require('../../../packages/kalm/bin/kalm');
@@ -15,7 +14,7 @@ const transports = {
   ws: require('../../../packages/ws/bin/ws'),
 };
 
-/* Local variables -----------------------------------------------------------*/
+/* Local variables ----------------------------------------------------------- */
 
 let server;
 let client;
@@ -24,7 +23,7 @@ let count = 0;
 let accDensity = 0;
 let handbreak = true;
 
-/* Methods -------------------------------------------------------------------*/
+/* Methods ------------------------------------------------------------------- */
 
 function setup(resolve) {
   server = Kalm.listen({
@@ -35,7 +34,7 @@ function setup(resolve) {
   });
 
   server.on('connection', (c) => {
-    c.subscribe(settings.testChannel, (msg) => c.write(settings.testChannel, msg));
+    c.subscribe(settings.testChannel, msg => c.write(settings.testChannel, msg));
   });
 
   server.on('error', (e) => {
@@ -68,7 +67,7 @@ function step(resolve) {
       routine: Kalm.routines.realtime(),
     });
     client.subscribe(settings.testChannel, (body, frame) => {
-      //console.log('got it', frame)
+      // console.log('got it', frame)
       count++;
     });
 
@@ -82,7 +81,7 @@ function step(resolve) {
   resolve();
 }
 
-/* Exports -------------------------------------------------------------------*/
+/* Exports ------------------------------------------------------------------- */
 
 module.exports = {
   setup,

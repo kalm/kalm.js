@@ -4,18 +4,17 @@ type UDPSocketHandle = {
   socket: dgram.Socket
   port: number
   host: string
-}
+};
 
 type UDPConfig = {
   type?: dgram.SocketType
   localAddr?: string
   reuseAddr?: boolean
   socketTimeout?: number
-}
+};
 
 function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000 }: UDPConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
-
     let listener: dgram.Socket;
     const clientCache = {};
 
@@ -36,7 +35,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
     function remote(handle: UDPSocketHandle): Remote {
       return {
         host: handle?.host || null,
-        port: handle?.port || null
+        port: handle?.port || null,
       };
     }
 
@@ -65,9 +64,9 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
     function connect(handle?: UDPSocketHandle): UDPSocketHandle {
       if (handle) return handle;
       const connection = dgram.createSocket(type as dgram.SocketType);
-      
+
       connection.on('error', err => emitter.emit('error', err));
-      connection.on('message', req => {
+      connection.on('message', (req) => {
         emitter.emit('connect', connection);
         emitter.emit('frame', JSON.parse(req.toString()), req.length);
         resetTimeout(res);
@@ -92,7 +91,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
         port: origin.port,
         socket: listener,
       };
-      
+
       const key = `${origin.address}.${origin.port}`;
 
       if (!clientCache[key]) {
@@ -121,7 +120,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
       listener.on('message', (data, origin) => resolveClient(origin, data));
       listener.on('error', err => emitter.emit('error', err));
       listener.bind(params.port, localAddr);
-      emitter.emit('ready');
+      setTimeout(() => emitter.emit('ready'), 1);
     }
 
     if (emitter && typeof emitter.on === 'function') emitter.on('connection', addClient);

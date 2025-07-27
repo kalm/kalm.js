@@ -56,11 +56,14 @@ const server = kalm.listen({
 });
 
 server.on('connection', (client) => {
-  client.subscribe('my-channel', (body, frame) => {
-    // Handle messages here
+  client.subscribe('channel1', (body, frame) => {
+    // When receiving messages from this client on "channel1"
+    console.log(body) //
+    console.log(frame) //
   });
 
-  server.broadcast('my-other-channel', 'some message');
+  // Sends a message to all clients on "channel2"
+  server.broadcast('channel2', 'some message');
 });
 ```
 
@@ -78,11 +81,14 @@ const client = kalm.connect({
 });
 
 client.on('connect', () => {
-  client.subscribe('my-other-channel', (body, frame) => {
-    // Handle messages here
+  client.subscribe('channel1', (body, frame) => {
+    // When receiving messages from the server on "channel1"
+    console.log(body); // 
+    console.log(frame); //
   });
 
-  client.write('my-channel', 'hello world');
+  // Sends a message to the server on "channel2"
+  client.write('channel2', 'hello world');
 });
 
 ```
@@ -119,16 +125,22 @@ Example:
 
 ## Events
 
-Kalm offers events to track when packets are processed by routines or when a raw frame is received.
+Kalm **servers** offers events to track when packets are processed by routines or when a raw frame is received.
 
-| Event | Payload | Description |
+| Server Event | Payload | Description |
 | --- | --- | --- |
 | `error` | Error | (server, client) Emits on errors. |
 | `ready` | void | (server) Indicates that the server is now actively listeneing for new connections |
-| `connection` | [Client](./types.d.ts#L35) | (server) Indicates that a client has successfuly connected |
-| `connect` | [Client](./types.d.ts#L35) | (client) Indicates that a client has successfuly connected |
+| `connection` | [Client](./types.d.ts#L90) | (server) Indicates that a client has successfuly connected |
+
+Kalm **clients** offers events to track when packets are processed by routines or when a raw frame is received.
+
+| Client Event | Payload | Description |
+| --- | --- | --- |
+| `error` | Error | (server, client) Emits on errors. |
+| `connect` | [Client](./types.d.ts#L90) | (client) Indicates that a client has successfuly connected |
 | `disconnect` | void | (client) Indicates that a client has disconnected |
-| `frame` | [RawFrame](./types.d.ts#L111) | (client) Triggered when recieving a parsed full frame. |
+| `frame` | [RawFrame](./types.d.ts#L189) | (client) Triggered when recieving a parsed full frame. |
 
 ## Testing
 
@@ -165,4 +177,4 @@ Support this project with your organization. Your logo will show up here with a 
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2023 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2025 Frederic Charette

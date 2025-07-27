@@ -5,7 +5,7 @@ if (!Peer.WEBRTC_SUPPORT && !(isNode && process.env.JEST_WORKER_ID)) throw new E
 
 type WebRTCConfig = {
   peers?: Peer[]
-}
+};
 
 function webrtc(config: WebRTCConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
@@ -20,12 +20,13 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
     }
 
     function negociate(event: any) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         if (!event.peer) throw new Error('No peer configuration provided in `connect`.');
         if (event.peer.type === 'answer') {
           activeNode.signal(event.peer);
-        } else {
-          passiveNode.on('signal', signal => {
+        }
+        else {
+          passiveNode.on('signal', (signal) => {
             if (signal.type === 'answer') resolve(signal);
           });
 
@@ -37,8 +38,8 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
     function bind(): void {
       activeNode = createNode(true);
       passiveNode = createNode(false);
-      activeNode.on('signal', signal => {
-        if (signal.type === 'offer') emitter.emit('ready', signal);
+      activeNode.on('signal', (signal) => {
+        if (signal.type === 'offer') setTimeout(() => emitter.emit('ready', signal), 1);
       });
 
       if (config.peers) config.peers.forEach(peer => negociate({ peer }));
@@ -57,7 +58,8 @@ function webrtc(config: WebRTCConfig = {}): KalmTransport {
         emitter.emit('connect', handle);
         handle.on('data', evt => emitter.emit('frame', JSON.parse(evt.data || evt), (evt.data || evt).length));
         handle.on('close', () => emitter.emit('disconnect'));
-      } else {
+      }
+      else {
         throw new Error('Do not use `connect` for webrtc, use `Client.transport.negociate()` instead.');
       }
 

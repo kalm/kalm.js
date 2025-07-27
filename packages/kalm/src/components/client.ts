@@ -8,13 +8,13 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
     name: string
     packets: any[]
     handlers: Function[]
-  }
+  };
 
-  const channels: {[channel: string]: Channel } = {};
+  const channels: { [channel: string]: Channel } = {};
   const routine = params.routine(params, _wrap);
   const transport: Socket = params.transport(params, emitter);
   let instance = null;
-  
+
   const remote: Remote = (params.isServer) ? transport.remote(socket) : { host: params.host, port: params.port };
   const local: Remote = (params.isServer) ? { host: params.host, port: params.port } : null;
 
@@ -39,7 +39,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
       return frame;
     }, { frameId, channels: {} }));
 
-    getChannels().forEach(channelName => { channels[channelName].packets.length = 0; });
+    getChannels().forEach((channelName) => { channels[channelName].packets.length = 0; });
   }
 
   function _handleConnect(): void {
@@ -53,7 +53,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
 
   function _handleRequest(frame: RawFrame, payloadBytes: number): void {
     if (frame && frame.channels) {
-      Object.keys(frame.channels).forEach(channelName => {
+      Object.keys(frame.channels).forEach((channelName) => {
         frame.channels[channelName].forEach((packet, messageIndex) => {
           if (channelName in channels) {
             channels[channelName].handlers.forEach(handler => handler(
@@ -93,8 +93,8 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
     if (connected > 1) setTimeout(() => transport.disconnect(socket), 0);
   }
 
-  function subscribe(channel: string, handler: (msg: any, frame: Frame) => void): void {
-    _resolveChannel(channel).handlers.push(handler);
+  function subscribe(channelName: string, handler: (msg: any, frame: Frame) => void): void {
+    _resolveChannel(channelName).handlers.push(handler);
   }
 
   function unsubscribe(channelName: string, handler?: (msg: any, frame: Frame) => void): void {
@@ -102,7 +102,8 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
     if (handler) {
       const index = channels[channelName].handlers.indexOf(handler);
       if (index > -1) channels[channelName].handlers.splice(index, 1);
-    } else channels[channelName].handlers = [];
+    }
+    else channels[channelName].handlers = [];
 
     if (channels[channelName].handlers.length === 0 && channels[channelName].packets.length === 0) delete channels[channelName];
   }

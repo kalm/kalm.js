@@ -15,7 +15,7 @@ interface IPCSocket extends net.Socket {
 type IPCConfig = {
   socketTimeout?: number
   path?: string
-}
+};
 
 function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
@@ -44,13 +44,14 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
     function connect(handle: IPCSocket): IPCSocket {
       const connection: net.Socket = handle || net.connect(`${path}${params.port}`);
       let buffer = '';
-      connection.on('data', req => {
+      connection.on('data', (req) => {
         buffer += req.toString();
         const chunks = buffer.split('\n\n');
         if (buffer.substring(buffer.length - 2) !== '\n\n') {
           buffer = chunks[chunks.length - 1];
           chunks.pop();
-        } else {
+        }
+        else {
           buffer = '';
         }
 

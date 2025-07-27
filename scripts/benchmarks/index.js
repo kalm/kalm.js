@@ -2,7 +2,7 @@
  * Kalm benchmarking
  */
 
-/* Requires ------------------------------------------------------------------*/
+/* Requires ------------------------------------------------------------------ */
 
 const Kalm = require('./transports/kalm');
 const TCP = require('./transports/tcp');
@@ -11,7 +11,7 @@ const UDP = require('./transports/udp');
 const WS = require('./transports/socketio');
 const settings = require('./settings');
 
-/* Local variables -----------------------------------------------------------*/
+/* Local variables ----------------------------------------------------------- */
 
 const _maxCount = null;
 let _curr = 0;
@@ -19,7 +19,7 @@ const Suite = { IPC, TCP, UDP, WS };
 const tests = [];
 const results = {};
 
-/* Methods -------------------------------------------------------------------*/
+/* Methods ------------------------------------------------------------------- */
 
 function _measure(transport, resolve) {
   _curr = 0;
@@ -60,13 +60,12 @@ function _postResults() {
   process.exit();
 }
 
-/* Init ----------------------------------------------------------------------*/
-
+/* Init ---------------------------------------------------------------------- */
 
 // Roll port number
 settings.port = 3000 + Math.round(Math.random() * 1000);
 
-const adpts = Object.keys(Suite).map((k) => ({
+const adpts = Object.keys(Suite).map(k => ({
   transport: k,
   settings: { transport: k.toLowerCase() },
   raw: Suite[k],
@@ -98,9 +97,9 @@ adpts.forEach((i) => {
 
 tests.push(_postResults);
 
-console.log(`Launching benchmarks for ${settings.testDuration/1000} second(s) -- MAKE SURE THAT YOU BUILD THE CODE FIRST --`)
+console.log(`Launching benchmarks for ${settings.testDuration / 1000} second(s) -- MAKE SURE THAT YOU BUILD THE CODE FIRST --`);
 
 tests.reduce(
-  (c, n) => c.then((resolve) => new Promise(n).then(resolve, _errorHandler), _errorHandler),
+  (c, n) => c.then(resolve => new Promise(n).then(resolve, _errorHandler), _errorHandler),
   Promise.resolve(),
 );

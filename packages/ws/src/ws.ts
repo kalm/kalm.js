@@ -1,24 +1,24 @@
 import events from 'events';
-import {createServer} from 'https';
+import { createServer } from 'https';
 
-const isBrowser = (typeof WebSocket !== 'undefined');
-const WS = isBrowser ? WebSocket : require('ws');
+const nativeAPIExists = (typeof WebSocket !== 'undefined');
+const WSClient = nativeAPIExists ? WebSocket : require('ws');
+const WSServer = require('ws').Server;
 
 type WSConfig = {
   cert?: string
   key?: string
   agent?: any
   socketTimeout?: number
-}
+};
 
 type WSHandle = WebSocket & {
-  _queue: string[],
+  _queue: string[]
   _timer: ReturnType<typeof setTimeout>
   headers?: any
   connection?: any
   _socket?: any
-}
-
+};
 
 function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: events.EventEmitter): Socket {
@@ -27,13 +27,14 @@ function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTra
     function bind(): void {
       if (cert && key) {
         const server = createServer({ key, cert }, req => req.socket.end());
-        listener = new WS.Server({ port: params.port, server });
-      } else {
-        listener = new WS.Server({ port: params.port });
+        listener = new WSServer({ port: params.port, server });
+      }
+      else {
+        listener = new WSServer({ port: params.port });
       }
       listener.on('connection', soc => emitter.emit('socket', soc));
       listener.on('error', err => emitter.emit('error', err));
-      emitter.emit('ready');
+      setTimeout(() => emitter.emit('ready'), 1);
     }
 
     function send(handle: WSHandle & { _queue: string[] }, payload: RawFrame | string): void {
@@ -48,12 +49,12 @@ function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTra
 
     function connect(handle?: WSHandle): WSHandle {
       const protocol: string = (!!cert && !!key) === true ? 'wss' : 'ws';
-      const connection: WSHandle = handle || new WS(`${protocol}://${params.host}:${params.port}`, { ...(agent ? {agent} : {})});
+      const connection: WSHandle = handle || new WSClient(`${protocol}://${params.host}:${params.port}`, { ...(agent ? { agent } : {}) });
       connection.binaryType = 'arraybuffer';
-      const evtType: string = isBrowser ? 'addEventListener' : 'on';
+      const evtType: string = nativeAPIExists ? 'addEventListener' : 'on';
       connection._queue = [];
       connection._timer = null;
-      connection[evtType]('message', evt => {
+      connection[evtType]('message', (evt) => {
         emitter.emit('frame', JSON.parse(evt.data || evt), (evt.data || evt).length);
         resetTimeout(connection);
       });
