@@ -40,3 +40,9 @@ node ./client.js 0.0.0.0 13002
 The clients should connect to the server and send an "hello world!" message using the external channel.
 
 In turn, the servers will forward this message to the others via an internal channel before each broadcasts it back to its connected clients.
+
+
+# Diagram
+<h3 align="center">
+    <img src="https://kalm.js.org/images/distributed.png" alt="peer-to-peer diagram"/>
+</h3>

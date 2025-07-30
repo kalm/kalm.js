@@ -5,6 +5,7 @@
 /* Requires ------------------------------------------------------------------ */
 
 const net = require('net');
+
 const settings = require('../settings');
 
 /* Local variables ----------------------------------------------------------- */
@@ -19,16 +20,17 @@ let handbreak = true;
 
 function _absorb(err) {
   console.log(err); /* eslint-disable-line */
+  return true;
 }
 
 function setup(resolve) {
   server = net.createServer((socket) => {
-    socket.addEventListener('data', () => socket.write(JSON.stringify(settings.testPayload)));
-    socket.addEventListener('error', _absorb);
+    socket.on('error', _absorb);
+    socket.on('data', () => socket.write(JSON.stringify(settings.testPayload)));
   });
   handbreak = false;
-  server.addEventListener('error', _absorb);
-  server.listen(settings.port, resolve);
+  server.on('error', _absorb);
+  server.listen(`/tmp/app.socket-${settings.port}`, resolve);
 }
 
 function teardown(resolve) {
@@ -50,9 +52,9 @@ function stop(resolve) {
 function step(resolve) {
   if (handbreak) return;
   if (!client) {
-    client = net.connect(settings.port, '0.0.0.0');
-    client.addEventListener('error', _absorb);
-    client.addEventListener('data', () => count++);
+    client = net.connect(`/tmp/app.socket-${settings.port}`);
+    client.on('error', _absorb);
+    client.on('data', () => count++);
   }
 
   client.write(JSON.stringify(settings.testPayload));

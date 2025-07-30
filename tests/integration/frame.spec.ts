@@ -26,7 +26,7 @@ describe('Frame', () => {
 
   it('Should have a well structured frame reference', (done) => {
     const payload = { foo: 'bar' };
-    server.addEventListener('connection', (c) => {
+    server.on('connection', (c) => {
       c.subscribe('test', (data, meta) => {
         expect(meta).toEqual({
           client: c,
@@ -41,12 +41,12 @@ describe('Frame', () => {
         done();
       });
     });
-    server.addEventListener('error', (e) => {
+    server.on('error', (e) => {
       throw new Error(e);
     });
 
     const client = connect({ transport: ipc() });
-    client.addEventListener('error', (e) => {
+    client.on('error', (e) => {
       throw new Error(e);
     });
     client.write('test', payload);

@@ -29,12 +29,12 @@ client.on('connect', () => {
   /**
    * Once a client has connected, we subscribe to messages sent on the "foo" channel.
    */
-  client.subscribe('foo', (body: MyCustomPayload, frame) => {
+  client.subscribe('foo', (body: MyCustomPayload, context) => {
     /**
      * When we receive a message on the foo channel, we also receive information about the frame and context.
      *
      * body: { message: "hello from the server!" }
-     * frame: {
+     * context: {
      *  client: <Client>,
      *  frame: {
      *     channel: "foo",
@@ -45,7 +45,7 @@ client.on('connect', () => {
      *   }
      * }
      */
-    console.log('Server event', body, frame);
+    console.log('Server event', body, context);
   });
 
   /**

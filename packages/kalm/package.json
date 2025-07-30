@@ -1,6 +1,6 @@
 {
   "name": "kalm",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "The socket optimizer",
   "main": "dist/kalm.js",
   "scripts": {
@@ -53,8 +53,7 @@
     "transform": {
       "^.+\\.tsx?$": [
       "ts-jest", {
-        "diagnostics": false,
-        "isolatedModules": true
+        "diagnostics": false
       }]
     }
   }

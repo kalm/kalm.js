@@ -34,13 +34,13 @@ provider.on('connection', (client) => {
   /**
    * Once a client has connected, we subscribe to messages sent on the "foo" channel.
    */
-  client.subscribe('foo', (body: MyCustomPayload, frame) => {
+  client.subscribe('foo', (body: Buffer, context) => {
     /**
      * When we receive a message on the foo channel, we also receive information about the frame and context.
      * We'll need to decompress the buffer to read it.
      *
      * body: <Buffer>
-     * frame: {
+     * context: {
      *  client: <Client>,
      *  frame: {
      *     channel: "foo",
@@ -51,8 +51,8 @@ provider.on('connection', (client) => {
      *   }
      * }
      */
-    uncompress(body, (decompressedMessage) => {
-      console.log('Client event', decompressedMessage, frame);
+    uncompress(body).then((decompressedMessage) => {
+      console.log('Client event', JSON.parse(decompressedMessage.toString()) as MyCustomPayload, context);
     });
   });
 

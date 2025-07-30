@@ -133,6 +133,10 @@
         }
 
         function printPeers() {
+            if (peers.length === 0) {
+                return document.getElementById('clientList').innerHTML = `<tr><td>No peers available</td></tr>`;
+            }
+
             // Pretty-print
             document.getElementById('clientList').innerHTML = `
                 ${peers.map((p, i) => `<tr class="peer"><td><span class="status ${['grey', 'yellow', 'green'][p.status]}" /></td><td>${p.name}</td><td> ${p.status < 1 ? `<button onClick="connect(${i})">Connect</button>` : ''}</td></tr>`).join('')}

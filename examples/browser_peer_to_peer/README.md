@@ -37,3 +37,7 @@ Open as many browser tabs as desired and navigate to `http://localhost:8000/exam
 
 Peers should appear in the list and give you the option to connect to them.
 
+# Diagram
+<h3 align="center">
+    <img src="https://kalm.js.org/images/p2p.png" alt="peer-to-peer diagram"/>
+</h3>

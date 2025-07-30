@@ -1,6 +1,6 @@
 # Changelog
 
-## [v8.0.0] - 2025-07-26
+## [v8.0.0] - 2025-07-30
 
 commit [#](https://github.com/kalm/kalm.js/commits)
 
@@ -18,6 +18,7 @@ commit [#](https://github.com/kalm/kalm.js/commits)
 - Migrated the underlying Node EventEmitter to the cross-platform EventTarget system. A translation layer should keep end-user code intact.
 - Fixed server connections not getting cleaned up
 - Removed empty channels from frame payloads, saving bandwidth
+- Changed the subscribe handler's second argument name from `frame` to `context`, to reduce confusion with its nested `frame` property.
 
 
 ## [v7.0.0] - 2023-03-17

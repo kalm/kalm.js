@@ -44,7 +44,7 @@ export function Server(params: ClientConfig, emitter: EventEmitter): Server {
     log(`connection from ${origin.host}:${origin.port}`);
 
     client.on('disconnected', () => {
-      const clientIndex = connections.findIndex((o) => o == client);
+      const clientIndex = connections.findIndex(o => o == client);
       if (clientIndex > -1) connections.splice(clientIndex, 1);
     });
   }

@@ -1,7 +1,7 @@
 {
-  "name": "kalm",
+  "name": "kalm.js",
   "private": true,
-  "version": "7.1.0",
+  "version": "8.0.0",
   "description": "The socket optimizer",
   "main": "packages/kalm/dist/kalm.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "test:integration": "jest ./tests/integration --forceExit",
     "build": "npm run build --workspaces --if-present",
     "clean": "npm run clean --workspaces --if-present",
-    "bench": "node ./scripts/benchmarks"
+    "bench": "ts-node --transpile-only ./scripts/benchmarks"
   },
   "funding": {
     "type": "Open Collective",
@@ -47,8 +47,7 @@
       "^.+\\.tsx?$": [
         "ts-jest",
         {
-          "diagnostics": false,
-          "isolatedModules": true
+          "diagnostics": false
         }
       ]
     }
@@ -71,6 +70,7 @@
     "socket.io": "^4.8.0",
     "socket.io-client": "^4.8.0",
     "ts-jest": "^29.4.0",
+    "ts-node": "10.9.2",
     "typescript": "^5.8.0",
     "typescript-eslint": "^8.38.0",
     "ws": "^8.18.3"

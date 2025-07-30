@@ -22,7 +22,7 @@ describe('ws transport', () => {
 
     describe('when fetching remote', () => {
       it('should return null values', () => {
-        expect(socket.remote).toEqual({ host: null, port: null });
+        expect(socket.remote()).toEqual({ host: null, port: null });
       });
     });
   });

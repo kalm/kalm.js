@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ws",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "WebSocket transport for Kalm",
   "main": "dist/ws.js",
   "scripts": {
@@ -52,8 +52,7 @@
     "transform": {
       "^.+\\.tsx?$": [
       "ts-jest", {
-        "diagnostics": false,
-        "isolatedModules": true
+        "diagnostics": false
       }]
     }
   }

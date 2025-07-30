@@ -36,7 +36,7 @@ export default function ws({ cert, key, socketTimeout = 30000 }: WSConfig = {}):
       setTimeout(() => emitter.emit('ready'), 1);
     }
 
-    function send(handle: WSHandle & { _queue: string[] }, payload: RawFrame | string): void {
+    function send(handle: WSHandle & { _queue?: string[] }, payload: RawFrame | string): void {
       if (handle && handle.readyState === 1) handle.send(typeof payload === 'string' ? payload : JSON.stringify(payload));
       else handle._queue.push(JSON.stringify(payload));
       resetTimeout(handle);
@@ -77,7 +77,7 @@ export default function ws({ cert, key, socketTimeout = 30000 }: WSConfig = {}):
     }
 
     function remote(handle: WSHandle): Remote {
-      const h = handle && handle.headers || {};
+      const h = (handle && handle.headers) || {};
       const headerHost = h && h['x-forwarded-for'] && h['x-forwarded-for'].split(',')[0];
       const remoteHost = handle?.connection?.remoteAddress;
       const socketHost = handle?._socket?.server?._connectionKey;

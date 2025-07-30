@@ -33,11 +33,11 @@ function setup(resolve) {
     routine: Kalm.routines[settings.routine[0]](settings.routine[1]),
   });
 
-  server.addEventListener('connection', (c) => {
+  server.on('connection', (c) => {
     c.subscribe(settings.testChannel, msg => c.write(settings.testChannel, msg));
   });
 
-  server.addEventListener('error', (e) => {
+  server.on('error', (e) => {
     console.error('Server error:', e);
   });
 
@@ -71,7 +71,7 @@ function step(resolve) {
       count++;
     });
 
-    client.addEventListener('error', (e) => {
+    client.on('error', (e) => {
       console.error('Client error:', e);
     });
   }

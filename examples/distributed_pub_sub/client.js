@@ -30,7 +30,7 @@ client.on('connect', () => {
   /**
    * Subscribes to messages on a channel named r.evt (Response Event).
    */
-  client.subscribe('r.evt', (body, frame) => {
+  client.subscribe('r.evt', (body) => {
     /**
      * We'll ignore our own messages
      */

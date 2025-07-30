@@ -7,7 +7,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
   type Channel = {
     name: string
     packets: any[]
-    handlers: Function[]
+    handlers: ((packet: any, context: Context) => void)[]
   };
 
   const channels: { [channel: string]: Channel } = {};
@@ -39,7 +39,9 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
       return frame;
     }, { frameId, channels: {} }));
 
-    getChannels().forEach((channelName) => { channels[channelName].packets.length = 0; });
+    for (const channelName in channels) {
+      channels[channelName].packets.length = 0;
+    }
   }
 
   function _handleConnect(): void {
@@ -96,11 +98,11 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
     if (connected > 1) setTimeout(() => transport.disconnect(socket), 0);
   }
 
-  function subscribe(channelName: string, handler: (msg: any, frame: Frame) => void): void {
+  function subscribe(channelName: string, handler: (msg: any, context: Context) => void): void {
     _resolveChannel(channelName).handlers.push(handler);
   }
 
-  function unsubscribe(channelName: string, handler?: (msg: any, frame: Frame) => void): void {
+  function unsubscribe(channelName: string, handler?: (msg: any, context: Context) => void): void {
     if (!(channelName in channels)) return;
     if (handler) {
       const index = channels[channelName].handlers.indexOf(handler);

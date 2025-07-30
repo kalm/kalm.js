@@ -47,7 +47,7 @@ interface ClientEventMap {
   connect: (client: Client) => void
   disconnect: () => void
   disconnected: () => void // Internal use only
-  frame: (frame: RawFrame) => void
+  frame: (data: { body: RawFrame, payloadBytes: number }) => void
   error: (error: Error) => void
 }
 
@@ -80,9 +80,9 @@ interface Server {
      * 'error': when an error occurs (non-fatal)
      */
   on<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
-  once<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k] | Function): this
-  removeListener<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k] | Function): this
-  off<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k] | Function): this
+  once<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
+  removeListener<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
+  off<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
   addEventListener<k extends keyof ServerEventMap>(event: k, listener: (evt?: Event) => void): this
   removeEventListener<k extends keyof ServerEventMap>(event: k, listener: (evt?: Event) => void): this
 }
@@ -108,14 +108,14 @@ interface Client {
      * @param channel The channel name for the subscription
      * @param handler The function to invoke when a new message arrives
      */
-  subscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
+  subscribe: (channel: string, handler: (body: any, context: Context) => any) => void
   /**
      * Stops listening for messages that are sent to a given channel
      *
      * @param channel The channel name for the subscription to stop
      * @param handler Optionally, the function to stop invoking. If left empty, will clear all handlers for that subscription
      */
-  unsubscribe: (channel: string, handler: (body: any, frame: Frame) => any) => void
+  unsubscribe: (channel: string, handler: (body: any, context: Context) => any) => void
   /**
      * Prints the coordinates of the local client
      */
@@ -137,9 +137,9 @@ interface Client {
      * 'error': when an error occurs (non-fatal)
      */
   on<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
-  once<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k] | Function): this
-  removeListener<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k] | Function): this
-  off<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k] | Function): this
+  once<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
+  removeListener<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
+  off<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
   addEventListener<k extends keyof ClientEventMap>(event: k, listener: (evt?: Event) => void): this
   removeEventListener<k extends keyof ClientEventMap>(event: k, listener: (evt?: Event) => void): this
 }
@@ -175,7 +175,7 @@ interface Socket {
   /** The command for a server to start listening for messages */
   bind: () => void
   /** Given a Client, prints the information of the remote party in the connection */
-  remote: (handle: any) => Remote
+  remote: (handle?: any) => Remote
   /** Initiates the connection to a remote server */
   connect: (handle?: any) => any
   /** The command to stop a server from accepting messages */
@@ -197,24 +197,26 @@ type RawFrame = {
 };
 
 /**
- * The contextual frame for a message received
+ * The context for a message received
  */
-type Frame = {
+type Context = {
   /** A reference to the Client instance */
   client: Client
+  /** The body of the message */
+  frame: Frame
+};
+
+type Frame = {
   /** The name of the subscription channel */
   channel: string
-  /** The body of the message */
-  frame: {
-    /** The id of the frame, these are integers cycling from 0 to 0xffffffff */
-    id: number
-    /** The position of the message ion the frame */
-    messageIndex: number
-    /** The number of bytes in the frame */
-    payloadBytes: number
-    /** The number of messages in the frame */
-    payloadMessages: number
-  }
+  /** The id of the frame, these are integers cycling from 0 to 0xffffffff */
+  id: number
+  /** The position of the message ion the frame */
+  messageIndex: number
+  /** The number of bytes in the frame */
+  payloadBytes: number
+  /** The number of messages in the frame */
+  payloadMessages: number
 };
 
 type TickConfig = {

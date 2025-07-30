@@ -21,7 +21,7 @@ export default function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTran
       listener.listen(params.port, () => emitter.emit('ready'));
     }
 
-    function remote(handle: TCPSocket): Remote {
+    function remote(handle?: TCPSocket): Remote {
       return {
         host: handle?.remoteAddress || handle?._peername?.address || null,
         port: handle?.remotePort || handle?._peername?.port || null,

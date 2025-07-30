@@ -4,7 +4,9 @@
 
 /* Requires ------------------------------------------------------------------ */
 
-const net = require('net');
+const io = require('socket.io');
+const http = require('http');
+const ioclient = require('socket.io-client');
 
 const settings = require('../settings');
 
@@ -24,17 +26,18 @@ function _absorb(err) {
 }
 
 function setup(resolve) {
-  server = net.createServer((socket) => {
-    socket.addEventListener('error', _absorb);
-    socket.addEventListener('data', () => socket.write(JSON.stringify(settings.testPayload)));
-  });
+  server = io();
   handbreak = false;
-  server.addEventListener('error', _absorb);
-  server.listen(`/tmp/app.socket-${settings.port}`, resolve);
+  server.on('connection', (socket) => {
+    socket.on('data', () => socket.emit('data', JSON.stringify(settings.testPayload)));
+  });
+  server.on('error', _absorb);
+  server.listen(http.createServer().listen(settings.port, '0.0.0.0'));
+  setTimeout(resolve, 10);
 }
 
 function teardown(resolve) {
-  if (client) client.destroy();
+  if (client) client.close();
   if (server) {
     server.close(() => {
       server = null;
@@ -52,12 +55,12 @@ function stop(resolve) {
 function step(resolve) {
   if (handbreak) return;
   if (!client) {
-    client = net.connect(`/tmp/app.socket-${settings.port}`);
-    client.addEventListener('error', _absorb);
-    client.addEventListener('data', () => count++);
+    client = ioclient(`http://0.0.0.0:${settings.port}`);
+    client.on('error', _absorb);
+    client.on('data', () => count++);
   }
 
-  client.write(JSON.stringify(settings.testPayload));
+  client.emit('data', JSON.stringify(settings.testPayload));
   resolve();
 }
 

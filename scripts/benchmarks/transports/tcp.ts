@@ -4,10 +4,7 @@
 
 /* Requires ------------------------------------------------------------------ */
 
-const io = require('socket.io');
-const http = require('http');
-const ioclient = require('socket.io-client');
-
+const net = require('net');
 const settings = require('../settings');
 
 /* Local variables ----------------------------------------------------------- */
@@ -22,22 +19,20 @@ let handbreak = true;
 
 function _absorb(err) {
   console.log(err); /* eslint-disable-line */
-  return true;
 }
 
 function setup(resolve) {
-  server = io();
-  handbreak = false;
-  server.addEventListener('connection', (socket) => {
-    socket.addEventListener('data', () => socket.emit('data', JSON.stringify(settings.testPayload)));
+  server = net.createServer((socket) => {
+    socket.on('data', () => socket.write(JSON.stringify(settings.testPayload)));
+    socket.on('error', _absorb);
   });
-  server.addEventListener('error', _absorb);
-  server.listen(http.createServer().listen(settings.port, '0.0.0.0'));
-  setTimeout(resolve, 10);
+  handbreak = false;
+  server.on('error', _absorb);
+  server.listen(settings.port, resolve);
 }
 
 function teardown(resolve) {
-  if (client) client.close();
+  if (client) client.destroy();
   if (server) {
     server.close(() => {
       server = null;
@@ -55,12 +50,12 @@ function stop(resolve) {
 function step(resolve) {
   if (handbreak) return;
   if (!client) {
-    client = ioclient(`http://0.0.0.0:${settings.port}`);
-    client.addEventListener('error', _absorb);
-    client.addEventListener('data', () => count++);
+    client = net.connect(settings.port, '0.0.0.0');
+    client.on('error', _absorb);
+    client.on('data', () => count++);
   }
 
-  client.emit('data', JSON.stringify(settings.testPayload));
+  client.write(JSON.stringify(settings.testPayload));
   resolve();
 }
 

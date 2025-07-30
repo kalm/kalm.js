@@ -34,18 +34,18 @@ describe('Integration tests', () => {
 
       it(`should work with ${transport}`, (done) => {
         const payload = { foo: 'bar' };
-        server.addEventListener('connection', (c) => {
+        server.on('connection', (c) => {
           c.subscribe('test', (data) => {
             expect(data).toEqual(payload);
             done();
           });
         });
-        server.addEventListener('error', (e) => {
+        server.on('error', (e) => {
           throw new Error(e);
         });
 
         const client = connect({ transport: soc });
-        client.addEventListener('error', (e) => {
+        client.on('error', (e) => {
           throw new Error(e);
         });
         client.write('test', payload);
@@ -53,18 +53,18 @@ describe('Integration tests', () => {
 
       it(`should handle foreign characters with ${transport}`, (done) => {
         const payload = { foo: '한자' };
-        server.addEventListener('connection', (c) => {
+        server.on('connection', (c) => {
           c.subscribe('test', (data) => {
             expect(data).toEqual(payload);
             done();
           });
         });
-        server.addEventListener('error', (e) => {
+        server.on('error', (e) => {
           throw new Error(e);
         });
 
         const client = connect({ transport: soc });
-        client.addEventListener('error', (e) => {
+        client.on('error', (e) => {
           throw new Error(e);
         });
         client.write('test', payload);
@@ -76,18 +76,18 @@ describe('Integration tests', () => {
           largePayload.push({ foo: 'bar' });
         }
 
-        server.addEventListener('connection', (c) => {
+        server.on('connection', (c) => {
           c.subscribe('test.large', (data) => {
             expect(data).toEqual(largePayload);
             done();
           });
         });
-        server.addEventListener('error', (e) => {
+        server.on('error', (e) => {
           throw new Error(e);
         });
 
         const client = connect({ transport: soc });
-        client.addEventListener('error', (e) => {
+        client.on('error', (e) => {
           if (transport === 'udp') {
             expect(e.message).toEqual('UDP Cannot send packets larger than 16384 bytes, tried to send 28715 bytes');
             return done();
@@ -99,7 +99,7 @@ describe('Integration tests', () => {
 
       it('should not trigger for unsubscribed channels', (done) => {
         const payload = { foo: 'bar' };
-        server.addEventListener('connection', (c) => {
+        server.on('connection', (c) => {
           c.subscribe('test', () => {
             // Throw on purpose
             expect(false).toBe(true);
@@ -108,12 +108,12 @@ describe('Integration tests', () => {
 
           c.unsubscribe('test');
         });
-        server.addEventListener('error', (e) => {
+        server.on('error', (e) => {
           throw new Error(e);
         });
 
         const client = connect({ transport: soc });
-        client.addEventListener('error', (e) => {
+        client.on('error', (e) => {
           throw new Error(e);
         });
         setTimeout(() => client.write('test', payload), 100);

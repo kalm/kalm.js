@@ -21,12 +21,12 @@
 - Flexible and extensible, create your own transports and buffering strategies
 - Can be used between servers or in the **browser**
 - Lower resource footprint and **better throughtput** than plain sockets
-- **Zero dependencies** and can be bundled down to ~5kb!
+- **Zero dependencies** and can be bundled down to ~6kb!
 
 
 ## Performance
 
-<img align="center" alt="perf" src="https://kalm.js.org/images/kalmv3_3chart.png" />
+<img align="center" alt="perf" src="https://kalm.js.org/images/v8_perf.png" />
 
 The performance gain comes from buffering packets before sending them- eventually sending batches instead of individual packages. The more traffic getting processed, the better the improvement. Many strategies are offered as routines. You can read more about the packet buffering algorithm [here](https://en.wikipedia.org/wiki/Nagle%27s_algorithm)
 
@@ -56,10 +56,10 @@ const server = kalm.listen({
 });
 
 server.on('connection', (client) => {
-  client.subscribe('channel1', (body, frame) => {
+  client.subscribe('channel1', (body, context) => {
     // When receiving messages from this client on "channel1"
     console.log(body) //
-    console.log(frame) //
+    console.log(context) //
   });
 
   // Sends a message to all clients on "channel2"
@@ -81,10 +81,10 @@ const client = kalm.connect({
 });
 
 client.on('connect', () => {
-  client.subscribe('channel1', (body, frame) => {
+  client.subscribe('channel1', (body, context) => {
     // When receiving messages from the server on "channel1"
     console.log(body); // 
-    console.log(frame); //
+    console.log(context); //
   });
 
   // Sends a message to the server on "channel2"
