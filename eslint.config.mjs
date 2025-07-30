@@ -16,5 +16,5 @@ export default tseslint.config(
       'jest/no-done-callback': 0,
     },
   },
-  globalIgnores(['**/bin']),
+  globalIgnores(['**/bin', '**/dist', '**/*.js']),
 );

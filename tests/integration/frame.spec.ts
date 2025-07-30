@@ -1,7 +1,7 @@
 /* Requires ------------------------------------------------------------------ */
 
-import { connect, listen } from '../../packages/kalm/bin/kalm';
-import ipc from '../../packages/ipc/bin/ipc';
+import { connect, listen } from '../../packages/kalm/dist/kalm';
+import ipc from '../../packages/ipc/dist/ipc';
 
 /* Suite -------------------------------------------------------------------- */
 
@@ -26,7 +26,7 @@ describe('Frame', () => {
 
   it('Should have a well structured frame reference', (done) => {
     const payload = { foo: 'bar' };
-    server.on('connection', (c) => {
+    server.addEventListener('connection', (c) => {
       c.subscribe('test', (data, meta) => {
         expect(meta).toEqual({
           client: c,
@@ -41,12 +41,12 @@ describe('Frame', () => {
         done();
       });
     });
-    server.on('error', (e) => {
+    server.addEventListener('error', (e) => {
       throw new Error(e);
     });
 
     const client = connect({ transport: ipc() });
-    client.on('error', (e) => {
+    client.addEventListener('error', (e) => {
       throw new Error(e);
     });
     client.write('test', payload);

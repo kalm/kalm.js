@@ -4,8 +4,6 @@ declare module '@kalm/ws' {
     cert?: string
     /** The key file content for a secure socket connection, both this and `cert` must be set */
     key?: string
-    /** A custom agent for the http connection, can be used to set proxies or other connection behaviours */
-    agent?: any
     /** The maximum idle time for the connection before it hangs up (default: 30000) */
     socketTimeout?: number
   }

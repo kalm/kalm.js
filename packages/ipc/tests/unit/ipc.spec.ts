@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events';
 import * as ipc from '../../src/ipc';
+import { EventEmitter } from '../../../kalm/src/utils/events';
 
 describe('IPC transport', () => {
   it('basic setup', () => {
@@ -22,7 +22,7 @@ describe('IPC transport', () => {
 
     describe('when fetching remote', () => {
       it('should return null values', () => {
-        expect(socket.remote()).toEqual({ host: null, port: null });
+        expect(socket.remote).toEqual({ host: null, port: null });
       });
     });
   });

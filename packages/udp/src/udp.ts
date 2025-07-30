@@ -13,7 +13,7 @@ type UDPConfig = {
   socketTimeout?: number
 };
 
-function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000 }: UDPConfig = {}): KalmTransport {
+export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000 }: UDPConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: dgram.Socket;
     const clientCache = {};
@@ -58,7 +58,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
 
     function disconnect(handle?: UDPSocketHandle): void {
       if (handle && handle.socket) handle.socket = null;
-      emitter.emit('disconnect');
+      emitter.emit('disconnected');
     }
 
     function connect(handle?: UDPSocketHandle): UDPSocketHandle {
@@ -68,7 +68,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
       connection.on('error', err => emitter.emit('error', err));
       connection.on('message', (req) => {
         emitter.emit('connect', connection);
-        emitter.emit('frame', JSON.parse(req.toString()), req.length);
+        emitter.emit('frame', { body: JSON.parse(req.toString()), payloadBytes: req.length });
         resetTimeout(res);
       });
       connection.bind(null, localAddr);
@@ -135,6 +135,3 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
     };
   };
 }
-
-// Ensures support for modules and requires
-module.exports = udp;

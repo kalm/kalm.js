@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../utils/events';
 import { log } from '../utils/logger';
 
 export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any): Client {
@@ -35,7 +35,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
 
   function _wrap(frameId: number): void {
     transport.send(socket, getChannels().reduce((frame, channelName) => {
-      frame.channels[channelName] = channels[channelName].packets;
+      if (channels[channelName].packets.length > 0) frame.channels[channelName] = channels[channelName].packets;
       return frame;
     }, { frameId, channels: {} }));
 
@@ -51,7 +51,8 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
     log(`error ${err.message}`);
   }
 
-  function _handleRequest(frame: RawFrame, payloadBytes: number): void {
+  function _handleRequest(frameEvent: { body: RawFrame, payloadBytes: number }): void {
+    const frame = frameEvent.body;
     if (frame && frame.channels) {
       Object.keys(frame.channels).forEach((channelName) => {
         frame.channels[channelName].forEach((packet, messageIndex) => {
@@ -64,7 +65,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
                   channel: channelName,
                   id: frame.frameId,
                   messageIndex,
-                  payloadBytes,
+                  payloadBytes: frameEvent.payloadBytes,
                   payloadMessages: frame.channels[channelName].length,
                 },
               },
@@ -78,6 +79,8 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
   function _handleDisconnect() {
     connected = 0;
     log(`lost connection to ${params.host}:${params.port}`);
+    // Gives a change for other internal listeners to run their business logic
+    setTimeout(() => emitter.emit('disconnect'), 0);
   }
 
   function write(channelName: string, message: Serializable): void {
@@ -109,7 +112,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
   }
 
   emitter.on('connect', _handleConnect);
-  emitter.on('disconnect', _handleDisconnect);
+  emitter.on('disconnected', _handleDisconnect);
   emitter.on('error', _handleError);
   emitter.on('frame', _handleRequest);
   if (!socket) log(`connecting to ${params.host}:${params.port}`);

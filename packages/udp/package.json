@@ -2,10 +2,10 @@
   "name": "@kalm/udp",
   "version": "7.0.0",
   "description": "UDP transport for Kalm",
-  "main": "bin/udp.js",
+  "main": "dist/udp.js",
   "scripts": {
-    "build": "../../scripts/build.sh udp",
-    "clean": "../../scripts/cleanup.sh",
+    "build": "npm run clean && rollup -c rollup.config.mjs",
+    "clean": "rm -rf ./dist/*",
     "test": "jest ./tests",
     "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
   },
@@ -28,7 +28,7 @@
     "nagle",
     "udp"
   ],
-  "files": ["bin", "types.d.ts"],
+  "files": ["dist", "types.d.ts"],
   "typings": "./types.d.ts",
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",

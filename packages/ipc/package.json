@@ -2,10 +2,10 @@
   "name": "@kalm/ipc",
   "version": "7.0.0",
   "description": "IPC transport for Kalm",
-  "main": "bin/ipc.js",
+  "main": "dist/ipc.js",
   "scripts": {
-    "build": "../../scripts/build.sh ipc",
-    "clean": "../../scripts/cleanup.sh",
+    "build": "npm run clean && rollup -c rollup.config.mjs",
+    "clean": "rm -rf ./dist/*",
     "test": "jest ./tests",
     "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
   },
@@ -28,7 +28,7 @@
     "nagle",
     "ipc"
   ],
-  "files": ["bin", "types.d.ts"],
+  "files": ["dist", "types.d.ts"],
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
   "typings": "./types.d.ts",

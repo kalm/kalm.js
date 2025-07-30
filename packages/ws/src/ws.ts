@@ -1,36 +1,35 @@
-import events from 'events';
-import { createServer } from 'https';
-
 const nativeAPIExists = (typeof WebSocket !== 'undefined');
-const WSClient = nativeAPIExists ? WebSocket : require('ws');
-const WSServer = require('ws').Server;
 
 type WSConfig = {
   cert?: string
   key?: string
-  agent?: any
   socketTimeout?: number
 };
 
 type WSHandle = WebSocket & {
-  _queue: string[]
-  _timer: ReturnType<typeof setTimeout>
+  _queue?: string[]
+  _timer?: ReturnType<typeof setTimeout>
   headers?: any
   connection?: any
   _socket?: any
 };
 
-function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: events.EventEmitter): Socket {
+export default function ws({ cert, key, socketTimeout = 30000 }: WSConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener;
 
-    function bind(): void {
+    async function bind(): Promise<void> {
+      if (typeof window !== 'undefined') throw new Error('Cannot create a websocket server from the browser');
+
+      const WSLib = await import('ws');
+
       if (cert && key) {
-        const server = createServer({ key, cert }, req => req.socket.end());
-        listener = new WSServer({ port: params.port, server });
+        const https = await import('https');
+        const server = https.createServer({ key, cert }, req => req.socket.end());
+        listener = new WSLib.WebSocketServer({ port: params.port, server });
       }
       else {
-        listener = new WSServer({ port: params.port });
+        listener = new WSLib.WebSocketServer({ port: params.port });
       }
       listener.on('connection', soc => emitter.emit('socket', soc));
       listener.on('error', err => emitter.emit('error', err));
@@ -49,17 +48,17 @@ function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTra
 
     function connect(handle?: WSHandle): WSHandle {
       const protocol: string = (!!cert && !!key) === true ? 'wss' : 'ws';
-      const connection: WSHandle = handle || new WSClient(`${protocol}://${params.host}:${params.port}`, { ...(agent ? { agent } : {}) });
+      const connection: WSHandle = handle || new WebSocket(`${protocol}://${params.host}:${params.port}`);
       connection.binaryType = 'arraybuffer';
       const evtType: string = nativeAPIExists ? 'addEventListener' : 'on';
       connection._queue = [];
       connection._timer = null;
       connection[evtType]('message', (evt) => {
-        emitter.emit('frame', JSON.parse(evt.data || evt), (evt.data || evt).length);
+        emitter.emit('frame', { body: JSON.parse(evt.data || evt), payloadBytes: (evt.data || evt).length });
         resetTimeout(connection);
       });
       connection[evtType]('error', err => emitter.emit('error', err));
-      connection[evtType]('close', () => emitter.emit('disconnect'));
+      connection[evtType]('close', () => emitter.emit('disconnected'));
       connection[evtType]('open', () => {
         emitter.emit('connect', connection);
         connection._queue.forEach(payload => send(connection, payload));
@@ -91,7 +90,7 @@ function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTra
     function disconnect(handle) {
       if (handle) {
         clearTimeout(handle._timer);
-        handle.end();
+        if (handle.end) handle.end();
         handle.close();
       }
     }
@@ -106,6 +105,3 @@ function ws({ cert, key, agent, socketTimeout = 30000 }: WSConfig = {}): KalmTra
     };
   };
 }
-
-// Ensures support for modules and requires
-module.exports = ws;

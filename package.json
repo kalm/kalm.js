@@ -3,7 +3,7 @@
   "private": true,
   "version": "7.1.0",
   "description": "The socket optimizer",
-  "main": "packages/kalm/bin/kalm.js",
+  "main": "packages/kalm/dist/kalm.js",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -45,13 +45,19 @@
     "testEnvironment": "node",
     "transform": {
       "^.+\\.tsx?$": [
-      "ts-jest", {
-        "diagnostics": false,
-        "isolatedModules": true
-      }]
+        "ts-jest",
+        {
+          "diagnostics": false,
+          "isolatedModules": true
+        }
+      ]
     }
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-sucrase": "^5.0.2",
+    "@rollup/plugin-typescript": "^12.1.4",
     "@stylistic/eslint-plugin": "^5.2.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
@@ -59,11 +65,14 @@
     "eslint-plugin-jest": "^29.0.0",
     "husky": "^9.1.0",
     "jest": "^30.0.0",
+    "rollup": "^4.46.0",
+    "rollup-plugin-polyfill-node": "^0.13.0",
     "snappy": "^7.3.0",
     "socket.io": "^4.8.0",
     "socket.io-client": "^4.8.0",
     "ts-jest": "^29.4.0",
     "typescript": "^5.8.0",
-    "typescript-eslint": "^8.38.0"
+    "typescript-eslint": "^8.38.0",
+    "ws": "^8.18.3"
   }
 }

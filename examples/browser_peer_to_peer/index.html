@@ -1,0 +1,232 @@
+<head>
+    <title>Kalm Peer-to-peer example</title>
+    <script src="../../packages/kalm/dist/kalm.js"></script>
+    <script src="../../packages/ws/dist/ws.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-peer/9.11.1/simplepeer.min.js"></script>
+    <script>
+        /**
+         * This program advertises potential peers to connect to, as long as they are connected via websocket to a central server.
+         * This is a sort of low-tech advertising server.
+         * 
+         * It starts by connecting to a websocket server and spawns an initiator WebRTC data-channel node.
+         * 
+         * The websocket server will return a list of potential peers, identified by their SDP signals.
+         * The websocket will facilitate the exchange of information between the peers until a connection is established.
+         */
+
+        /**
+         * The list of peers and candiates will be stored here
+         */
+        const peers = [];
+        
+        /**
+         * This is to keep track of our own unique id. In this case, we'll use our own SDP signal.
+         */
+        let myAdvertisingId = null;
+
+        /**
+         * The websocket server instance
+         */
+        let gossip;
+        
+        /**
+         * The Simple-peer initiator node instance
+         */
+        let advertisingPeer;
+
+
+        /**
+         * Once the user has entered a display name, we can begin advertising via the websocket server
+         */
+        function advertise() {
+            gossip = kalm.connect({
+                host: '0.0.0.0',
+                port: 9001,
+                transport: ws(),
+                routine: kalm.routines.realtime()
+            });
+
+            advertisingPeer = new SimplePeer({
+                initiator: true,
+                trickle: false
+            });
+
+            gossip.once('connect', () => {
+                /**
+                 * This gets called once we have obtained the SDP signal for our initiator node
+                 */
+                advertisingPeer.on('signal', data => {
+                    myAdvertisingId = data.sdp;
+                    const myName = document.getElementById('name').value;
+
+                    /**
+                     * We let the websocket server know of our existence
+                     */
+                    gossip.write('peering', { sdp: myAdvertisingId, name: myName });
+
+                    document.getElementById('login').style.display = 'none';
+                    document.getElementById('welcome').style.display = 'block';
+                    document.getElementById('welcome').innerHTML = `<h2>Hello, ${myName}</h2>`;
+                    document.getElementById('list').style.display = 'block';
+                });
+
+                /**
+                 * An update for the list of clients is available
+                 */
+                gossip.subscribe('peering', (advlist) => {
+                    updatePeers(advlist);
+                });
+
+                /**
+                 * A connection has been initiated from another node
+                 */
+                gossip.subscribe('candidate', (answer) => {
+                    const match = peers.find((p) => p.sdp === answer.source);
+                    if (match) match.status = 2;
+                    
+                    /**
+                     * We officialize it
+                     */
+                    advertisingPeer.signal(answer);
+
+                    printPeers();
+                });
+
+                document.getElementById('advertiseBtn').disabled = true;
+            });
+
+            advertisingPeer.on('error', err => console.log('error', err));
+
+            advertisingPeer.on('connect', (e) => {
+                /**
+                 * At this point, browser clients are connected together and can exchange messages via `send`
+                 */
+                console.log('CONNECTED', e);
+            });
+
+            advertisingPeer.on('data', data => {
+                /**
+                 * When receiving messages from the WebRTC data-channel of a connected node
+                 */
+                console.log('DATA: ' + data);
+            });
+        }
+
+        function updatePeers(advlist) {
+            // Add new nodes
+            advlist.forEach((adv) => {
+                if (adv.sdp !== myAdvertisingId) {
+                    if (!peers.find((p) => p.sdp === adv.sdp)) {
+                        peers.push({ status: 0, sdp: adv.sdp, name: adv.name, socket: null });
+                    }
+                }
+            });
+
+            // Remove disconnected nodes
+            for (let i = peers.length -1; i >= 0; i--) {
+                if (!advlist.find((adv) => adv.sdp === peers[i].sdp)) {
+                    peers.splice(i,1);
+                }
+            }
+
+            printPeers();
+        }
+
+        function printPeers() {
+            // Pretty-print
+            document.getElementById('clientList').innerHTML = `
+                ${peers.map((p, i) => `<tr class="peer"><td><span class="status ${['grey', 'yellow', 'green'][p.status]}" /></td><td>${p.name}</td><td> ${p.status < 1 ? `<button onClick="connect(${i})">Connect</button>` : ''}</td></tr>`).join('')}
+            `;
+        }
+
+        /**
+         * Attemps to connect to another node
+         */
+        function connect(i) {
+            const p = peers[i];
+
+            p.status = 1;
+            p.socket = new SimplePeer();
+            p.socket.signal({ type: 'offer', sdp: p.sdp });
+            p.socket.on('connect', () => {
+                p.status = 2;
+                printPeers();
+            });
+
+            p.socket.on('signal', (data) => {
+                gossip.write('candidate', { source: myAdvertisingId, target: p.sdp, ...data});
+            });
+
+            p.socket.on('error', err => console.log('error', err));
+
+            printPeers();
+        }
+
+        function refresh() {
+            printPeers();
+        }
+
+    </script>
+
+    <style>
+
+        section {
+            border: 1px solid #aaa;
+            padding: 10px;
+        }
+
+        #clientList {
+            border: 1px solid grey;
+            padding:5px;
+        }
+
+        .peer {
+            display: block;
+            height:50px;
+            background-color: #eee;
+        }
+
+        .status {
+            border-radius: 50%;
+            background-color: grey;
+            float: left;
+            width:24px;
+            height:24px;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Kalm Peer-to-peer example</h1>
+
+    <section id="login">
+        <h2>Login</h2>
+        <form id="connect" method="get" action="#" >
+            <input id="name" placeholder="Your name"/>
+            <button id="advertiseBtn" onClick="advertise()">Advertise</button>
+        </form>
+    </section>
+    <section id="welcome" style="display: none;">
+    </section>
+
+    <section id="list" style="display: none;">
+        <h2>Available peers</h2>
+        <form id="refresh" method="get" action="#" >
+            <button onClick="refresh()">Refresh peers</button>
+        </form>
+        <table id="clientList"></table>
+    </section>
+
+    <script>
+        document.getElementById('name').value = "User" + Math.round(Math.random() * 1000);
+    </script>
+</body>

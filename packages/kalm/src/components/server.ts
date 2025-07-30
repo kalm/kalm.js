@@ -1,8 +1,8 @@
-import { EventEmitter } from 'events';
 import { log } from '../utils/logger';
+import { EventEmitter } from '../utils/events';
 import { Client } from './client';
 
-export function Server(params: ClientConfig, emitter: NodeJS.EventEmitter): Server {
+export function Server(params: ClientConfig, emitter: EventEmitter): Server {
   const connections = [];
   const socket: Socket = params.transport(params, emitter);
 
@@ -42,6 +42,11 @@ export function Server(params: ClientConfig, emitter: NodeJS.EventEmitter): Serv
     connections.push(client);
     emitter.emit('connection', client);
     log(`connection from ${origin.host}:${origin.port}`);
+
+    client.on('disconnected', () => {
+      const clientIndex = connections.findIndex((o) => o == client);
+      if (clientIndex > -1) connections.splice(clientIndex, 1);
+    });
   }
 
   emitter.on('socket', handleConnection);

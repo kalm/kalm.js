@@ -6,33 +6,34 @@ This example shows how to create a P2P (Peer to Peer) network.
 
 - The clients can run in either the browser or in Node.js.
 - The server must run in a Node.js environment.
-- NPM or other package manager to install `kalm`, `@kalm/tcp` and `@kalm/ws` 
+- NPM or other package manager to install `kalm`, `@kalm/tcp` and `@kalm/ws`
+- A means to run a local web server to serve html pages from. Eg: python's SimpleHTTPServer
 
 # Testing
 
-Launch any number of servers first, using process arguments to specify the hosts and ports for this node and the seed node.
-
-<hostname> <port> <seed_hostname> <seed_port>
+First, let's start the WebSocket server, which enables peer discovery.
 
 ```
-node ./server.js 0.0.0.0 3000 0.0.0.0 3000
-node ./server.js 0.0.0.0 3001 0.0.0.0 3000
-node ./server.js 0.0.0.0 3002 0.0.0.0 3000
+node ./server.js
 ```
 
-With this example, three servers are launched, listening on 3 different ports, but all connected to the seed host (port 3000).
-The seed acts as an orchestrator and puts nodes in contact with each other. They all end up connected to one another.
+Clients will connect to this server to advertise to other peers.
 
-In parallel, servers also listen on `port + 10000` for clients to join.
+Next, we'll launch some clients.
 
-We will now launch clients connecting to any given server.
+Serve the index.html file from an http server (otherwise you will run into CORS issues). At the root of this repo, run:
 
 ```
-node ./client.js 0.0.0.0 13000
-node ./client.js 0.0.0.0 13001
-node ./client.js 0.0.0.0 13002
+python -m SimpleHTTPServer
 ```
 
-The clients should connect to the server and send an "hello world!" message using the external channel.
+OR, if using python 3:
 
-In turn, the servers will forward this message to the others via an internal channel before each broadcasts it back to its connected clients.
+```
+python3 -m http.server
+```
+
+Open as many browser tabs as desired and navigate to `http://localhost:8000/examples/browser_peer_to_peer/`
+
+Peers should appear in the list and give you the option to connect to them.
+

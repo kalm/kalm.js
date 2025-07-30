@@ -5,13 +5,13 @@
 /* Requires ------------------------------------------------------------------ */
 
 const settings = require('../settings');
-const Kalm = require('../../../packages/kalm/bin/kalm');
+const Kalm = require('../../../packages/kalm/dist/kalm');
 
 const transports = {
-  ipc: require('../../../packages/ipc/bin/ipc'),
-  tcp: require('../../../packages/tcp/bin/tcp'),
-  udp: require('../../../packages/udp/bin/udp'),
-  ws: require('../../../packages/ws/bin/ws'),
+  ipc: require('../../../packages/ipc/dist/ipc'),
+  tcp: require('../../../packages/tcp/dist/tcp'),
+  udp: require('../../../packages/udp/dist/udp'),
+  ws: require('../../../packages/ws/dist/ws'),
 };
 
 /* Local variables ----------------------------------------------------------- */
@@ -33,11 +33,11 @@ function setup(resolve) {
     routine: Kalm.routines[settings.routine[0]](settings.routine[1]),
   });
 
-  server.on('connection', (c) => {
+  server.addEventListener('connection', (c) => {
     c.subscribe(settings.testChannel, msg => c.write(settings.testChannel, msg));
   });
 
-  server.on('error', (e) => {
+  server.addEventListener('error', (e) => {
     console.error('Server error:', e);
   });
 
@@ -71,7 +71,7 @@ function step(resolve) {
       count++;
     });
 
-    client.on('error', (e) => {
+    client.addEventListener('error', (e) => {
       console.error('Client error:', e);
     });
   }

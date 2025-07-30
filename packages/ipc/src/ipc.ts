@@ -1,4 +1,4 @@
-import net from 'net';
+import net from 'node:net';
 
 interface IPCSocket extends net.Socket {
   server?: {
@@ -17,7 +17,7 @@ type IPCConfig = {
   path?: string
 };
 
-function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
+export default function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
@@ -56,12 +56,12 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
         }
 
         for (let i = 0; i < chunks.length; i++) {
-          if (chunks[i] !== '') emitter.emit('frame', JSON.parse(chunks[i]), req.length);
+          if (chunks[i] !== '') emitter.emit('frame', { body: JSON.parse(chunks[i]), payloadBytes: req.length });
         }
       });
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
-      connection.on('close', () => emitter.emit('disconnect'));
+      connection.on('close', () => emitter.emit('disconnected'));
       connection.setTimeout(socketTimeout, () => disconnect(handle));
       return connection;
     }
@@ -84,6 +84,3 @@ function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {
     };
   };
 }
-
-// Ensures support for modules and requires
-module.exports = ipc;

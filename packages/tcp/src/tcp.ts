@@ -1,5 +1,4 @@
 import net from 'net';
-import events from 'events';
 
 interface TCPSocket extends net.Socket {
   _peername: {
@@ -12,8 +11,8 @@ interface TCPConfig {
   socketTimeout?: number
 }
 
-function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
-  return function socket(params: ClientConfig, emitter: events.EventEmitter): Socket {
+export default function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
+  return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 
     function bind(): void {
@@ -51,12 +50,12 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
         }
 
         for (let i = 0; i < chunks.length; i++) {
-          if (chunks[i] !== '') emitter.emit('frame', JSON.parse(chunks[i]), req.length);
+          if (chunks[i] !== '') emitter.emit('frame', { body: JSON.parse(chunks[i]), payloadBytes: req.length });
         }
       });
       connection.on('error', err => emitter.emit('error', err));
       connection.on('connect', () => emitter.emit('connect', connection));
-      connection.on('close', () => emitter.emit('disconnect'));
+      connection.on('close', () => emitter.emit('disconnected'));
       connection.setTimeout(socketTimeout, () => disconnect(handle));
       return connection as TCPSocket;
     }
@@ -79,6 +78,3 @@ function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
     };
   };
 }
-
-// Ensures support for modules and requires
-module.exports = tcp;

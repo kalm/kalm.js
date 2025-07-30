@@ -25,11 +25,11 @@ function _absorb(err) {
 
 function setup(resolve) {
   server = net.createServer((socket) => {
-    socket.on('error', _absorb);
-    socket.on('data', () => socket.write(JSON.stringify(settings.testPayload)));
+    socket.addEventListener('error', _absorb);
+    socket.addEventListener('data', () => socket.write(JSON.stringify(settings.testPayload)));
   });
   handbreak = false;
-  server.on('error', _absorb);
+  server.addEventListener('error', _absorb);
   server.listen(`/tmp/app.socket-${settings.port}`, resolve);
 }
 
@@ -53,8 +53,8 @@ function step(resolve) {
   if (handbreak) return;
   if (!client) {
     client = net.connect(`/tmp/app.socket-${settings.port}`);
-    client.on('error', _absorb);
-    client.on('data', () => count++);
+    client.addEventListener('error', _absorb);
+    client.addEventListener('data', () => count++);
   }
 
   client.write(JSON.stringify(settings.testPayload));

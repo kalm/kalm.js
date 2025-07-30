@@ -2,10 +2,10 @@
   "name": "@kalm/ws",
   "version": "7.0.0",
   "description": "WebSocket transport for Kalm",
-  "main": "bin/ws.js",
+  "main": "dist/ws.js",
   "scripts": {
-    "build": "../../scripts/build.sh ws",
-    "clean": "../../scripts/cleanup.sh",
+    "build": "npm run clean && rollup -c rollup.config.mjs",
+    "clean": "rm -rf ./dist/*",
     "test": "jest ./tests",
     "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
   },
@@ -28,7 +28,7 @@
     "nagle",
     "websocket"
   ],
-  "files": ["bin", "types.d.ts"],
+  "files": ["dist", "types.d.ts"],
   "typings": "./types.d.ts",
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
@@ -40,12 +40,11 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "dependencies": {
-    "ws": "^8.13.0"
+    "ws": "^8.18.0"
   },
   "browser": {
     "http": false,
-    "https": false,
-    "events": false
+    "https": false
   },
   "jest": {
     "preset": "ts-jest",

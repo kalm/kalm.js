@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../../../kalm/src/utils/events';
 import * as tcp from '../../src/tcp';
 
 describe('TCP transport', () => {
@@ -22,7 +22,7 @@ describe('TCP transport', () => {
 
     describe('when fetching remote', () => {
       it('should return null values', () => {
-        expect(socket.remote()).toEqual({ host: null, port: null });
+        expect(socket.remote).toEqual({ host: null, port: null });
       });
     });
   });

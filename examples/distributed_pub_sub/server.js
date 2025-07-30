@@ -50,7 +50,6 @@ if (!isSeed) {
     transport: tcp(),
     routine: kalm.routines.realtime(),
   });
-  seedNode.write('n.add', { host: config.host, ts, port: config.port });
 
   /**
    * We'll add the seed node to our internal server's connection list manually, this will allow us to broadcast once.
@@ -74,12 +73,30 @@ if (!isSeed) {
        * We'll add the new node to our internal server's connection list manually, this will allow us to broadcast once.
        */
       internal.connections.push(newNode);
+
+      newNode.subscribe('n.evt', (body) => {
+        external.broadcast('r.evt', body);
+      });
+
+      newNode.on('connect', () => {
+        console.log('Connected to new node');
+      });
+
+      newNode.on('error', (err) => console.log('newNode error:', err));
     }
   });
 
   seedNode.subscribe('n.evt', (body) => {
     external.broadcast('r.evt', body);
   });
+
+  seedNode.on('connect', () => {
+    console.log('Connected to seed node');
+  });
+
+  seedNode.on('error', (err) => console.log('seedNode error:', err));
+
+  seedNode.write('n.add', { host: config.host, ts, port: config.port });
 }
 
 internal.on('connection', (client) => {
@@ -114,3 +131,7 @@ external.on('connection', (client) => {
     external.broadcast('r.evt', body);
   });
 });
+
+
+internal.on('error', (err) => console.log('internal error:', err));
+external.on('error', (err) => console.log('external error:', err));

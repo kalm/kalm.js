@@ -46,6 +46,7 @@ interface ServerEventMap {
 interface ClientEventMap {
   connect: (client: Client) => void
   disconnect: () => void
+  disconnected: () => void // Internal use only
   frame: (frame: RawFrame) => void
   error: (error: Error) => void
 }
@@ -82,6 +83,8 @@ interface Server {
   once<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k] | Function): this
   removeListener<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k] | Function): this
   off<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k] | Function): this
+  addEventListener<k extends keyof ServerEventMap>(event: k, listener: (evt?: Event) => void): this
+  removeEventListener<k extends keyof ServerEventMap>(event: k, listener: (evt?: Event) => void): this
 }
 
 /**
@@ -137,6 +140,8 @@ interface Client {
   once<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k] | Function): this
   removeListener<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k] | Function): this
   off<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k] | Function): this
+  addEventListener<k extends keyof ClientEventMap>(event: k, listener: (evt?: Event) => void): this
+  removeEventListener<k extends keyof ClientEventMap>(event: k, listener: (evt?: Event) => void): this
 }
 
 type Serializable = Buffer | object | string | null;
@@ -179,8 +184,6 @@ interface Socket {
   send: (handle: any, message: RawFrame) => void
   /** The command to disconnect a Client */
   disconnect: (handle: any) => void
-  /** Exclusive to WebRTC transport, allows the connection with a new Peer */
-  negociate?: (params: { peer: Peer }) => Promise<Peer>
 }
 
 /**

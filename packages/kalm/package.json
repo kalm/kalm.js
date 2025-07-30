@@ -2,10 +2,10 @@
   "name": "kalm",
   "version": "7.0.0",
   "description": "The socket optimizer",
-  "main": "bin/kalm.js",
+  "main": "dist/kalm.js",
   "scripts": {
-    "build": "../../scripts/build.sh kalm",
-    "clean": "../../scripts/cleanup.sh",
+    "build": "npm run clean && rollup -c rollup.config.mjs",
+    "clean": "rm -rf ./dist/*",
     "test": "jest ./tests",
     "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
   },
@@ -34,7 +34,7 @@
     "peer"
   ],
   "files": [
-    "bin",
+    "dist",
     "types.d.ts"
   ],
   "typings": "./types.d.ts",
