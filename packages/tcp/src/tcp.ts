@@ -12,6 +12,8 @@ interface TCPConfig {
 }
 
 export default function tcp({ socketTimeout = 30000 }: TCPConfig = {}): KalmTransport {
+  if (typeof window !== 'undefined') throw new Error('Cannot use TCP from the browser');
+
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 

@@ -130,9 +130,9 @@ Kalm **clients** offers events to track when packets are processed by routines o
 | Client Event | Payload | Description |
 | --- | --- | --- |
 | `error` | Error | (server, client) Emits on errors. |
-| `connect` | [Client](./types.d.ts#L90) | (client) Indicates that a client has successfully connected |
+| `connect` | void | (client) Indicates that a client has successfully connected |
 | `disconnect` | void | (client) Indicates that a client has disconnected |
-| `frame` | [RawFrame](./types.d.ts#L189) | (client) Triggered when receiving a parsed full frame. |
+| `frame` | { body: Partial<[RawFrame](./types.d.ts#L189)>, payloadBytes: number } | (client) Triggered when receiving payloads, can be used to intercept messages from non-kalm counterparts. |
 
 ## Testing
 
@@ -141,9 +141,6 @@ Kalm **clients** offers events to track when packets are processed by routines o
 
 `npm run bench`
 
-## Contribute
-
-If you think of something that you want, [open an issue](//github.com/kalm/kalm.js/issues/new) or file a pull request, we'll be more than happy to take a look!
 
 ## Contributors
 
@@ -153,20 +150,8 @@ This project exists thanks to all the people who contribute. [[Contribute](CONTR
 
 <a href="https://github.com/kalm/kalm.js/graphs/contributors"><img src="https://opencollective.com/kalm/contributors.svg?width=890&button=false" /></a>
 
-### Financial Contributors
-
-Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/kalm/contribute)]
-
-#### Individuals
-
-<a href="https://opencollective.com/kalm"><img src="https://opencollective.com/kalm/individuals.svg?width=890"></a>
-
-#### Organizations
-
-Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/kalm/contribute)]
-
-<a href="https://opencollective.com/kalm/organization/0/website"><img src="https://opencollective.com/kalm/organization/0/avatar.svg"></a>
+If you think of something that you want, [open an issue](//github.com/kalm/kalm.js/issues/new) or file a pull request, we'll be more than happy to take a look!
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2025 Frederic Charette
+[Apache 2.0](LICENSE) 2025 Frederic Charette
