@@ -1,3 +1,5 @@
+import { WebSocket as WSClient, WebSocketServer } from 'ws';
+
 const nativeAPIExists = (typeof WebSocket !== 'undefined');
 
 type WSConfig = {
@@ -21,15 +23,13 @@ export default function ws({ cert, key, socketTimeout = 30000 }: WSConfig = {}):
     async function bind(): Promise<void> {
       if (typeof window !== 'undefined') throw new Error('Cannot create a websocket server from the browser');
 
-      const WSLib = await import('ws');
-
       if (cert && key) {
         const https = await import('https');
         const server = https.createServer({ key, cert }, req => req.socket.end());
-        listener = new WSLib.WebSocketServer({ port: params.port, server });
+        listener = new WebSocketServer({ port: params.port, server });
       }
       else {
-        listener = new WSLib.WebSocketServer({ port: params.port });
+        listener = new WebSocketServer({ port: params.port });
       }
       listener.on('connection', soc => emitter.emit('socket', soc));
       listener.on('error', err => emitter.emit('error', err));
@@ -48,7 +48,7 @@ export default function ws({ cert, key, socketTimeout = 30000 }: WSConfig = {}):
 
     function connect(handle?: WSHandle): WSHandle {
       const protocol: string = (!!cert && !!key) === true ? 'wss' : 'ws';
-      const connection: WSHandle = handle || new WebSocket(`${protocol}://${params.host}:${params.port}`);
+      const connection: WSHandle = handle || new (nativeAPIExists ? WebSocket : WSClient)(`${protocol}://${params.host}:${params.port}`);
       connection.binaryType = 'arraybuffer';
       const evtType: string = nativeAPIExists ? 'addEventListener' : 'on';
       connection._queue = [];
