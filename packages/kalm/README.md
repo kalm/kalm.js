@@ -130,9 +130,9 @@ Kalm **clients** offers events to track when packets are processed by routines o
 | Client Event | Payload | Description |
 | --- | --- | --- |
 | `error` | Error | (server, client) Emits on errors. |
-| `connect` | [Client](./types.d.ts#L90) | (client) Indicates that a client has successfully connected |
+| `connect` | void | (client) Indicates that a client has successfully connected |
 | `disconnect` | void | (client) Indicates that a client has disconnected |
-| `frame` | [RawFrame](./types.d.ts#L189) | (client) Triggered when receiving a parsed full frame. |
+| `frame` | { body: Partial<[RawFrame](./types.d.ts#L189)>, payloadBytes: number } | (client) Triggered when receiving payloads, can be used to intercept messages from non-kalm counterparts. |
 
 ## Testing
 

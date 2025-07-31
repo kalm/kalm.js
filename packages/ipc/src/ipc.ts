@@ -18,6 +18,8 @@ type IPCConfig = {
 };
 
 export default function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
+  if (typeof window !== 'undefined') throw new Error('Cannot use IPC from the browser');
+
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
 

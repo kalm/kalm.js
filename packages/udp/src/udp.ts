@@ -14,6 +14,8 @@ type UDPConfig = {
 };
 
 export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000 }: UDPConfig = {}): KalmTransport {
+  if (typeof window !== 'undefined') throw new Error('Cannot use UDP from the browser');
+
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: dgram.Socket;
     const clientCache = {};
