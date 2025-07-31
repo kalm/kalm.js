@@ -69,3 +69,5 @@ packages/ipc/CHANGELOG.md
 packages/tcp/CHANGELOG.md
 packages/udp/CHANGELOG.md
 packages/ws/CHANGELOG.md
+
+packages/kalm/types.d.ts

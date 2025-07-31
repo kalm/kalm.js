@@ -21,6 +21,7 @@ commit [#](https://github.com/kalm/kalm.js/commits)
 - Changed the subscribe handler's second argument name from `frame` to `context`, to reduce confusion with its nested `frame` property.
 - Fixed missing UDP client `connect` event. 
 - Removed the potentially misleading argument in the `connect` event since it only exposes the unbound socket.
+- Bumped engines requirement to Node 20.x 
 
 
 ## [v7.0.0] - 2023-03-17

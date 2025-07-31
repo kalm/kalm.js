@@ -7,14 +7,14 @@
     "build": "npm run clean && rollup -c rollup.config.mjs",
     "clean": "rm -rf ./dist/*",
     "test": "jest ./tests",
-    "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
+    "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE"
   },
   "funding": {
     "type": "Open Collective",
     "url": "https://opencollective.com/kalm"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "repository": {
     "type": "git",

@@ -7,10 +7,10 @@
     "build": "npm run clean && rollup -c rollup.config.mjs",
     "clean": "rm -rf ./dist/*",
     "test": "jest ./tests",
-    "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
+    "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE && cp ../../types.d.ts ./types.d.ts"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "funding": {
     "type": "Open Collective",
