@@ -11,7 +11,7 @@
     "test:integration": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest ./tests/integration --forceExit",
     "build": "npm run build --workspaces --if-present",
     "clean": "npm run clean --workspaces --if-present",
-    "bench": "ts-node --transpile-only ./scripts/benchmarks"
+    "bench": "tsx ./scripts/benchmarks"
   },
   "funding": {
     "type": "Open Collective",
@@ -70,7 +70,7 @@
     "socket.io": "^4.8.0",
     "socket.io-client": "^4.8.0",
     "ts-jest": "^29.4.0",
-    "ts-node": "10.9.2",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.0",
     "typescript-eslint": "^8.38.0",
     "ws": "^8.18.3"
