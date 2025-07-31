@@ -1,8 +1,8 @@
 # Distributed Pub-Sub example
 
-This example shows how to create a network of multiple servers sharing their messages and relaying them to all thier clients.
+This example shows how to create a network of multiple servers sharing their messages and relaying them to all their clients.
 
-This is usefull if you have a very large set of connected clients that you wish to split between many servers.
+This is useful if you have a very large set of connected clients that you wish to split between many servers.
 
 In this case, clients connect to this server mesh via websocket, yet servers communicate over straight TCP.
 

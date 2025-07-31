@@ -6,7 +6,7 @@ commit [#](https://github.com/kalm/kalm.js/commits)
 
 ### Breaking changes
 
-- Updated bundling for greater compatibilty (exports *may* behave differently)
+- Updated bundling for greater compatibility (exports *may* behave differently)
 - Deprecated the WebRTC Transport (too convoluted to fit the Kalm model)
 - Changed the signature of the `frame` event handler from `(frame: RawFrame, payloadBytes: number)` to `({ body: RawFrame, payloadBytes: number})` to ensure all event handlers only have one arguments.
 

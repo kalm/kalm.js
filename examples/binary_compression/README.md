@@ -1,6 +1,6 @@
-# Birary messages and compression example
+# Binary messages and compression example
 
-This example shows how to send brinary messages and how to add compression.
+This example shows how to send binary messages and how to add compression.
 
 # Requirements
 

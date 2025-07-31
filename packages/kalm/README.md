@@ -11,16 +11,10 @@
 </h3>
 <br/>
 
-[![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/kalm)
-[![Build Status](https://github.com/kalm/kalm.js/workflows/master-status/badge.svg)](https://github.com/kalm/kalm.js/actions?query=workflow%3A+master-status)
-[![Financial Contributors on Open Collective](https://opencollective.com/kalm/all/badge.svg?label=financial+contributors)](https://opencollective.com/kalm) 
-[![Join the chat at https://gitter.im/KALM/home](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/KALM/?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
----
-
 - **Easy-to-use syntax** unified across protocols
 - Flexible and extensible, create your own transports and buffering strategies
 - Can be used between servers or in the **browser**
-- Lower resource footprint and **better throughtput** than plain sockets
+- Lower resource footprint and **better throughput** than plain sockets
 - **Zero dependencies** and can be bundled down to ~5kb!
 
 
@@ -94,11 +88,10 @@ client.on('connect', () => {
 ```
 To see working implementations, check out our [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
 
-- [Peer to peer](https://github.com/kalm/kalm.js/tree/master/examples/browser_peer_to_peer)
-- [Chat via websockets](https://github.com/kalm/kalm.js/tree/master/examples/chat_websocket)
+- [Peer to peer with WebRTC](https://github.com/kalm/kalm.js/tree/master/examples/browser_peer_to_peer)
 - [Distributed Pub-Sub](https://github.com/kalm/kalm.js/tree/master/examples/distributed_pub_sub)
-- [Packet compressing](https://github.com/kalm/kalm.js/tree/master/examples/compression)
-- [Typescript usage](https://github.com/kalm/kalm.js/tree/master/examples/typescript)
+- [Binary packet compression](https://github.com/kalm/kalm.js/tree/master/examples/binary_compression)
+- [Basic Typescript usage](https://github.com/kalm/kalm.js/tree/master/examples/typescript_websocket)
 
 ## Documentation
 
@@ -129,17 +122,17 @@ Kalm **servers** offers events to track when packets are processed by routines o
 | Server Event | Payload | Description |
 | --- | --- | --- |
 | `error` | Error | (server, client) Emits on errors. |
-| `ready` | void | (server) Indicates that the server is now actively listeneing for new connections |
-| `connection` | [Client](./types.d.ts#L90) | (server) Indicates that a client has successfuly connected |
+| `ready` | void | (server) Indicates that the server is now actively listening for new connections |
+| `connection` | [Client](./types.d.ts#L90) | (server) Indicates that a client has successfully connected |
 
 Kalm **clients** offers events to track when packets are processed by routines or when a raw frame is received.
 
 | Client Event | Payload | Description |
 | --- | --- | --- |
 | `error` | Error | (server, client) Emits on errors. |
-| `connect` | [Client](./types.d.ts#L90) | (client) Indicates that a client has successfuly connected |
+| `connect` | [Client](./types.d.ts#L90) | (client) Indicates that a client has successfully connected |
 | `disconnect` | void | (client) Indicates that a client has disconnected |
-| `frame` | [RawFrame](./types.d.ts#L189) | (client) Triggered when recieving a parsed full frame. |
+| `frame` | [RawFrame](./types.d.ts#L189) | (client) Triggered when receiving a parsed full frame. |
 
 ## Testing
 
