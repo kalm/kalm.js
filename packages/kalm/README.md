@@ -153,20 +153,6 @@ This project exists thanks to all the people who contribute. [[Contribute](CONTR
 
 <a href="https://github.com/kalm/kalm.js/graphs/contributors"><img src="https://opencollective.com/kalm/contributors.svg?width=890&button=false" /></a>
 
-### Financial Contributors
-
-Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/kalm/contribute)]
-
-#### Individuals
-
-<a href="https://opencollective.com/kalm"><img src="https://opencollective.com/kalm/individuals.svg?width=890"></a>
-
-#### Organizations
-
-Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/kalm/contribute)]
-
-<a href="https://opencollective.com/kalm/organization/0/website"><img src="https://opencollective.com/kalm/organization/0/avatar.svg"></a>
-
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2025 Frederic Charette
+[Apache 2.0](LICENSE) 2025 Frederic Charette
