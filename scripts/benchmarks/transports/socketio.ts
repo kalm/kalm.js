@@ -1,17 +1,8 @@
-/**
- * KALM Benchmark
- */
+import * as io from 'socket.io';
+import http from 'http';
+import ioclient from 'socket.io-client';
 
-
-/* Requires ------------------------------------------------------------------*/
-
-const io = require('socket.io');
-const http = require('http');
-const ioclient = require('socket.io-client');
-
-const settings = require('../settings');
-
-/* Local variables -----------------------------------------------------------*/
+import settings from '../settings.ts';
 
 let server;
 let client;
@@ -19,15 +10,13 @@ let client;
 let count = 0;
 let handbreak = true;
 
-/* Methods -------------------------------------------------------------------*/
-
 function _absorb(err) {
-  console.log(err); /* eslint-disable-line */
+  console.log(err);
   return true;
 }
 
-function setup(resolve) {
-  server = io();
+export function setup(resolve) {
+  server = new io.Server();
   handbreak = false;
   server.on('connection', (socket) => {
     socket.on('data', () => socket.emit('data', JSON.stringify(settings.testPayload)));
@@ -37,7 +26,7 @@ function setup(resolve) {
   setTimeout(resolve, 10);
 }
 
-function teardown(resolve) {
+export function teardown(resolve) {
   if (client) client.close();
   if (server) {
     server.close(() => {
@@ -48,12 +37,12 @@ function teardown(resolve) {
   }
 }
 
-function stop(resolve) {
+export function stop(resolve) {
   handbreak = true;
   setTimeout(resolve, 0);
 }
 
-function step(resolve) {
+export function step(resolve) {
   if (handbreak) return;
   if (!client) {
     client = ioclient(`http://0.0.0.0:${settings.port}`);
@@ -64,12 +53,3 @@ function step(resolve) {
   client.emit('data', JSON.stringify(settings.testPayload));
   resolve();
 }
-
-/* Exports -------------------------------------------------------------------*/
-
-module.exports = {
-  setup,
-  teardown,
-  step,
-  stop,
-};

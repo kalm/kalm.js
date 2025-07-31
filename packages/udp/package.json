@@ -1,20 +1,20 @@
 {
   "name": "@kalm/udp",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "UDP transport for Kalm",
-  "main": "bin/udp.js",
+  "main": "dist/udp.js",
   "scripts": {
-    "build": "../../scripts/build.sh udp",
-    "clean": "../../scripts/cleanup.sh",
+    "build": "npm run clean && rollup -c rollup.config.mjs",
+    "clean": "rm -rf ./dist/*",
     "test": "jest ./tests",
-    "prepublish": "cp ../../LICENSE ./LICENSE && cp ../../CHANGELOG.md ./CHANGELOG.md"
+    "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE"
   },
   "funding": {
     "type": "Open Collective",
     "url": "https://opencollective.com/kalm"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
     "nagle",
     "udp"
   ],
-  "files": ["bin", "types.d.ts"],
+  "files": ["dist", "types.d.ts"],
   "typings": "./types.d.ts",
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
@@ -48,8 +48,7 @@
     "transform": {
       "^.+\\.tsx?$": [
       "ts-jest", {
-        "diagnostics": false,
-        "isolatedModules": true
+        "diagnostics": false
       }]
     }
   }

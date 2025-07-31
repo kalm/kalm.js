@@ -1,8 +1,32 @@
 # Changelog
 
-## [v7.0.0] - 2023-03-17
+## [v8.0.0] - 2025-07-30
 
 commit [#](https://github.com/kalm/kalm.js/commits)
+
+### Breaking changes
+
+- Updated bundling for greater compatibility (exports *may* behave differently)
+- Deprecated the WebRTC Transport (too convoluted to fit the Kalm model)
+- Changed the signature of the `frame` event handler from `(frame: RawFrame, payloadBytes: number)` to `({ body: RawFrame, payloadBytes: number})` to ensure all event handlers only have one arguments.
+
+### Minor changes
+
+- Added support for the new native WS APIs in Node 22 and later
+- Removed yarn from the toolchain. There's no reason to keep it now that NPM workspaces are more mature.
+- Deprecated the `agent` property for the WS Transport
+- Migrated the underlying Node EventEmitter to the cross-platform EventTarget system. A translation layer should keep end-user code intact.
+- Fixed server connections not getting cleaned up
+- Removed empty channels from frame payloads, saving bandwidth
+- Changed the subscribe handler's second argument name from `frame` to `context`, to reduce confusion with its nested `frame` property.
+- Fixed missing UDP client `connect` event. 
+- Removed the potentially misleading argument in the `connect` event since it only exposes the unbound socket.
+- Bumped engines requirement to Node 20.x 
+
+
+## [v7.0.0] - 2023-03-17
+
+commit [99a3ab9](https://github.com/kalm/kalm.js/commit/99a3ab9c495f6f50d7d4b4a0f478a213cc0ce484)
 
 ### Major changes
 

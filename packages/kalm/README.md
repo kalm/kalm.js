@@ -11,22 +11,16 @@
 </h3>
 <br/>
 
-[![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/kalm)
-[![Build Status](https://github.com/kalm/kalm.js/workflows/master-status/badge.svg)](https://github.com/kalm/kalm.js/actions?query=workflow%3A+master-status)
-[![Financial Contributors on Open Collective](https://opencollective.com/kalm/all/badge.svg?label=financial+contributors)](https://opencollective.com/kalm) 
-[![Join the chat at https://gitter.im/KALM/home](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/KALM/?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
----
-
 - **Easy-to-use syntax** unified across protocols
 - Flexible and extensible, create your own transports and buffering strategies
 - Can be used between servers or in the **browser**
-- Lower resource footprint and **better throughtput** than plain sockets
+- Lower resource footprint and **better throughput** than plain sockets
 - **Zero dependencies** and can be bundled down to ~5kb!
 
 
 ## Performance
 
-<img align="center" alt="perf" src="https://kalm.js.org/images/kalmv3_3chart.png" />
+<img align="center" alt="perf" src="https://kalm.js.org/images/v8_perf.png" />
 
 The performance gain comes from buffering packets before sending them- eventually sending batches instead of individual packages. The more traffic getting processed, the better the improvement. Many strategies are offered as routines. You can read more about the packet buffering algorithm [here](https://en.wikipedia.org/wiki/Nagle%27s_algorithm)
 
@@ -56,11 +50,14 @@ const server = kalm.listen({
 });
 
 server.on('connection', (client) => {
-  client.subscribe('my-channel', (body, frame) => {
-    // Handle messages here
+  client.subscribe('channel1', (body, context) => {
+    // When receiving messages from this client on "channel1"
+    console.log(body) //
+    console.log(context) //
   });
 
-  server.broadcast('my-other-channel', 'some message');
+  // Sends a message to all clients on "channel2"
+  server.broadcast('channel2', 'some message');
 });
 ```
 
@@ -78,21 +75,23 @@ const client = kalm.connect({
 });
 
 client.on('connect', () => {
-  client.subscribe('my-other-channel', (body, frame) => {
-    // Handle messages here
+  client.subscribe('channel1', (body, context) => {
+    // When receiving messages from the server on "channel1"
+    console.log(body); // 
+    console.log(context); //
   });
 
-  client.write('my-channel', 'hello world');
+  // Sends a message to the server on "channel2"
+  client.write('channel2', 'hello world');
 });
 
 ```
 To see working implementations, check out our [examples](https://github.com/kalm/kalm.js/tree/master/examples) folder.
 
-- [Peer to peer](https://github.com/kalm/kalm.js/tree/master/examples/browser_peer_to_peer)
-- [Chat via websockets](https://github.com/kalm/kalm.js/tree/master/examples/chat_websocket)
+- [Peer to peer with WebRTC](https://github.com/kalm/kalm.js/tree/master/examples/browser_peer_to_peer)
 - [Distributed Pub-Sub](https://github.com/kalm/kalm.js/tree/master/examples/distributed_pub_sub)
-- [Packet compressing](https://github.com/kalm/kalm.js/tree/master/examples/compression)
-- [Typescript usage](https://github.com/kalm/kalm.js/tree/master/examples/typescript)
+- [Binary packet compression](https://github.com/kalm/kalm.js/tree/master/examples/binary_compression)
+- [Basic Typescript usage](https://github.com/kalm/kalm.js/tree/master/examples/typescript_websocket)
 
 ## Documentation
 
@@ -102,7 +101,6 @@ To see working implementations, check out our [examples](https://github.com/kalm
   - [@kalm/ipc](https://www.npmjs.com/package/@kalm/ipc)
   - [@kalm/tcp](https://www.npmjs.com/package/@kalm/tcp)
   - [@kalm/udp](https://www.npmjs.com/package/@kalm/udp)
-  - [@kalm/webrtc](https://www.npmjs.com/package/@kalm/webrtc)
   - [@kalm/ws](https://www.npmjs.com/package/@kalm/ws)
 - Routines  [[wiki]](https://github.com/kalm/kalm.js/wiki/Routines)
   - realtime
@@ -119,16 +117,22 @@ Example:
 
 ## Events
 
-Kalm offers events to track when packets are processed by routines or when a raw frame is received.
+Kalm **servers** offers events to track when packets are processed by routines or when a raw frame is received.
 
-| Event | Payload | Description |
+| Server Event | Payload | Description |
 | --- | --- | --- |
 | `error` | Error | (server, client) Emits on errors. |
-| `ready` | void | (server) Indicates that the server is now actively listeneing for new connections |
-| `connection` | [Client](./types.d.ts#L35) | (server) Indicates that a client has successfuly connected |
-| `connect` | [Client](./types.d.ts#L35) | (client) Indicates that a client has successfuly connected |
+| `ready` | void | (server) Indicates that the server is now actively listening for new connections |
+| `connection` | [Client](./types.d.ts#L90) | (server) Indicates that a client has successfully connected |
+
+Kalm **clients** offers events to track when packets are processed by routines or when a raw frame is received.
+
+| Client Event | Payload | Description |
+| --- | --- | --- |
+| `error` | Error | (server, client) Emits on errors. |
+| `connect` | [Client](./types.d.ts#L90) | (client) Indicates that a client has successfully connected |
 | `disconnect` | void | (client) Indicates that a client has disconnected |
-| `frame` | [RawFrame](./types.d.ts#L111) | (client) Triggered when recieving a parsed full frame. |
+| `frame` | [RawFrame](./types.d.ts#L189) | (client) Triggered when receiving a parsed full frame. |
 
 ## Testing
 
@@ -165,4 +169,4 @@ Support this project with your organization. Your logo will show up here with a 
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2023 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2025 Frederic Charette

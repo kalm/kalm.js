@@ -1,17 +1,17 @@
 {
-  "name": "kalm",
+  "name": "kalm.js",
   "private": true,
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "The socket optimizer",
-  "main": "packages/kalm/bin/kalm.js",
+  "main": "packages/kalm/dist/kalm.js",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "yarn workspaces run test && yarn run test:integration",
-    "test:integration": "jest ./tests/integration --forceExit",
-    "build": "yarn workspaces run build",
-    "clean": "yarn workspaces run clean",
-    "bench": "node ./scripts/benchmarks"
+    "test": "npm run test --workspaces --if-present && npm run test:integration",
+    "test:integration": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest ./tests/integration --forceExit",
+    "build": "npm run build --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present",
+    "bench": "tsx ./scripts/benchmarks"
   },
   "funding": {
     "type": "Open Collective",
@@ -37,7 +37,7 @@
   ],
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint"
+      "pre-commit": "npm run lint"
     }
   },
   "jest": {
@@ -45,23 +45,34 @@
     "testEnvironment": "node",
     "transform": {
       "^.+\\.tsx?$": [
-      "ts-jest", {
-        "diagnostics": false,
-        "isolatedModules": true
-      }]
+        "ts-jest",
+        {
+          "diagnostics": false
+        }
+      ]
     }
   },
   "devDependencies": {
-    "@types/jest": "^29.4.0",
-    "@types/node": "^18.15.0",
-    "@typescript-eslint/eslint-plugin": "^5.55.0",
-    "@typescript-eslint/parser": "^5.55.0",
-    "eslint": "^8.36.0",
-    "husky": "^8.0.0",
-    "jest": "^29.5.0",
-    "socket.io": "^4.6.0",
-    "socket.io-client": "^4.6.0",
-    "ts-jest": "^29.0.0",
-    "typescript": "^4.9.0"
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-sucrase": "^5.0.2",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@stylistic/eslint-plugin": "^5.2.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.1.0",
+    "eslint": "^9.32.0",
+    "eslint-plugin-jest": "^29.0.0",
+    "husky": "^9.1.0",
+    "jest": "^30.0.0",
+    "rollup": "^4.46.0",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "snappy": "^7.3.0",
+    "socket.io": "^4.8.0",
+    "socket.io-client": "^4.8.0",
+    "ts-jest": "^29.4.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.38.0",
+    "ws": "^8.18.3"
   }
 }

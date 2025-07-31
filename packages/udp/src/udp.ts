@@ -4,39 +4,45 @@ type UDPSocketHandle = {
   socket: dgram.Socket
   port: number
   host: string
-}
+};
 
 type UDPConfig = {
   type?: dgram.SocketType
   localAddr?: string
   reuseAddr?: boolean
   socketTimeout?: number
-}
+};
 
-function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000 }: UDPConfig = {}): KalmTransport {
+export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000 }: UDPConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
-
     let listener: dgram.Socket;
     const clientCache = {};
 
+    // Appends client instance and message queue
     function addClient(client: Client): void {
       const local: Remote = client.local;
-      const key = `${local.host}.${local.port}`;
+      const key = `${local.host}:${local.port}`;
 
       // Client connection - skip
       if (local.host === params.host && local.port === params.port) return;
       clientCache[key].client = client;
 
-      for (let i = 0; i < clientCache[key].data.length; i++) {
-        clientCache[key].client.emit('frame', JSON.parse(clientCache[key].data[i].toString()), clientCache[key].data[i].length);
+      setTimeout(() => emitFrames(key), 1);
+    }
+
+    function emitFrames(key) {
+      if (clientCache[key].client) {
+        for (let i = 0; i < clientCache[key].data.length; i++) {
+          clientCache[key].client.emit('frame', { body: JSON.parse(clientCache[key].data[i].toString()), payloadBytes: clientCache[key].data[i].length });
+        }
+        clientCache[key].data.length = 0;
       }
-      clientCache[key].data.length = 0;
     }
 
     function remote(handle: UDPSocketHandle): Remote {
       return {
         host: handle?.host || null,
-        port: handle?.port || null
+        port: handle?.port || null,
       };
     }
 
@@ -47,7 +53,13 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
         return;
       }
       if (handle && handle.socket) {
-        handle.socket.send(payloadBytes, handle.port, handle.host);
+        // We're leaving performance on the table, but sometimes the state of the drgam socket changes mid-flight...
+        try {
+          handle.socket.send(payloadBytes, handle.port, handle.host);
+        }
+        catch (e) {
+          emitter.emit('error', e);
+        }
       }
       resetTimeout(handle);
     }
@@ -59,17 +71,16 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
 
     function disconnect(handle?: UDPSocketHandle): void {
       if (handle && handle.socket) handle.socket = null;
-      emitter.emit('disconnect');
+      setTimeout(() => emitter.emit('disconnected'), 1);
     }
 
     function connect(handle?: UDPSocketHandle): UDPSocketHandle {
       if (handle) return handle;
       const connection = dgram.createSocket(type as dgram.SocketType);
-      
+
       connection.on('error', err => emitter.emit('error', err));
-      connection.on('message', req => {
-        emitter.emit('connect', connection);
-        emitter.emit('frame', JSON.parse(req.toString()), req.length);
+      connection.on('message', (req) => {
+        emitter.emit('frame', { body: JSON.parse(req.toString()), payloadBytes: req.length });
         resetTimeout(res);
       });
       connection.bind(null, localAddr);
@@ -80,6 +91,8 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
         socket: connection,
         _timer: null,
       };
+
+      setTimeout(() => emitter.emit('connect'), 1);
 
       resetTimeout(res);
 
@@ -92,8 +105,8 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
         port: origin.port,
         socket: listener,
       };
-      
-      const key = `${origin.address}.${origin.port}`;
+
+      const key = `${origin.address}:${origin.port}`;
 
       if (!clientCache[key]) {
         clientCache[key] = {
@@ -104,8 +117,8 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
       }
 
       if (data) {
-        if (clientCache[key].client) clientCache[key].client.emit('frame', JSON.parse(data.toString()));
-        else clientCache[key].data.push(data);
+        clientCache[key].data.push(data);
+        setTimeout(() => emitFrames(key), 1);
       }
     }
 
@@ -121,7 +134,7 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
       listener.on('message', (data, origin) => resolveClient(origin, data));
       listener.on('error', err => emitter.emit('error', err));
       listener.bind(params.port, localAddr);
-      emitter.emit('ready');
+      setTimeout(() => emitter.emit('ready'), 1);
     }
 
     if (emitter && typeof emitter.on === 'function') emitter.on('connection', addClient);
@@ -136,6 +149,3 @@ function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTi
     };
   };
 }
-
-// Ensures support for modules and requires
-module.exports = udp;

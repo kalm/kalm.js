@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events';
 import * as ipc from '../../src/ipc';
+import { EventEmitter } from '../../../kalm/src/utils/events';
 
 describe('IPC transport', () => {
   it('basic setup', () => {

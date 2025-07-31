@@ -11,11 +11,12 @@
 </h3>
 <br/>
 
-[![Kalm](https://img.shields.io/npm/v/kalm.svg)](https://www.npmjs.com/package/@kalm/udp)
-[![Build Status](https://github.com/kalm/kalm.js/workflows/master-status/badge.svg)](https://github.com/kalm/kalm.js/actions?query=workflow%3A+master-status)
-![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/kalm/kalm.js)
-[![Financial Contributors on Open Collective](https://opencollective.com/kalm/all/badge.svg?label=financial+contributors)](https://opencollective.com/kalm)
-[![Join the chat at https://gitter.im/KALM/home](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/KALM/?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+A UDP transport for the [Kalm](https://github.com/kalm/kalm.js) framework.
+
+- Use fire-and-forget type messaging with the conveinience of stateful interfaces
+- Supports ipv4 and ipv6 addresses
+- Adds timeouts for recycling instances
+
 
 ## Installing
 
@@ -44,4 +45,4 @@ If you think of something that you want, [open an issue](//github.com/kalm/kalm.
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2023 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2025 Frederic Charette

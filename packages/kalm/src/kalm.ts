@@ -1,10 +1,11 @@
-import { EventEmitter } from 'events';
 import { Client } from './components/client';
 import { Server } from './components/server';
 
 import { dynamic } from './routines/dynamic';
 import { realtime } from './routines/realtime';
 import { tick } from './routines/tick';
+
+import { EventEmitter } from './utils/events';
 
 const defaults: ServerConfig = {
   host: '0.0.0.0',

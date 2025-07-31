@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   transport: 'tcp',
   port: 3001,
   routine: ['dynamic', { maxInterval: 5 }],

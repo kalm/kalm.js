@@ -1,14 +1,14 @@
-/* Requires ------------------------------------------------------------------*/
+/* Requires ------------------------------------------------------------------ */
 
-import { connect, listen } from '../../packages/kalm/bin/kalm';
-import ipc from '../../packages/ipc/bin/ipc';
+import { connect, listen } from '../../packages/kalm/dist/kalm';
+import ipc from '../../packages/ipc/dist/ipc';
 
-/* Suite --------------------------------------------------------------------*/
+/* Suite -------------------------------------------------------------------- */
 
 describe('Frame', () => {
   let server;
 
-  /* --- Setup ---*/
+  /* --- Setup --- */
 
   // Create a server before each scenario
   beforeEach(() => {
@@ -18,15 +18,15 @@ describe('Frame', () => {
   });
 
   // Cleanup afterwards
-  afterEach(done => {
+  afterEach((done) => {
     server.stop();
     server = null;
     setTimeout(() => done(), 100);
   });
 
-  it('Should have a well structured frame reference', done => {
+  it('Should have a well structured frame reference', (done) => {
     const payload = { foo: 'bar' };
-    server.on('connection', c => {
+    server.on('connection', (c) => {
       c.subscribe('test', (data, meta) => {
         expect(meta).toEqual({
           client: c,
@@ -41,12 +41,12 @@ describe('Frame', () => {
         done();
       });
     });
-    server.on('error', e => {
+    server.on('error', (e) => {
       throw new Error(e);
     });
 
     const client = connect({ transport: ipc() });
-    client.on('error', e => {
+    client.on('error', (e) => {
       throw new Error(e);
     });
     client.write('test', payload);

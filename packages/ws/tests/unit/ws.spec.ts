@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../../../kalm/src/utils/events';
 import * as ws from '../../src/ws';
 
 describe('ws transport', () => {

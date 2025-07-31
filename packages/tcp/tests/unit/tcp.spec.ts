@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../../../kalm/src/utils/events';
 import * as tcp from '../../src/tcp';
 
 describe('TCP transport', () => {

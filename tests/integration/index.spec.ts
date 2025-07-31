@@ -1,20 +1,24 @@
-/**
- * Kalm integration test suite
- */
+import { connect, listen } from '../../packages/kalm/dist/kalm';
 
-/* Requires ------------------------------------------------------------------*/
+import ipc from '../../packages/ipc/dist/ipc.js';
+import tcp from '../../packages/tcp/dist/tcp.js';
+import udp from '../../packages/udp/dist/udp.js';
+import ws from '../../packages/ws/dist/ws.js';
 
-import { connect, listen } from '../../packages/kalm/bin/kalm';
+const transports = { ipc, tcp, udp, ws };
 
-/* Suite --------------------------------------------------------------------*/
+const largePayload: { foo: string }[] = [];
+while (largePayload.length < 2048) {
+  largePayload.push({ foo: 'bar' });
+}
 
 describe('Integration tests', () => {
-  ['ipc', 'tcp', 'udp', 'ws'].forEach(transport => {
+  ['ipc', 'tcp', 'udp', 'ws'].forEach((transport) => {
     describe(`Testing ${transport} transport`, () => {
       let server;
-      const soc = require(`../../packages/${transport}/bin/${transport}`)(); /* eslint-disable-line */
+      const soc = transports[transport]();
 
-      /* --- Setup ---*/
+      /* --- Setup --- */
 
       // Create a server before each scenario
       beforeEach(() => {
@@ -24,7 +28,7 @@ describe('Integration tests', () => {
       });
 
       // Cleanup afterwards
-      afterEach(done => {
+      afterEach((done) => {
         server.stop();
         server = null;
         setTimeout(() => done(), 100);
@@ -32,62 +36,57 @@ describe('Integration tests', () => {
 
       /* --- Tests --- */
 
-      it(`should work with ${transport}`, done => {
+      it(`should work with ${transport}`, (done) => {
         const payload = { foo: 'bar' };
-        server.on('connection', c => {
-          c.subscribe('test', data => {
+        server.on('connection', (c) => {
+          c.subscribe('test', (data) => {
             expect(data).toEqual(payload);
             done();
           });
         });
-        server.on('error', e => {
+        server.on('error', (e) => {
           throw new Error(e);
         });
 
         const client = connect({ transport: soc });
-        client.on('error', e => {
+        client.on('error', (e) => {
           throw new Error(e);
         });
         client.write('test', payload);
       });
 
-      it(`should handle foreign characters with ${transport}`, done => {
+      it(`should handle special characters with ${transport}`, (done) => {
         const payload = { foo: '한자' };
-        server.on('connection', c => {
-          c.subscribe('test', data => {
+        server.on('connection', (c) => {
+          c.subscribe('test', (data) => {
             expect(data).toEqual(payload);
             done();
           });
         });
-        server.on('error', e => {
+        server.on('error', (e) => {
           throw new Error(e);
         });
 
         const client = connect({ transport: soc });
-        client.on('error', e => {
+        client.on('error', (e) => {
           throw new Error(e);
         });
         client.write('test', payload);
       });
 
-      it(`should handle large payloads with ${transport}`, done => {
-        const largePayload: { foo: string }[] = [];
-        while (largePayload.length < 2048) {
-          largePayload.push({ foo: 'bar' });
-        }
-
-        server.on('connection', c => {
-          c.subscribe('test.large', data => {
+      it(`should handle large payloads with ${transport}`, (done) => {
+        server.on('connection', (c) => {
+          c.subscribe('test.large', (data) => {
             expect(data).toEqual(largePayload);
             done();
           });
         });
-        server.on('error', e => {
+        server.on('error', (e) => {
           throw new Error(e);
         });
 
         const client = connect({ transport: soc });
-        client.on('error', e => {
+        client.on('error', (e) => {
           if (transport === 'udp') {
             expect(e.message).toEqual('UDP Cannot send packets larger than 16384 bytes, tried to send 28715 bytes');
             return done();
@@ -97,9 +96,9 @@ describe('Integration tests', () => {
         client.write('test.large', largePayload);
       });
 
-      it('should not trigger for unsubscribed channels', done => {
+      it('should not trigger for unsubscribed channels', (done) => {
         const payload = { foo: 'bar' };
-        server.on('connection', c => {
+        server.on('connection', (c) => {
           c.subscribe('test', () => {
             // Throw on purpose
             expect(false).toBe(true);
@@ -108,12 +107,12 @@ describe('Integration tests', () => {
 
           c.unsubscribe('test');
         });
-        server.on('error', e => {
+        server.on('error', (e) => {
           throw new Error(e);
         });
 
         const client = connect({ transport: soc });
-        client.on('error', e => {
+        client.on('error', (e) => {
           throw new Error(e);
         });
         setTimeout(() => client.write('test', payload), 100);
