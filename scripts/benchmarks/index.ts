@@ -1,25 +1,15 @@
-/**
- * Kalm benchmarking
- */
-
-/* Requires ------------------------------------------------------------------ */
-
-const Kalm = require('./transports/kalm');
-const TCP = require('./transports/tcp');
-const IPC = require('./transports/ipc');
-const UDP = require('./transports/udp');
-const WS = require('./transports/socketio');
-const settings = require('./settings');
-
-/* Local variables ----------------------------------------------------------- */
+import * as kalm from './transports/kalm.ts';
+import * as ipc from './transports/ipc.ts';
+import * as tcp from './transports/tcp.ts';
+import * as udp from './transports/udp.ts';
+import * as ws from './transports/socketio.ts';
+import settings from './settings.ts';
 
 const _maxCount = null;
 let _curr = 0;
-const Suite = { IPC, TCP, UDP, WS };
-const tests = [];
+const Suite = { ipc, tcp, udp, ws };
+const tests: any[] = [];
 const results = {};
-
-/* Methods ------------------------------------------------------------------- */
 
 function _measure(transport, resolve) {
   _curr = 0;
@@ -50,17 +40,15 @@ function _updateSettings(obj, resolve) {
 }
 
 function _errorHandler(err) {
-  console.error(err); /* eslint-disable-line */
+  console.error(err);
   process.exit(1);
 }
 
 function _postResults() {
-  console.log(JSON.stringify(results)); /* eslint-disable-line */
+  console.log(JSON.stringify(results));
   // Do something with the info
   process.exit();
 }
-
-/* Init ---------------------------------------------------------------------- */
 
 // Roll port number
 settings.port = 3000 + Math.round(Math.random() * 1000);
@@ -69,7 +57,7 @@ const adpts = Object.keys(Suite).map(k => ({
   transport: k,
   settings: { transport: k.toLowerCase() },
   raw: Suite[k],
-  kalm: Kalm,
+  kalm,
 }));
 
 adpts.forEach((i) => {

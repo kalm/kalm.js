@@ -1,36 +1,25 @@
-/**
- * KALM Benchmark
- */
+import settings from '../settings.ts';
+import kalm from '../../../packages/kalm/dist/kalm.js';
 
-/* Requires ------------------------------------------------------------------ */
+import ipc from '../../../packages/ipc/dist/ipc.js';
+import tcp from '../../../packages/tcp/dist/tcp.js';
+import udp from '../../../packages/udp/dist/udp.js';
+import ws from '../../../packages/ws/dist/ws.js';
 
-const settings = require('../settings');
-const Kalm = require('../../../packages/kalm/dist/kalm');
-
-const transports = {
-  ipc: require('../../../packages/ipc/dist/ipc'),
-  tcp: require('../../../packages/tcp/dist/tcp'),
-  udp: require('../../../packages/udp/dist/udp'),
-  ws: require('../../../packages/ws/dist/ws'),
-};
-
-/* Local variables ----------------------------------------------------------- */
+const transports = { ipc, tcp, udp, ws };
 
 let server;
 let client;
 
 let count = 0;
-let accDensity = 0;
 let handbreak = true;
 
-/* Methods ------------------------------------------------------------------- */
-
-function setup(resolve) {
-  server = Kalm.listen({
+export function setup(resolve) {
+  server = kalm.listen({
     port: settings.port,
     json: true,
     transport: transports[settings.transport](),
-    routine: Kalm.routines[settings.routine[0]](settings.routine[1]),
+    routine: kalm.routines[settings.routine[0]](settings.routine[1]),
   });
 
   server.on('connection', (c) => {
@@ -45,28 +34,28 @@ function setup(resolve) {
   setTimeout(resolve, 0);
 }
 
-function teardown(resolve) {
+export function teardown(resolve) {
   server.stop();
   server = null;
   client = null;
   resolve(count);
 }
 
-function stop(resolve) {
+export function stop(resolve) {
   handbreak = true;
   setTimeout(resolve, 0);
 }
 
-function step(resolve) {
+export function step(resolve) {
   if (handbreak) return;
   if (!client) {
-    client = Kalm.connect({
+    client = kalm.connect({
       port: settings.port,
       json: true,
       transport: transports[settings.transport](),
-      routine: Kalm.routines.realtime(),
+      routine: kalm.routines.realtime(),
     });
-    client.subscribe(settings.testChannel, (body, frame) => {
+    client.subscribe(settings.testChannel, () => {
       // console.log('got it', frame)
       count++;
     });
@@ -80,12 +69,3 @@ function step(resolve) {
 
   resolve();
 }
-
-/* Exports ------------------------------------------------------------------- */
-
-module.exports = {
-  setup,
-  teardown,
-  step,
-  stop,
-};

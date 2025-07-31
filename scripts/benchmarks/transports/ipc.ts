@@ -1,14 +1,5 @@
-/**
- * KALM Benchmark
- */
-
-/* Requires ------------------------------------------------------------------ */
-
-const net = require('net');
-
-const settings = require('../settings');
-
-/* Local variables ----------------------------------------------------------- */
+import { createServer, connect } from 'net';
+import settings from '../settings.ts';
 
 let server;
 let client;
@@ -16,15 +7,13 @@ let client;
 let count = 0;
 let handbreak = true;
 
-/* Methods ------------------------------------------------------------------- */
-
 function _absorb(err) {
-  console.log(err); /* eslint-disable-line */
+  console.log(err);
   return true;
 }
 
-function setup(resolve) {
-  server = net.createServer((socket) => {
+export function setup(resolve) {
+  server = createServer((socket) => {
     socket.on('error', _absorb);
     socket.on('data', () => socket.write(JSON.stringify(settings.testPayload)));
   });
@@ -33,7 +22,7 @@ function setup(resolve) {
   server.listen(`/tmp/app.socket-${settings.port}`, resolve);
 }
 
-function teardown(resolve) {
+export function teardown(resolve) {
   if (client) client.destroy();
   if (server) {
     server.close(() => {
@@ -44,15 +33,15 @@ function teardown(resolve) {
   }
 }
 
-function stop(resolve) {
+export function stop(resolve) {
   handbreak = true;
   setTimeout(resolve, 0);
 }
 
-function step(resolve) {
+export function step(resolve) {
   if (handbreak) return;
   if (!client) {
-    client = net.connect(`/tmp/app.socket-${settings.port}`);
+    client = connect(`/tmp/app.socket-${settings.port}`);
     client.on('error', _absorb);
     client.on('data', () => count++);
   }
@@ -60,12 +49,3 @@ function step(resolve) {
   client.write(JSON.stringify(settings.testPayload));
   resolve();
 }
-
-/* Exports ------------------------------------------------------------------- */
-
-module.exports = {
-  setup,
-  teardown,
-  step,
-  stop,
-};

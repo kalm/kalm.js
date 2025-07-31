@@ -19,6 +19,8 @@ commit [#](https://github.com/kalm/kalm.js/commits)
 - Fixed server connections not getting cleaned up
 - Removed empty channels from frame payloads, saving bandwidth
 - Changed the subscribe handler's second argument name from `frame` to `context`, to reduce confusion with its nested `frame` property.
+- Fixed missing UDP client `connect` event. 
+- Removed the potentially misleading argument in the `connect` event since it only exposes the unbound socket.
 
 
 ## [v7.0.0] - 2023-03-17

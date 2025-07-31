@@ -1,18 +1,22 @@
-/**
- * Kalm integration test suite
- */
-
-/* Requires ------------------------------------------------------------------ */
-
 import { connect, listen } from '../../packages/kalm/dist/kalm';
 
-/* Suite -------------------------------------------------------------------- */
+import ipc from '../../packages/ipc/dist/ipc.js';
+import tcp from '../../packages/tcp/dist/tcp.js';
+import udp from '../../packages/udp/dist/udp.js';
+import ws from '../../packages/ws/dist/ws.js';
+
+const transports = { ipc, tcp, udp, ws };
+
+const largePayload: { foo: string }[] = [];
+while (largePayload.length < 2048) {
+  largePayload.push({ foo: 'bar' });
+}
 
 describe('Integration tests', () => {
   ['ipc', 'tcp', 'udp', 'ws'].forEach((transport) => {
     describe(`Testing ${transport} transport`, () => {
       let server;
-      const soc = require(`../../packages/${transport}/dist/${transport}`)(); /* eslint-disable-line */
+      const soc = transports[transport]();
 
       /* --- Setup --- */
 
@@ -51,7 +55,7 @@ describe('Integration tests', () => {
         client.write('test', payload);
       });
 
-      it(`should handle foreign characters with ${transport}`, (done) => {
+      it(`should handle special characters with ${transport}`, (done) => {
         const payload = { foo: '한자' };
         server.on('connection', (c) => {
           c.subscribe('test', (data) => {
@@ -71,11 +75,6 @@ describe('Integration tests', () => {
       });
 
       it(`should handle large payloads with ${transport}`, (done) => {
-        const largePayload: { foo: string }[] = [];
-        while (largePayload.length < 2048) {
-          largePayload.push({ foo: 'bar' });
-        }
-
         server.on('connection', (c) => {
           c.subscribe('test.large', (data) => {
             expect(data).toEqual(largePayload);

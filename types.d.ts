@@ -44,7 +44,7 @@ interface ServerEventMap {
 }
 
 interface ClientEventMap {
-  connect: (client: Client) => void
+  connect: () => void
   disconnect: () => void
   disconnected: () => void // Internal use only
   frame: (data: { body: RawFrame, payloadBytes: number }) => void

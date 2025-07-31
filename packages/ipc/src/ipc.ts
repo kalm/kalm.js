@@ -60,7 +60,7 @@ export default function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }
         }
       });
       connection.on('error', err => emitter.emit('error', err));
-      connection.on('connect', () => emitter.emit('connect', connection));
+      connection.on('connect', () => emitter.emit('connect'));
       connection.on('close', () => emitter.emit('disconnected'));
       connection.setTimeout(socketTimeout, () => disconnect(handle));
       return connection;

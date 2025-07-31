@@ -60,7 +60,7 @@ export default function ws({ cert, key, socketTimeout = 30000 }: WSConfig = {}):
       connection[evtType]('error', err => emitter.emit('error', err));
       connection[evtType]('close', () => emitter.emit('disconnected'));
       connection[evtType]('open', () => {
-        emitter.emit('connect', connection);
+        emitter.emit('connect');
         connection._queue.forEach(payload => send(connection, payload));
 
         resetTimeout(connection);

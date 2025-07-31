@@ -18,18 +18,25 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
     let listener: dgram.Socket;
     const clientCache = {};
 
+    // Appends client instance and message queue
     function addClient(client: Client): void {
       const local: Remote = client.local;
-      const key = `${local.host}.${local.port}`;
+      const key = `${local.host}:${local.port}`;
 
       // Client connection - skip
       if (local.host === params.host && local.port === params.port) return;
       clientCache[key].client = client;
 
-      for (let i = 0; i < clientCache[key].data.length; i++) {
-        clientCache[key].client.emit('frame', JSON.parse(clientCache[key].data[i].toString()), clientCache[key].data[i].length);
+      setTimeout(() => emitFrames(key), 1);
+    }
+
+    function emitFrames(key) {
+      if (clientCache[key].client) {
+        for (let i = 0; i < clientCache[key].data.length; i++) {
+          clientCache[key].client.emit('frame', { body: JSON.parse(clientCache[key].data[i].toString()), payloadBytes: clientCache[key].data[i].length });
+        }
+        clientCache[key].data.length = 0;
       }
-      clientCache[key].data.length = 0;
     }
 
     function remote(handle: UDPSocketHandle): Remote {
@@ -58,7 +65,7 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
 
     function disconnect(handle?: UDPSocketHandle): void {
       if (handle && handle.socket) handle.socket = null;
-      emitter.emit('disconnected');
+      setTimeout(() => emitter.emit('disconnected'), 1);
     }
 
     function connect(handle?: UDPSocketHandle): UDPSocketHandle {
@@ -67,7 +74,6 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
 
       connection.on('error', err => emitter.emit('error', err));
       connection.on('message', (req) => {
-        emitter.emit('connect', connection);
         emitter.emit('frame', { body: JSON.parse(req.toString()), payloadBytes: req.length });
         resetTimeout(res);
       });
@@ -79,6 +85,8 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
         socket: connection,
         _timer: null,
       };
+
+      setTimeout(() => emitter.emit('connect'), 1);
 
       resetTimeout(res);
 
@@ -92,7 +100,7 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
         socket: listener,
       };
 
-      const key = `${origin.address}.${origin.port}`;
+      const key = `${origin.address}:${origin.port}`;
 
       if (!clientCache[key]) {
         clientCache[key] = {
@@ -103,8 +111,8 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
       }
 
       if (data) {
-        if (clientCache[key].client) clientCache[key].client.emit('frame', JSON.parse(data.toString()));
-        else clientCache[key].data.push(data);
+        clientCache[key].data.push(data);
+        setTimeout(() => emitFrames(key), 1);
       }
     }
 
