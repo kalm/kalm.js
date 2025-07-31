@@ -53,7 +53,13 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
         return;
       }
       if (handle && handle.socket) {
-        handle.socket.send(payloadBytes, handle.port, handle.host);
+        // We're leaving performance on the table, but sometimes the state of the drgam socket changes mid-flight...
+        try {
+          handle.socket.send(payloadBytes, handle.port, handle.host);
+        }
+        catch (e) {
+          emitter.emit('error', e);
+        }
       }
       resetTimeout(handle);
     }
