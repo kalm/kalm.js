@@ -141,9 +141,6 @@ Kalm **clients** offers events to track when packets are processed by routines o
 
 `npm run bench`
 
-## Contribute
-
-If you think of something that you want, [open an issue](//github.com/kalm/kalm.js/issues/new) or file a pull request, we'll be more than happy to take a look!
 
 ## Contributors
 
@@ -152,6 +149,8 @@ If you think of something that you want, [open an issue](//github.com/kalm/kalm.
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
 
 <a href="https://github.com/kalm/kalm.js/graphs/contributors"><img src="https://opencollective.com/kalm/contributors.svg?width=890&button=false" /></a>
+
+If you think of something that you want, [open an issue](//github.com/kalm/kalm.js/issues/new) or file a pull request, we'll be more than happy to take a look!
 
 ## License 
 
