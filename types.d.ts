@@ -68,7 +68,6 @@ interface KalmTransport {
   (params: any, emitter: any): Socket
 }
 
-
 interface Socket {
   /** The command for a server to start listening for messages */
   bind: () => void
