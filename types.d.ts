@@ -51,99 +51,6 @@ interface ClientEventMap {
   error: (error: Error) => void
 }
 
-/**
- * A socket server instance. When a server receives a request from an initiating
- * client, it creates a matching client instance on it's end, building it's connection pool.
- */
-interface Server {
-  /**
-     * Sends a message to all active clients in the connection pool
-     *
-     * @params channel The channel name for the message, any client with a matching subscription will receive the broadcast
-     * @params message The message to be emitted to all active clients in the connection pool
-     */
-  broadcast: (channel: string, message: Serializable) => void
-  /** A unique label or name for the server (optional) */
-  label: string
-  /** Kills the server and destroys all active clients and their connection */
-  stop: () => void
-  /** The list of active clients */
-  connections: Client[]
-
-  /**
-     * Events emitted by the server:
-     *
-     * 'ready': once the server is ready and accepting new connections
-     *
-     * 'connection': when a client connects to the server
-     *
-     * 'error': when an error occurs (non-fatal)
-     */
-  on<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
-  once<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
-  removeListener<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
-  off<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
-  addEventListener<k extends keyof ServerEventMap>(event: k, listener: (evt?: Event) => void): this
-  removeEventListener<k extends keyof ServerEventMap>(event: k, listener: (evt?: Event) => void): this
-}
-
-/**
- * A socket client instance.
- */
-interface Client {
-  /**
-     * Writes a message to the remote client
-     *
-     * @params channel The channel name for the message, given the remote client has a matching subscription
-     * @params message The message to be emitted to the remote client
-     */
-  write: (channel: string, message: Serializable) => void
-  /**
-     * Kills the connection to the server and destroys the client
-     */
-  destroy: () => void
-  /**
-     * Begins listening for messages that are sent to a given channel
-     *
-     * @param channel The channel name for the subscription
-     * @param handler The function to invoke when a new message arrives
-     */
-  subscribe: (channel: string, handler: (body: any, context: Context) => any) => void
-  /**
-     * Stops listening for messages that are sent to a given channel
-     *
-     * @param channel The channel name for the subscription to stop
-     * @param handler Optionally, the function to stop invoking. If left empty, will clear all handlers for that subscription
-     */
-  unsubscribe: (channel: string, handler: (body: any, context: Context) => any) => void
-  /**
-     * Prints the coordinates of the local client
-     */
-  local: Remote
-  /**
-     * Prints the coordinates of the remote client
-     */
-  remote: Remote
-
-  /**
-     * Events emitted by the client:
-     *
-     * 'connect': once the client has connected to the server
-     *
-     * 'disconnect': when the client disconnects from the server
-     *
-     * 'frame': inspects a raw frame as it arrives
-     *
-     * 'error': when an error occurs (non-fatal)
-     */
-  on<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
-  once<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
-  removeListener<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
-  off<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
-  addEventListener<k extends keyof ClientEventMap>(event: k, listener: (evt?: Event) => void): this
-  removeEventListener<k extends keyof ClientEventMap>(event: k, listener: (evt?: Event) => void): this
-}
-
 type Serializable = Buffer | object | string | null;
 
 interface KalmRoutine {
@@ -160,16 +67,6 @@ interface Queue {
 interface KalmTransport {
   (params: any, emitter: any): Socket
 }
-
-type Peer = {
-  candidate?: {
-    candidate: string
-    sdpMLineIndex: number
-    sdpMid: string
-  }
-  type?: 'offer' | 'answer'
-  sdp?: string
-};
 
 interface Socket {
   /** The command for a server to start listening for messages */
@@ -266,5 +163,108 @@ declare module 'kalm' {
          * Emits messages immediatly as they enter the queue, no buffering
          */
     realtime: (confg?: RealtimeConfig) => KalmRoutine
+  };
+
+  /**
+   * A socket server instance. When a server receives a request from an initiating
+   * client, it creates a matching client instance on it's end, building it's connection pool.
+   */
+  export interface Server {
+    /**
+       * Sends a message to all active clients in the connection pool
+       *
+       * @params channel The channel name for the message, any client with a matching subscription will receive the broadcast
+       * @params message The message to be emitted to all active clients in the connection pool
+       */
+    broadcast: (channel: string, message: Serializable) => void
+    /** A unique label or name for the server (optional) */
+    label: string
+    /** Kills the server and destroys all active clients and their connection */
+    stop: () => void
+    /** The list of active clients */
+    connections: Client[]
+
+    /**
+       * Events emitted by the server:
+       *
+       * 'ready': once the server is ready and accepting new connections
+       *
+       * 'connection': when a client connects to the server
+       *
+       * 'error': when an error occurs (non-fatal)
+       */
+    on<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
+    once<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
+    removeListener<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
+    off<k extends keyof ServerEventMap>(event: k, listener: ServerEventMap[k]): this
+    addEventListener<k extends keyof ServerEventMap>(event: k, listener: (evt?: Event) => void): this
+    removeEventListener<k extends keyof ServerEventMap>(event: k, listener: (evt?: Event) => void): this
+  }
+
+  /**
+   * A socket client instance.
+   */
+  export interface Client {
+    /**
+       * Writes a message to the remote client
+       *
+       * @params channel The channel name for the message, given the remote client has a matching subscription
+       * @params message The message to be emitted to the remote client
+       */
+    write: (channel: string, message: Serializable) => void
+    /**
+       * Kills the connection to the server and destroys the client
+       */
+    destroy: () => void
+    /**
+       * Begins listening for messages that are sent to a given channel
+       *
+       * @param channel The channel name for the subscription
+       * @param handler The function to invoke when a new message arrives
+       */
+    subscribe: (channel: string, handler: (body: any, context: Context) => any) => void
+    /**
+       * Stops listening for messages that are sent to a given channel
+       *
+       * @param channel The channel name for the subscription to stop
+       * @param handler Optionally, the function to stop invoking. If left empty, will clear all handlers for that subscription
+       */
+    unsubscribe: (channel: string, handler: (body: any, context: Context) => any) => void
+    /**
+       * Prints the coordinates of the local client
+       */
+    local: Remote
+    /**
+       * Prints the coordinates of the remote client
+       */
+    remote: Remote
+
+    /**
+       * Events emitted by the client:
+       *
+       * 'connect': once the client has connected to the server
+       *
+       * 'disconnect': when the client disconnects from the server
+       *
+       * 'frame': inspects a raw frame as it arrives
+       *
+       * 'error': when an error occurs (non-fatal)
+       */
+    on<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
+    once<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
+    removeListener<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
+    off<k extends keyof ClientEventMap>(event: k, listener: ClientEventMap[k]): this
+    addEventListener<k extends keyof ClientEventMap>(event: k, listener: (evt?: Event) => void): this
+    removeEventListener<k extends keyof ClientEventMap>(event: k, listener: (evt?: Event) => void): this
+  }
+
+  /**
+   * The context for a message received
+   */
+  export type Context = {
+    /** A reference to the Client instance */
+    client: Client
+    /** The body of the message */
+    frame: Frame
   };
 }

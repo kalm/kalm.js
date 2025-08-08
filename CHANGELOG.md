@@ -1,8 +1,16 @@
 # Changelog
 
-## [v8.0.0] - 2025-07-30
+## [v8.0.1] - 2025-08-08
 
 commit [#](https://github.com/kalm/kalm.js/commits)
+
+### Bug fixes
+
+- No longer sending empty payloads, which was problematic with the tick routine. Frame Ids are still counted as if it were sent.
+
+## [v8.0.0] - 2025-07-30
+
+commit [f8816cc](https://github.com/kalm/kalm.js/commit/f8816cc003ef0938e3651d7f0f7a57871daea77c)
 
 ### Breaking changes
 
