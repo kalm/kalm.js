@@ -119,8 +119,9 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
   emitter.on('disconnected', _handleDisconnect);
   emitter.on('error', _handleError);
   emitter.on('frame', _handleRequest);
-  if (!socket) log(`connecting to ${params.host}:${params.port}`);
-  socket = transport.connect(socket);
+
+  if (!socket && !params.socket) log(`connecting to ${params.host}:${params.port}`);
+  socket = transport.connect(socket || params.socket);
 
   instance = Object.assign(emitter, {
     write,
