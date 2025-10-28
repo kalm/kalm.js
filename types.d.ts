@@ -11,6 +11,8 @@ interface ClientConfig {
   port?: number
   /** The hostname or ip of the server to connect to */
   host?: string
+  /** An optional Socket object, this can be useful when combining Kalm with other libraries */
+  socket?: any
   /** Internal: Tells if the client has been created by the server */
   isServer?: boolean
   /** Internal: The server object reference for server-created clients */

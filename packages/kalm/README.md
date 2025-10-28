@@ -72,6 +72,7 @@ const client = kalm.connect({
   port: 8800,
   transport: ws(),
   routine: kalm.routines.realtime(),
+  // socket: new WebSocket(...), // You can also pass a socket object, which unlocks compatibility with many other libraries, like https://github.com/joewalnes/reconnecting-websocket
 });
 
 client.on('connect', () => {

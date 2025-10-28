@@ -1,12 +1,21 @@
 # Changelog
 
-## [v8.0.1] - 2025-08-08
+## [v8.1.0] - 2025-10-27
 
 commit [#](https://github.com/kalm/kalm.js/commits)
+
+### Minor changes
+
+- Allowing socket objects to be passed to the Client constructor, enabling compatibility with other socket libraries.
+
+## [v8.0.1] - 2025-08-08
+
+commit [b5569f2](https://github.com/kalm/kalm.js/commits/b5569f27fa497b5ae8edb730d9c4a29cac1219d4)
 
 ### Bug fixes
 
 - No longer sending empty payloads, which was problematic with the tick routine. Frame Ids are still counted as if it were sent.
+- Cleanup of typescript definitions
 
 ## [v8.0.0] - 2025-07-30
 
