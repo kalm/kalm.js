@@ -1,5 +1,16 @@
 # Changelog
 
+## [v8.1.1] - 2025-10-28
+
+commit [#](https://github.com/kalm/kalm.js/commits)
+
+### Minor changes (QOL)
+
+- added warning on misnamed config parameters
+- added a client `disconnect()` method that is an alias for `destroy()`
+- added a `secure` property on ws transport config for simpler wss
+- throws an error on channel subscription with non-function handler
+
 ## [v8.1.0] - 2025-10-27
 
 commit [#](https://github.com/kalm/kalm.js/commits)

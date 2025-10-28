@@ -4,13 +4,14 @@ type UDPSocketHandle = {
   socket: dgram.Socket
   port: number
   host: string
+  _timer?: number
 };
 
 type UDPConfig = {
   type?: dgram.SocketType
   localAddr?: string
   reuseAddr?: boolean
-  socketTimeout?: number
+  socketTimeout?: NodeJS.Timeout
 };
 
 export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000 }: UDPConfig = {}): KalmTransport {
@@ -72,6 +73,7 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
     }
 
     function disconnect(handle?: UDPSocketHandle): void {
+      if (handle && handle._timer) clearTimeout(handle._timer);
       if (handle && handle.socket) handle.socket = null;
       setTimeout(() => emitter.emit('disconnected'), 1);
     }
@@ -124,7 +126,7 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
       }
     }
 
-    function resetTimeout(handle) {
+    function resetTimeout(handle: UDPSocketHandle) {
       clearTimeout(handle._timer);
       handle._timer = setTimeout(() => {
         disconnect(handle);
