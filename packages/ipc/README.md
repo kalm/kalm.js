@@ -24,8 +24,12 @@ An IPC transport for the [Kalm](https://github.com/kalm/kalm.js) framework.
 
 ```
 {
+    /** The maximum idle time for the connection before it hangs up (default: 30000) */
     socketTimeout: 30000,
-    path: '/tmp/app.socket'
+    /** The prefix to use for file handler location. Final handler is ${path + port}
+        Ex: '/tmp/app.socket-9001' for Mac and Linux or 'C:\Windows\Temp\app.socket-9001' on Windows
+    */
+    path: '/tmp/app.socket-'
 }
 ```
 

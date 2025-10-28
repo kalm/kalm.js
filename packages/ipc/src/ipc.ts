@@ -1,4 +1,5 @@
 import net from 'node:net';
+import path from 'node:path';
 
 interface IPCSocket extends net.Socket {
   server?: {
@@ -17,11 +18,23 @@ type IPCConfig = {
   path?: string
 };
 
+function isValidPathSyntax(filePath) {
+  try {
+    path.parse(filePath);
+    return true;
+  }
+  catch (e) {
+    return e;
+  }
+}
+
 export default function ipc({ socketTimeout = 30000, path = '/tmp/app.socket-' }: IPCConfig = {}): KalmTransport {
   if (typeof window !== 'undefined') throw new Error('Cannot use IPC from the browser');
 
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener: net.Server;
+
+    if (isValidPathSyntax(path + params.port) !== true) throw new Error(`Invalid IPC location, path is not resolvable: ${path + params.port}`);
 
     function bind(): void {
       listener = net.createServer(soc => emitter.emit('socket', soc));
