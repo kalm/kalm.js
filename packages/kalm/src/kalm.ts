@@ -42,6 +42,11 @@ function validateOptions(options: ServerConfig): void {
       throw new Error('Routine is not valid, it may not have been invoked, see: https://github.com/kalm/kalm.js#documentation');
     }
   }
+
+  // Common misnamed parameters
+  if (options['hostname'] && !options.host) {
+    console.warn('Kalm: Option "hostname" does not exist, did you mean "host" ?');
+  }
 }
 
 export function listen(options: ServerConfig): Server {

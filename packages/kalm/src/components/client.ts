@@ -101,6 +101,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
   }
 
   function subscribe(channelName: string, handler: (msg: any, context: Context) => void): void {
+    if (!handler || typeof handler !== 'function') throw new Error(`Subscribe handler is not a function: ${handler.toString()}`);
     _resolveChannel(channelName).handlers.push(handler);
   }
 
@@ -126,6 +127,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
   instance = Object.assign(emitter, {
     write,
     destroy,
+    disconnect: destroy,
     subscribe,
     unsubscribe,
     remote,

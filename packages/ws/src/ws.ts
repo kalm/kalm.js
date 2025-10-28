@@ -6,6 +6,7 @@ type WSConfig = {
   cert?: string
   key?: string
   socketTimeout?: number
+  secure?: boolean
 };
 
 type WSHandle = WebSocket & {
@@ -16,12 +17,16 @@ type WSHandle = WebSocket & {
   _socket?: any
 };
 
-export default function ws({ cert, key, socketTimeout = 30000 }: WSConfig = {}): KalmTransport {
+export default function ws({ cert, key, secure, socketTimeout = 30000 }: WSConfig = {}): KalmTransport {
   return function socket(params: ClientConfig, emitter: NodeJS.EventEmitter): Socket {
     let listener;
 
     async function bind(): Promise<void> {
       if (typeof window !== 'undefined') throw new Error('Cannot create a websocket server from the browser');
+      if (secure) {
+        if (!cert) throw new Error('Missing cert to create a secure websocket server');
+        if (!key) throw new Error('Missing key to create a secure websocket server');
+      }
 
       if (cert && key) {
         const https = await import('https');
@@ -47,7 +52,7 @@ export default function ws({ cert, key, socketTimeout = 30000 }: WSConfig = {}):
     }
 
     function connect(handle?: WSHandle): WSHandle {
-      const protocol: string = (!!cert && !!key) === true ? 'wss' : 'ws';
+      const protocol: string = ((!!secure) || (!!cert && !!key)) === true ? 'wss' : 'ws';
       const connection: WSHandle = handle || new (nativeAPIExists ? WebSocket : WSClient)(`${protocol}://${params.host}:${params.port}`);
       connection.binaryType = 'arraybuffer';
       const evtType: string = nativeAPIExists ? 'addEventListener' : 'on';
