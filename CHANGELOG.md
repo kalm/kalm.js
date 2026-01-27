@@ -1,5 +1,14 @@
 # Changelog
 
+## [v8.2.0] - 2026-01-06
+
+commit [#](https://github.com/kalm/kalm.js/commits)
+
+### Minor changes
+
+- Added a `manual` routine for interop with external frame tick systems.
+- Modified `udp` and `ws` socketTimeout logic, making it less accurate, but allowing a 2-5% throughput improvement.
+
 ## [v8.1.1] - 2025-10-28
 
 commit [#](https://github.com/kalm/kalm.js/commits)
@@ -257,4 +266,4 @@ commit: [b5209ec](https://github.com/kalm/kalm.js/commit/b5209ec4d3ab86000b72b50
 
 ### Added
 - Migrated the codebase from the [original repo](https://github.com/fed135/kalm)
-- Implemeted new interface
+- Implemented new interface

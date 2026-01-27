@@ -164,7 +164,11 @@ declare module 'kalm' {
     /**
          * Emits messages immediatly as they enter the queue, no buffering
          */
-    realtime: (confg?: RealtimeConfig) => KalmRoutine
+    realtime: () => KalmRoutine
+    /**
+         * Does not emit messages, but exposes a `flush` method to do so manually.
+         */
+    manual: () => { flush: () => void, queue: KalmRoutine }
   };
 
   /**
