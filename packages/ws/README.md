@@ -28,7 +28,7 @@ A websocket transport for the [Kalm](https://github.com/kalm/kalm.js) framework.
     cert?: string
     /** The key file content for a secure socket connection, both this and `cert` must be set */
     key?: string
-    /** Indicates wether a server or client should use wss:// protocol. Will throw an error if set without cert or key on the server */
+    /** Indicates whether a server or client should use wss:// protocol. Will throw an error if set without cert or key on the server */
     secure?: boolean
     /** The maximum idle time for the connection before it hangs up (default: 30000) */
     socketTimeout: number
@@ -43,4 +43,4 @@ If you think of something that you want, [open an issue](//github.com/kalm/kalm.
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2025 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2026 Frederic Charette

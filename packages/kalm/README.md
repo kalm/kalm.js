@@ -22,7 +22,7 @@
 
 <img align="center" alt="perf" src="https://kalm.js.org/images/v8_perf.png" />
 
-The performance gain comes from buffering packets before sending them- eventually sending batches instead of individual packages. The more traffic getting processed, the better the improvement. Many strategies are offered as routines. You can read more about the packet buffering algorithm [here](https://en.wikipedia.org/wiki/Nagle%27s_algorithm)
+The performance gain comes from buffering packets before sending them- eventually sending batches instead of individual packets. The more traffic getting processed, the better the improvement. Many strategies are offered as routines. You can read more about the packet buffering algorithm [here](https://en.wikipedia.org/wiki/Nagle%27s_algorithm)
 
 ## Install
 
@@ -107,6 +107,7 @@ To see working implementations, check out our [examples](https://github.com/kalm
   - realtime
   - dynamic
   - tick
+  - manual
 
 ## Logging
 
@@ -118,7 +119,7 @@ Example:
 
 ## Events
 
-Kalm **servers** offers events to track when packets are processed by routines or when a raw frame is received.
+Kalm **servers** offer events to track when packets are processed by routines or when a raw frame is received.
 
 | Server Event | Payload | Description |
 | --- | --- | --- |
@@ -126,7 +127,7 @@ Kalm **servers** offers events to track when packets are processed by routines o
 | `ready` | void | (server) Indicates that the server is now actively listening for new connections |
 | `connection` | [Client](./types.d.ts#L90) | (server) Indicates that a client has successfully connected |
 
-Kalm **clients** offers events to track when packets are processed by routines or when a raw frame is received.
+Kalm **clients** offer events to track when packets are processed by routines or when a raw frame is received.
 
 | Client Event | Payload | Description |
 | --- | --- | --- |
@@ -155,4 +156,4 @@ If you think of something that you want, [open an issue](//github.com/kalm/kalm.
 
 ## License 
 
-[Apache 2.0](LICENSE) 2025 Frederic Charette
+[Apache 2.0](LICENSE) 2026 Frederic Charette

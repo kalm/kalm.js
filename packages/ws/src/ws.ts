@@ -15,6 +15,7 @@ type WSHandle = WebSocket & {
   headers?: any
   connection?: any
   _socket?: any
+  _isActive?: boolean
 };
 
 export default function ws({ cert, key, secure, socketTimeout = 30000 }: WSConfig = {}): KalmTransport {
@@ -44,7 +45,7 @@ export default function ws({ cert, key, secure, socketTimeout = 30000 }: WSConfi
     function send(handle: WSHandle & { _queue?: string[] }, payload: RawFrame | string): void {
       if (handle && handle.readyState === 1) handle.send(typeof payload === 'string' ? payload : JSON.stringify(payload));
       else handle._queue.push(JSON.stringify(payload));
-      resetTimeout(handle);
+      handle._isActive = true;
     }
 
     function stop(): void {
@@ -57,28 +58,30 @@ export default function ws({ cert, key, secure, socketTimeout = 30000 }: WSConfi
       connection.binaryType = 'arraybuffer';
       const evtType: string = nativeAPIExists ? 'addEventListener' : 'on';
       connection._queue = [];
-      connection._timer = null;
+      connection._timer = setInterval(() => checkTimeout(connection), socketTimeout);
+      connection._isActive = false;
       connection[evtType]('message', (evt) => {
         emitter.emit('frame', { body: JSON.parse(evt.data || evt), payloadBytes: (evt.data || evt).length });
-        resetTimeout(connection);
+        connection._isActive = true;
       });
       connection[evtType]('error', err => emitter.emit('error', err));
       connection[evtType]('close', () => emitter.emit('disconnected'));
       connection[evtType]('open', () => {
         emitter.emit('connect');
         connection._queue.forEach(payload => send(connection, payload));
-
-        resetTimeout(connection);
+        connection._isActive = true;
       });
 
       return connection;
     }
 
-    function resetTimeout(handle) {
-      clearTimeout(handle._timer);
-      handle._timer = setTimeout(() => {
+    function checkTimeout(handle: WSHandle) {
+      if (!handle._isActive) {
         disconnect(handle);
-      }, socketTimeout);
+      }
+      else {
+        handle._isActive = false;
+      }
     }
 
     function remote(handle: WSHandle): Remote {
@@ -94,7 +97,7 @@ export default function ws({ cert, key, secure, socketTimeout = 30000 }: WSConfi
 
     function disconnect(handle) {
       if (handle) {
-        clearTimeout(handle._timer);
+        clearInterval(handle._timer);
         if (handle.end) handle.end();
         handle.close();
       }

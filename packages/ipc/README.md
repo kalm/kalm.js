@@ -41,4 +41,4 @@ If you think of something that you want, [open an issue](//github.com/kalm/kalm.
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2025 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2026 Frederic Charette

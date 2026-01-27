@@ -5,13 +5,14 @@ type UDPSocketHandle = {
   port: number
   host: string
   _timer?: number
+  _isActive?: boolean
 };
 
 type UDPConfig = {
   type?: dgram.SocketType
   localAddr?: string
   reuseAddr?: boolean
-  socketTimeout?: NodeJS.Timeout
+  socketTimeout?: number
 };
 
 export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = false, socketTimeout = 30000 }: UDPConfig = {}): KalmTransport {
@@ -30,7 +31,7 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
       if (local.host === params.host && local.port === params.port) return;
       clientCache[key].client = client;
 
-      setTimeout(() => emitFrames(key), 1);
+      setImmediate(() => emitFrames(key));
     }
 
     function emitFrames(key) {
@@ -56,15 +57,9 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
         return;
       }
       if (handle && handle.socket) {
-        // We're leaving performance on the table, but sometimes the state of the drgam socket changes mid-flight...
-        try {
-          handle.socket.send(payloadBytes, handle.port, handle.host);
-        }
-        catch (e) {
-          emitter.emit('error', e);
-        }
+        handle.socket.send(payloadBytes, handle.port, handle.host);
       }
-      resetTimeout(handle);
+      handle._isActive = true;
     }
 
     function stop(): void {
@@ -73,19 +68,19 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
     }
 
     function disconnect(handle?: UDPSocketHandle): void {
-      if (handle && handle._timer) clearTimeout(handle._timer);
+      if (handle && handle._timer) clearInterval(handle._timer);
       if (handle && handle.socket) handle.socket = null;
-      setTimeout(() => emitter.emit('disconnected'), 1);
+      setImmediate(() => emitter.emit('disconnected'));
     }
 
     function connect(handle?: UDPSocketHandle): UDPSocketHandle {
       if (handle) return handle;
-      const connection = dgram.createSocket(type as dgram.SocketType);
+      const connection = dgram.createSocket(type as dgram.SocketType) as dgram.Socket & { _parent: UDPSocketHandle };
 
       connection.on('error', err => emitter.emit('error', err));
       connection.on('message', (req) => {
         emitter.emit('frame', { body: JSON.parse(req.toString()), payloadBytes: req.length });
-        resetTimeout(res);
+        connection._parent._isActive = true;
       });
       connection.bind(null, localAddr);
 
@@ -94,11 +89,14 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
         port: params.port,
         socket: connection,
         _timer: null,
+        _isActive: false,
       };
 
-      setTimeout(() => emitter.emit('connect'), 1);
+      res.socket._parent = res;
 
-      resetTimeout(res);
+      setImmediate(() => emitter.emit('connect'));
+
+      res._timer = setInterval(() => checkTimeout(res), socketTimeout);
 
       return res;
     }
@@ -122,15 +120,17 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
 
       if (data) {
         clientCache[key].data.push(data);
-        setTimeout(() => emitFrames(key), 1);
+        setImmediate(() => emitFrames(key));
       }
     }
 
-    function resetTimeout(handle: UDPSocketHandle) {
-      clearTimeout(handle._timer);
-      handle._timer = setTimeout(() => {
+    function checkTimeout(handle: UDPSocketHandle) {
+      if (!handle._isActive) {
         disconnect(handle);
-      }, socketTimeout);
+      }
+      else {
+        handle._isActive = false;
+      }
     }
 
     function bind(): void {
@@ -138,7 +138,7 @@ export default function udp({ type = 'udp4', localAddr = '0.0.0.0', reuseAddr = 
       listener.on('message', (data, origin) => resolveClient(origin, data));
       listener.on('error', err => emitter.emit('error', err));
       listener.bind(params.port, localAddr);
-      setTimeout(() => emitter.emit('ready'), 1);
+      setImmediate(() => emitter.emit('ready'));
     }
 
     if (emitter && typeof emitter.on === 'function') emitter.on('connection', addClient);

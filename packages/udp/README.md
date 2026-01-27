@@ -13,7 +13,7 @@
 
 A UDP transport for the [Kalm](https://github.com/kalm/kalm.js) framework.
 
-- Use fire-and-forget type messaging with the conveinience of stateful interfaces
+- Use fire-and-forget type messaging with the convenience of stateful interfaces
 - Supports ipv4 and ipv6 addresses
 - Adds timeouts for recycling instances
 
@@ -30,7 +30,7 @@ A UDP transport for the [Kalm](https://github.com/kalm/kalm.js) framework.
     type?: 'udp4' | 'udp6'
     /** The ip address that shows up when calling `local()` (default: '0.0.0.0') */
     localAddr?: string
-    /** UDP reuse Address seting (default: false) */
+    /** UDP reuse Address setting (default: false) */
     reuseAddr?: boolean
     /** The maximum idle time for the connection before it hangs up (default: 30000) */
     socketTimeout?: number
@@ -45,4 +45,4 @@ If you think of something that you want, [open an issue](//github.com/kalm/kalm.
 
 ## License 
 
-[Apache 2.0](LICENSE) (c) 2025 Frederic Charette
+[Apache 2.0](LICENSE) (c) 2026 Frederic Charette

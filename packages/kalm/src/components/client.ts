@@ -34,12 +34,16 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
   }
 
   function _wrap(frameId: number): void {
-    const payload = getChannels().reduce((frame, channelName) => {
-      if (channels[channelName].packets.length > 0) frame.channels[channelName] = channels[channelName].packets;
-      return frame;
-    }, { frameId, channels: {} });
+    const payload = { frameId, channels: {} };
+    let hasPackets = false;
+    for (const channelName in channels) {
+      if (channels[channelName].packets.length > 0) {
+        hasPackets = true;
+        payload.channels[channelName] = channels[channelName].packets;
+      }
+    }
 
-    if (Object.keys(payload.channels || {}).length > 0) transport.send(socket, payload);
+    if (hasPackets) transport.send(socket, payload);
 
     for (const channelName in channels) {
       channels[channelName].packets.length = 0;
