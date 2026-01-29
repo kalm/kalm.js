@@ -92,7 +92,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
   }
 
   function write(channelName: string, message: Serializable): void {
-    if (params.json !== true && !Buffer.isBuffer(message)) {
+    if (params.json !== true && (typeof Buffer === 'undefined' ? !Array.isArray(message) : !Buffer.isBuffer(message))) {
       throw new Error(`Unable to serialize message: ${message}, expected type Buffer`);
     }
     _resolveChannel(channelName).packets.push(message);

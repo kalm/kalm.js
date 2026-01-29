@@ -53,7 +53,7 @@ interface ClientEventMap {
   error: (error: Error) => void
 }
 
-type Serializable = Buffer | object | string | null;
+type Serializable = Buffer | Uint8Array | object | string | null;
 
 interface KalmRoutine {
   (params: any, routineEmitter: (frameId: number) => any): Queue
@@ -107,7 +107,7 @@ type Context = {
 
 type Frame = {
   /** The name of the subscription channel */
-  channel: string
+  channel: string | number
   /** The id of the frame, these are integers cycling from 0 to 0xffffffff */
   id: number
   /** The position of the message ion the frame */
@@ -182,7 +182,7 @@ declare module 'kalm' {
        * @params channel The channel name for the message, any client with a matching subscription will receive the broadcast
        * @params message The message to be emitted to all active clients in the connection pool
        */
-    broadcast: (channel: string, message: Serializable) => void
+    broadcast: (channel: string | number, message: Serializable) => void
     /** A unique label or name for the server (optional) */
     label: string
     /** Kills the server and destroys all active clients and their connection */
@@ -217,25 +217,29 @@ declare module 'kalm' {
        * @params channel The channel name for the message, given the remote client has a matching subscription
        * @params message The message to be emitted to the remote client
        */
-    write: (channel: string, message: Serializable) => void
+    write: (channel: string | number, message: Serializable) => void
     /**
-       * Kills the connection to the server and destroys the client
+       * Flushes pending messages then kills the connection to the server and destroys the client
        */
     destroy: () => void
+    /**
+     * An alias for .destroy()
+     */
+    disconnect: () => void
     /**
        * Begins listening for messages that are sent to a given channel
        *
        * @param channel The channel name for the subscription
        * @param handler The function to invoke when a new message arrives
        */
-    subscribe: (channel: string, handler: (body: any, context: Context) => any) => void
+    subscribe: <T = void>(channel: string | number, handler: (body: T | Uint8Array, context: Context) => any) => void
     /**
        * Stops listening for messages that are sent to a given channel
        *
        * @param channel The channel name for the subscription to stop
        * @param handler Optionally, the function to stop invoking. If left empty, will clear all handlers for that subscription
        */
-    unsubscribe: (channel: string, handler: (body: any, context: Context) => any) => void
+    unsubscribe: <T = void>(channel: string | number, handler: (body: T | Uint8Array, context: Context) => any) => void
     /**
        * Prints the coordinates of the local client
        */
