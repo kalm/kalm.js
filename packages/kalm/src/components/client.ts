@@ -43,7 +43,9 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
       }
     }
 
-    if (hasPackets) transport.send(socket, payload);
+    if (hasPackets) {
+      transport.send(socket, payload);
+    }
 
     for (const channelName in channels) {
       channels[channelName].packets.length = 0;
@@ -66,7 +68,7 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
         frame.channels[channelName].forEach((packet, messageIndex) => {
           if (channelName in channels) {
             channels[channelName].handlers.forEach(handler => handler(
-              packet,
+              (params.json ? packet : new Uint8Array(packet)),
               {
                 client: instance,
                 frame: {
@@ -92,9 +94,10 @@ export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any
   }
 
   function write(channelName: string, message: Serializable): void {
-    if (params.json !== true && !Buffer.isBuffer(message)) {
-      throw new Error(`Unable to serialize message: ${message}, expected type Buffer`);
+    if (params.json !== true) {
+      message = [...message as Uint8Array];
     }
+
     _resolveChannel(channelName).packets.push(message);
     routine.add(message);
   }

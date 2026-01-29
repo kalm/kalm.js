@@ -1,8 +1,23 @@
 # Changelog
 
-## [v8.2.0] - 2026-01-06
+## [v8.2.1] - 2026-01-29
 
 commit [#](https://github.com/kalm/kalm.js/commits)
+
+### Minor changes
+
+- Added a optional generic type for `subscribe` methods' expected body.
+- Allowing channel names to be of type `number`.
+
+### Bug fixes
+
+- Fixed an error preventing binary payloads in the browser.
+- Added missing types definitions for `disconnect`.
+
+
+## [v8.2.0] - 2026-01-06
+
+commit [c8e4386](https://github.com/kalm/kalm.js/commits/c8e4386225fce46e620106d7b19c5674dcbaafca)
 
 ### Minor changes
 
@@ -11,7 +26,7 @@ commit [#](https://github.com/kalm/kalm.js/commits)
 
 ## [v8.1.1] - 2025-10-28
 
-commit [#](https://github.com/kalm/kalm.js/commits)
+commit [25b421f](https://github.com/kalm/kalm.js/commits/25b421fcb526be89c74412e7758ba19c8d31692b)
 
 ### Minor changes (QOL)
 
@@ -22,7 +37,7 @@ commit [#](https://github.com/kalm/kalm.js/commits)
 
 ## [v8.1.0] - 2025-10-27
 
-commit [#](https://github.com/kalm/kalm.js/commits)
+commit [4cd0855](https://github.com/kalm/kalm.js/commits/bd8676eb91e336bc05d2c697441c6048ec0cda09)
 
 ### Minor changes
 

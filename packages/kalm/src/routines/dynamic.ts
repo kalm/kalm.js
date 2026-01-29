@@ -24,7 +24,7 @@ export function dynamic({
 
     function _add(packet: Buffer) {
       if (maxBytes !== Infinity) {
-        if (Buffer.isBuffer(packet) || typeof packet === 'string') totalBytes += packet.length;
+        if (typeof packet.length === 'number') totalBytes += packet.length;
         else totalBytes += JSON.stringify(packet).length;
       }
       numPackets++;
