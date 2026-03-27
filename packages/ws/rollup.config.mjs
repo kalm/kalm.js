@@ -11,6 +11,6 @@ export default (async () => ({
   output: {
     file: 'dist/ws.js',
     name: 'ws',
-    format: 'umd',
+    format: 'es',
   },
 }))();

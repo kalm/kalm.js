@@ -1,20 +1,34 @@
 import { listen, routines } from 'kalm';
-import ws from '@kalm/ws';
+import webtransport from '@kalm/webtransport';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import url from 'node:url';
+
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const certificate = {
+  private: readFileSync(path.join(__dirname, './cert/localhost.key')),
+  cert: readFileSync(path.join(__dirname, './cert/localhost.crt')),
+};
 
 /**
- * Creates a kalm server that uses the Websocket transport.
+ * Creates a kalm server that uses the WebTransport protocol.
  * It is bound to local IP 127.0.0.1 and listens on port 3938.
  *
- * The manual routine needs to be constructed first in order to get access to the `flush` method.
- * This can be an option if you have a seperate system to manage server ticks.
+ * The tick routine will emit messages to clients at a frequency no higher than 5hz, or no shorter than 20ms
+ *
+ * This is a common setup for relaying information to multiple connected clients that all send information rapidly.
  */
-const { flush, queue } = routines.manual();
-
 const provider = listen({
-  transport: ws(),
+  transport: webtransport({
+    secret: 'my-secret',
+    cert: certificate?.cert,
+    key: certificate?.private,
+  }),
   port: 3938,
-  routine: queue,
-  host: '127.0.0.1',
+  host: '0.0.0.0',
+  routine: routines.tick({ hz: 5 }),
 });
 
 /**
@@ -63,11 +77,6 @@ provider.on('connection', (client) => {
   provider.broadcast('foo', {
     message: 'A new client has connected!',
   } as MyCustomPayload);
-
-  /**
-   * In manual mode, `flush` needs to be explicitly invoked for both `write` and `broadcast`. Since routines operate at the client level, they will process all channels.
-   */
-  flush();
 });
 
 /**

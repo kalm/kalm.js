@@ -1,16 +1,17 @@
 {
   "name": "@kalm/tcp",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "description": "TCP transport for Kalm",
+  "type": "module",
   "main": "dist/tcp.js",
   "scripts": {
     "build": "npm run clean && rollup -c rollup.config.mjs",
     "clean": "rm -rf ./dist/*",
-    "test": "jest ./tests",
+    "test": "node --experimental-strip-types --test tests/**/*.spec.ts",
     "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "funding": {
     "type": "Open Collective",
@@ -41,15 +42,5 @@
   ],
   "browser": {
     "net": false
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.tsx?$": [
-      "ts-jest", {
-        "diagnostics": false
-      }]
-    }
   }
 }

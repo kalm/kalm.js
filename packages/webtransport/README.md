@@ -11,27 +11,24 @@
 </h3>
 <br/>
 
-A UDP transport for the [Kalm](https://github.com/kalm/kalm.js) framework.
+A [WebTransport](https://developer.mozilla.org/en-US/docs/Web/API/WebTransport) transport for the [Kalm](https://github.com/kalm/kalm.js) framework.
 
-- Use fire-and-forget type messaging with the convenience of stateful interfaces
-- Supports ipv4 and ipv6 addresses
-- Adds timeouts for recycling instances
-
+- Requires secure connections
 
 ## Installing
 
-`npm install @kalm/udp`
+`npm install @kalm/webtransport`
 
 ## Options
 
 ```typescript
 {
-    /** The udp socket family (default: udp4) */
-    type?: 'udp4' | 'udp6'
-    /** The ip address that shows up when calling `local()` (default: '127.0.0.1') */
-    localAddr?: string
-    /** UDP reuse Address setting (default: false) */
-    reuseAddr?: boolean
+    /** The certificate file content for a secure socket connection */
+    cert?: string
+    /** The private key file content for a secure socket connection */
+    key?: string
+    /** The secret to use for the connection. Will throw an error if created without cert, key or secret on the server */
+    secret?: string
     /** The maximum idle time for the connection before it hangs up (default: 30000) */
     socketTimeout?: number
 }

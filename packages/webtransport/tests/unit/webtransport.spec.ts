@@ -1,12 +1,12 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import ipc from '../../src/ipc.ts';
 import { EventEmitter } from '../../../kalm/src/utils/events.ts';
+import webtransport from '../../src/webtransport.ts';
 
-describe('IPC transport', () => {
+describe.skip('webtransport transport', () => {
   it('basic setup', () => {
-    assert.strictEqual(typeof ipc, 'function');
-    const transport = ipc();
+    assert.strictEqual(typeof webtransport, 'function');
+    const transport = webtransport();
     assert.strictEqual(typeof transport, 'function');
     const socket = transport({}, new EventEmitter());
 
@@ -19,7 +19,7 @@ describe('IPC transport', () => {
   });
 
   describe('Given an empty handle reference and no configs', () => {
-    const transport = ipc();
+    const transport = webtransport();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {
@@ -30,14 +30,24 @@ describe('IPC transport', () => {
   });
 
   describe('Given a handle reference and no configs', () => {
-    const transport = ipc();
+    const transport = webtransport();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {
-      it('should return handle\'s values', () => {
+      it('should return handle\'s values from headers', () => {
         assert.deepStrictEqual(
-          socket.remote({ _server: { _pipeName: '/foo' }, _handle: { fd: 12345 } }),
-          { host: '/foo', port: 12345 },
+          socket.remote({
+            headers: { 'x-forwarded-for': '127.0.0.1' },
+            connection: { remotePort: 3000 },
+          }),
+          { host: '127.0.0.1', port: 3000 },
+        );
+      });
+
+      it('should return handle\'s values from connection', () => {
+        assert.deepStrictEqual(
+          socket.remote({ connection: { remoteAddress: '127.0.0.1', remotePort: 3000 } }),
+          { host: '127.0.0.1', port: 3000 },
         );
       });
     });

@@ -38,15 +38,15 @@ Install the transport layer ('tcp' for example)
 
 **Server**
 
-```javascript
-const kalm = require('kalm');
-const ws = require('@kalm/ws');
+```typescript
+import { listen, routines } from 'kalm';
+import ws from '@kalm/ws';
 
-const server = kalm.listen({
+const server = listen({
   port: 8800,
   transport: ws(),
-  routine: kalm.routines.tick({ hz: 5 }), // Sends packets at a frequency of 5 Hz (200ms)
-  host: '0.0.0.0',
+  routine: routines.tick({ hz: 5 }), // Sends packets at a frequency of 5 Hz (200ms)
+  host: '127.0.0.1',
 });
 
 server.on('connection', (client) => {
@@ -63,15 +63,15 @@ server.on('connection', (client) => {
 
 **Client**
 
-```javascript
-const kalm = require('kalm');
-const ws = require('@kalm/ws');
+```typescript
+import { connect, routines } from 'kalm';
+import ws from '@kalm/ws';
 
-const client = kalm.connect({
-  host: '0.0.0.0',
+const client = connect({
+  host: '127.0.0.1',
   port: 8800,
   transport: ws(),
-  routine: kalm.routines.realtime(),
+  routine: routines.realtime(),
   // socket: new WebSocket(...), // You can also pass a socket object, which unlocks compatibility with many other libraries, like https://github.com/joewalnes/reconnecting-websocket
 });
 
@@ -93,6 +93,7 @@ To see working implementations, check out our [examples](https://github.com/kalm
 - [Distributed Pub-Sub](https://github.com/kalm/kalm.js/tree/master/examples/distributed_pub_sub)
 - [Binary packet compression](https://github.com/kalm/kalm.js/tree/master/examples/binary_compression)
 - [Basic Typescript usage](https://github.com/kalm/kalm.js/tree/master/examples/typescript_websocket)
+- [WebTransport usage](https://github.com/kalm/kalm.js/tree/master/examples/typescript_webtransport)
 
 ## Documentation
 
@@ -103,6 +104,7 @@ To see working implementations, check out our [examples](https://github.com/kalm
   - [@kalm/tcp](https://www.npmjs.com/package/@kalm/tcp)
   - [@kalm/udp](https://www.npmjs.com/package/@kalm/udp)
   - [@kalm/ws](https://www.npmjs.com/package/@kalm/ws)
+  - [@kalm/webtransport](https://www.npmjs.com/package/@kalm/webtransport)
 - Routines  [[wiki]](https://github.com/kalm/kalm.js/wiki/Routines)
   - realtime
   - dynamic

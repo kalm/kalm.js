@@ -41,7 +41,7 @@ export function stop(resolve) {
 export function step(resolve) {
   if (handbreak) return;
   if (!client) {
-    client = connect(settings.port, '0.0.0.0');
+    client = connect(settings.port, '127.0.0.1');
     client.on('error', _absorb);
     client.on('data', () => count++);
   }

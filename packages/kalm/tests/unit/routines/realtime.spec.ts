@@ -1,5 +1,7 @@
-import { realtime } from '../../../src/routines/realtime';
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import { realtime } from '../../../src/routines/realtime.ts';
 
 describe('Realtime routine', () => {
-  it('TODO', () => expect(realtime).not.toBeUndefined());
+  it('TODO', () => assert.notEqual(realtime, undefined));
 });

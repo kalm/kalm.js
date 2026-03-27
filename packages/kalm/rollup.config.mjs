@@ -1,14 +1,10 @@
-import resolve from '@rollup/plugin-node-resolve';
+import nodeExternals from 'rollup-plugin-node-externals';
 import sucrase from '@rollup/plugin-sucrase';
 
 export default {
   input: 'src/kalm.ts',
   plugins: [
-    resolve({
-      extensions: ['.ts'],
-      preferBuiltins: true,
-      browser: true,
-    }),
+    nodeExternals(),
     sucrase({
       include: ['src/**'],
       transforms: ['typescript'],
@@ -17,6 +13,6 @@ export default {
   output: {
     file: 'dist/kalm.js',
     name: 'kalm',
-    format: 'umd',
+    format: 'es',
   },
 };

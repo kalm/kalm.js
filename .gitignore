@@ -49,6 +49,7 @@ packages/ipc/bin
 packages/tcp/bin
 packages/udp/bin
 packages/ws/bin
+packages/webtransport/bin
 
 # distribution code
 packages/kalm/dist
@@ -56,6 +57,7 @@ packages/ipc/dist
 packages/tcp/dist
 packages/udp/dist
 packages/ws/dist
+packages/webtransport/dist
 
 # publish-only files
 packages/kalm/LICENSE
@@ -63,11 +65,15 @@ packages/ipc/LICENSE
 packages/tcp/LICENSE
 packages/udp/LICENSE
 packages/ws/LICENSE
+packages/webtransport/LICENSE
 
 packages/kalm/CHANGELOG.md
 packages/ipc/CHANGELOG.md
 packages/tcp/CHANGELOG.md
 packages/udp/CHANGELOG.md
 packages/ws/CHANGELOG.md
+packages/webtransport/CHANGELOG.md
 
-packages/kalm/types.d.ts
+localhost.crt
+localhost.key
+fingerprint.hex

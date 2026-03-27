@@ -4,7 +4,7 @@ import { compressSync, uncompress } from 'snappy';
 
 /**
  * Creates a kalm client that uses the Websocket transport.
- * It will attempt to connect to a server located at the address '0.0.0.0' on port 3938.
+ * It will attempt to connect to a server located at the address '127.0.0.1' on port 3938.
  *
  * The realtime routine will emit messages as soon as possible. While this is ideal in a few scenarios, for instance when the client does not send a lot of events,
  * it does not leverage the benefits of buffering and may cause slowdowns if many messages are sent rapidly.
@@ -15,7 +15,7 @@ const client = connect({
   transport: ws({}),
   json: false,
   port: 3938,
-  host: '0.0.0.0',
+  host: '127.0.0.1',
   routine: routines.realtime(),
 });
 

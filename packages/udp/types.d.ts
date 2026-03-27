@@ -2,7 +2,7 @@ declare module '@kalm/udp' {
   interface UDPConfig {
     /** The udp socket family (default: udp4) */
     type?: 'udp4' | 'udp6'
-    /** The ip address that shows up when calling `local()` (default: '0.0.0.0') */
+    /** The ip address that shows up when calling `local()` (default: '127.0.0.1') */
     localAddr?: string
     /** UDP reuse Address seting (default: false) */
     reuseAddr?: boolean

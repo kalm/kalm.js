@@ -3,7 +3,7 @@ const ws = require('../../packages/ws');
 
 /**
  * Creates a kalm server that uses the Websocket transport.
- * It is bound to local IP 0.0.0.0 and listens on port 9001.
+ * It is bound to local IP 127.0.0.1 and listens on port 9001.
  *
  * The realtime routine will emit messages to clients as soon as possible
  *
@@ -14,7 +14,7 @@ const Server = kalm.listen({
   port: 9001,
   transport: ws(),
   routine: kalm.routines.realtime(),
-  host: '0.0.0.0',
+  host: '127.0.0.1',
 });
 
 Server.on('connection', (client) => {

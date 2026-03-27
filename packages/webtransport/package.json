@@ -1,9 +1,9 @@
 {
-  "name": "@kalm/ws",
+  "name": "@kalm/webtransport",
   "version": "9.0.0",
-  "description": "WebSocket transport for Kalm",
+  "description": "webtransport transport for Kalm",
   "type": "module",
-  "main": "dist/ws.js",
+  "main": "dist/webtransport.js",
   "scripts": {
     "build": "npm run clean && rollup -c rollup.config.mjs",
     "clean": "rm -rf ./dist/*",
@@ -27,9 +27,13 @@
     "realtime",
     "socket",
     "nagle",
-    "websocket"
+    "websocket",
+    "webtransport"
   ],
-  "files": ["dist", "types.d.ts"],
+  "files": [
+    "dist",
+    "types.d.ts"
+  ],
   "typings": "./types.d.ts",
   "author": "frederic charette <fredericcharette@gmail.com>",
   "license": "Apache-2.0",
@@ -41,7 +45,11 @@
     "frederic charette <fredericcharette@gmail.com>"
   ],
   "dependencies": {
-    "ws": "^8.20.0"
+    "@fails-components/webtransport": "^1.5.3",
+    "@fails-components/webtransport-transport-http3-quiche": "^1.5.3"
+  },
+  "devDependencies": {
+    "node-forge": "^1.4.0"
   },
   "browser": {
     "http": false,

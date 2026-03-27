@@ -1,17 +1,16 @@
 import sucrase from '@rollup/plugin-sucrase';
 
-export default {
-  input: 'src/tcp.ts',
+export default (async () => ({
+  input: 'src/webtransport.ts',
   plugins: [
     sucrase({
       include: ['src/**'],
       transforms: ['typescript'],
     }),
   ],
-  external: ['net'],
   output: {
-    file: 'dist/tcp.js',
-    name: 'tcp',
+    file: 'dist/webtransport.js',
+    name: 'webtransport',
     format: 'es',
   },
-};
+}))();

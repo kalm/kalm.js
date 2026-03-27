@@ -1,7 +1,9 @@
-import { listen, connect } from '../../src/kalm';
+import { describe, it, mock } from 'node:test';
+import assert from 'node:assert/strict';
+import { listen, connect } from '../../src/kalm.ts';
 
-const bindSpy = jest.fn();
-const connectSpy = jest.fn();
+const bindSpy = mock.fn();
+const connectSpy = mock.fn();
 const mockTransport = () => () => ({ bind: bindSpy, connect: connectSpy });
 
 describe('Kalm constructors', () => {
@@ -9,16 +11,16 @@ describe('Kalm constructors', () => {
     let server;
 
     it('should throw an error if no transports are provided', () => {
-      expect(listen).toThrow();
+      assert.throws(listen);
     });
 
     it('listen should bind to a transport if one is provided', () => {
       server = listen({ transport: mockTransport() });
-      expect(bindSpy).toHaveBeenCalled();
+      assert.ok(bindSpy.mock.calls.length > 0);
     });
 
     it('should return an object with all the required fields', () => {
-      expect(server).toHaveProperty('label');
+      assert.ok('label' in server);
     });
   });
 
@@ -26,16 +28,16 @@ describe('Kalm constructors', () => {
     let client;
 
     it('should throw an error if no transports are provided', () => {
-      expect(connect).toThrow();
+      assert.throws(connect);
     });
 
     it('listen should connect via a transport if one is provided', () => {
       client = connect({ transport: mockTransport() });
-      expect(connectSpy).toHaveBeenCalled();
+      assert.ok(connectSpy.mock.calls.length > 0);
     });
 
     it('should return an object with all the required fields', () => {
-      expect(client).toHaveProperty('label');
+      assert.ok('label' in client);
     });
   });
 });

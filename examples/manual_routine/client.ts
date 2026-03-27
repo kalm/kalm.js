@@ -3,7 +3,7 @@ import ws from '@kalm/ws';
 
 /**
  * Creates a kalm client that uses the Websocket transport.
- * It will attempt to connect to a server located at the address '0.0.0.0' on port 3938.
+ * It will attempt to connect to a server located at the address '127.0.0.1' on port 3938.
  *
  * The manual routine needs to be constructed first in order to get access to the `flush` method.
  */
@@ -12,7 +12,7 @@ const { flush, queue } = routines.manual();
 const client = connect({
   transport: ws({}),
   port: 3938,
-  host: '0.0.0.0',
+  host: '127.0.0.1',
   routine: queue,
 });
 

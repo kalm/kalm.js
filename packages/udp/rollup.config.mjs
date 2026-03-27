@@ -12,6 +12,6 @@ export default {
   output: {
     file: 'dist/udp.js',
     name: 'udp',
-    format: 'umd',
+    format: 'es',
   },
 };

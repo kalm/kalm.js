@@ -1,5 +1,5 @@
-import { EventEmitter } from '../utils/events';
-import { log } from '../utils/logger';
+import { EventEmitter } from '../utils/events.ts';
+import { log } from '../utils/logger.ts';
 
 export function Client(params: ClientConfig, emitter: EventEmitter, socket?: any): Client {
   let connected = 1;
