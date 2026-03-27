@@ -29,7 +29,7 @@ const external = kalm.listen({
   transport: ws(),
   port: 10000 + Number(config.port),
   routine: kalm.routines.tick({ hz: 120, seed: ts }),
-  host: '0.0.0.0',
+  host: '127.0.0.1',
 });
 
 const isSeed = (config.host === seedConfig.host && config.port === seedConfig.port);

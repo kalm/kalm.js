@@ -1,26 +1,38 @@
-import { connect, routines } from 'kalm';
-import ws from '@kalm/ws';
+<script type="module">
+
+
+import { connect, routines} from '../../packages/kalm/dist/kalm.js';
+import webtransport from '../../packages/webtransport/dist/webtransport.js';
 
 /**
- * Creates a kalm client that uses the Websocket transport.
+ * Creates a kalm client that uses the WebTransport protocol.
  * It will attempt to connect to a server located at the address '127.0.0.1' on port 3938.
  *
  * The realtime routine will emit messages as soon as possible. While this is ideal in a few scenarios, for instance when the client does not send a lot of events,
  * it does not leverage the benefits of buffering and may cause slowdowns if many messages are sent rapidly.
  */
+
+function base64ToArrayBuffer(base64) {
+  var binaryString = atob(base64);
+  var bytes = new Uint8Array(binaryString.length);
+  for (var i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
 const client = connect({
-  transport: ws({}),
+  transport: webtransport({
+    serverCertificateHashes: [
+      { algorithm: 'sha-256', value: base64ToArrayBuffer('YTk4N2U5Mjk5NTg0MzlmMzIxMDU2ODM2MTFjYjgzYjExMGNiMjE3MDQ3YjVmMjc3NjZlOGFjMzFkZTcyZmU3ZQ==') }
+    ]
+  }),
   port: 3938,
-  host: '127.0.0.1',
+  host: '0.0.0.0',
   routine: routines.realtime(),
 });
 
-/**
- * An example interface for messages sent between client and server
- */
-type MyCustomPayload = {
-  message: string
-};
+client.on('error', (err) => console.error(err))
 
 /**
  * To confirm that the client has succesfully connected to the server, listen to the 'connect' event.
@@ -29,7 +41,7 @@ client.on('connect', () => {
   /**
    * Once a client has connected, we subscribe to messages sent on the "foo" channel.
    */
-  client.subscribe('foo', (body: MyCustomPayload, context) => {
+  client.subscribe('foo', (body, context) => {
     /**
      * When we receive a message on the foo channel, we also receive information about the frame and context.
      *
@@ -53,3 +65,5 @@ client.on('connect', () => {
    */
   client.write('foo', { message: 'hello world!' });
 });
+
+</script>

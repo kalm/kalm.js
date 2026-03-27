@@ -12,6 +12,6 @@ export default {
   output: {
     file: 'dist/ipc.js',
     name: 'ipc',
-    format: 'umd',
+    format: 'es',
   },
 };

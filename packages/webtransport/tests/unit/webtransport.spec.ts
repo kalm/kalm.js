@@ -1,10 +1,10 @@
 import { EventEmitter } from '../../../kalm/src/utils/events';
-import udp from '../../src/udp';
+import webtransport from '../../src/webtransport';
 
-describe('UDP transport', () => {
+describe('webtransport transport', () => {
   it('basic setup', () => {
-    expect(typeof udp).toBe('function');
-    const transport = udp();
+    expect(typeof webtransport).toBe('function');
+    const transport = webtransport();
     expect(typeof transport).toBe('function');
     const socket = transport({}, new EventEmitter());
 
@@ -17,7 +17,7 @@ describe('UDP transport', () => {
   });
 
   describe('Given an empty handle reference and no configs', () => {
-    const transport = udp();
+    const transport = webtransport();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {
@@ -28,12 +28,19 @@ describe('UDP transport', () => {
   });
 
   describe('Given a handle reference and no configs', () => {
-    const transport = udp();
+    const transport = webtransport();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {
-      it('should return handle\'s values', () => {
-        expect(socket.remote({ host: '127.0.0.1', port: 3000 })).toEqual({ host: '127.0.0.1', port: 3000 });
+      it('should return handle\'s values from headers', () => {
+        expect(socket.remote({
+          headers: { 'x-forwarded-for': '127.0.0.1' },
+          connection: { remotePort: 3000 },
+        })).toEqual({ host: '127.0.0.1', port: 3000 });
+      });
+
+      it('should return handle\'s values from connection', () => {
+        expect(socket.remote({ connection: { remoteAddress: '127.0.0.1', remotePort: 3000 } })).toEqual({ host: '127.0.0.1', port: 3000 });
       });
     });
   });

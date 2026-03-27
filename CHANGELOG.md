@@ -1,8 +1,24 @@
 # Changelog
 
-## [v8.2.1] - 2026-01-29
+## [v9.0.0] - 2026-04-06
 
 commit [#](https://github.com/kalm/kalm.js/commits)
+
+### Breaking changes
+
+- Updated bundling output to ES modules.
+- Bumped engine requirements to Node 22.
+- Changed the default host from 0.0.0.0 to 127.0.0.1 for [security reasons](https://superuser.com/a/949429).
+
+### New features
+
+- Added WebTransport support through the `@kalm/webtransport` module. This is experimental and uses a 3rd party module for the server side (node:quic is still unstable at the time of publishing).
+- 
+
+
+## [v8.2.1] - 2026-01-29
+
+commit [094aa1c](https://github.com/kalm/kalm.js/commit/094aa1c0c64cf074d24e311e0096fc83af05ce90)
 
 ### Minor changes
 

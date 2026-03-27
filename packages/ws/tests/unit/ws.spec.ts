@@ -1,10 +1,10 @@
 import { EventEmitter } from '../../../kalm/src/utils/events';
-import * as ws from '../../src/ws';
+import ws from '../../src/ws';
 
 describe('ws transport', () => {
   it('basic setup', () => {
-    expect(typeof ws.default).toBe('function');
-    const transport = ws.default();
+    expect(typeof ws).toBe('function');
+    const transport = ws();
     expect(typeof transport).toBe('function');
     const socket = transport({}, new EventEmitter());
 
@@ -17,7 +17,7 @@ describe('ws transport', () => {
   });
 
   describe('Given an empty handle reference and no configs', () => {
-    const transport = ws.default();
+    const transport = ws();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {
@@ -28,7 +28,7 @@ describe('ws transport', () => {
   });
 
   describe('Given a handle reference and no configs', () => {
-    const transport = ws.default();
+    const transport = ws();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {

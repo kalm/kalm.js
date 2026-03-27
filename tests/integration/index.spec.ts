@@ -4,8 +4,9 @@ import ipc from '../../packages/ipc/dist/ipc.js';
 import tcp from '../../packages/tcp/dist/tcp.js';
 import udp from '../../packages/udp/dist/udp.js';
 import ws from '../../packages/ws/dist/ws.js';
+import webtransport from '../../packages/ws/dist/ws.js';
 
-const transports = { ipc, tcp, udp, ws };
+const transports = { ipc, tcp, udp, ws, webtransport };
 
 const largePayload: { foo: string }[] = [];
 while (largePayload.length < 2048) {
@@ -13,7 +14,7 @@ while (largePayload.length < 2048) {
 }
 
 describe('Integration tests', () => {
-  ['ipc', 'tcp', 'udp', 'ws'].forEach((transport) => {
+  ['ipc', 'tcp', 'udp', 'ws', 'webtransport'].forEach((transport) => {
     describe(`Testing ${transport} transport`, () => {
       let server;
       const soc = transports[transport]();

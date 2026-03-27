@@ -1,6 +1,6 @@
 {
   "name": "@kalm/ipc",
-  "version": "8.1.1",
+  "version": "9.0.0",
   "description": "IPC transport for Kalm",
   "main": "dist/ipc.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "funding": {
     "type": "Open Collective",

@@ -4,7 +4,7 @@ import { compressSync, uncompress } from 'snappy';
 
 /**
  * Creates a kalm server that uses the Websocket transport.
- * It is bound to local IP 0.0.0.0 and listens on port 3938.
+ * It is bound to local IP 127.0.0.1 and listens on port 3938.
  *
  * The tick routine will emit messages to clients at a frequency no higher than 5hz, or no shorter than 20ms
  *
@@ -17,7 +17,7 @@ const provider = listen({
   port: 3938,
   json: false,
   routine: routines.tick({ hz: 5 }),
-  host: '0.0.0.0',
+  host: '127.0.0.1',
 });
 
 /**

@@ -1,10 +1,10 @@
 import { EventEmitter } from '../../../kalm/src/utils/events';
-import * as tcp from '../../src/tcp';
+import tcp from '../../src/tcp';
 
 describe('TCP transport', () => {
   it('basic setup', () => {
-    expect(typeof tcp.default).toBe('function');
-    const transport = tcp.default();
+    expect(typeof tcp).toBe('function');
+    const transport = tcp();
     expect(typeof transport).toBe('function');
     const socket = transport({}, new EventEmitter());
 
@@ -17,7 +17,7 @@ describe('TCP transport', () => {
   });
 
   describe('Given an empty handle reference and no configs', () => {
-    const transport = tcp.default();
+    const transport = tcp();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {
@@ -28,7 +28,7 @@ describe('TCP transport', () => {
   });
 
   describe('Given a handle reference and no configs', () => {
-    const transport = tcp.default();
+    const transport = tcp();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {

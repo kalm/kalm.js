@@ -8,7 +8,7 @@ import { tick } from './routines/tick';
 import { EventEmitter } from './utils/events';
 
 const defaults: ServerConfig = {
-  host: '0.0.0.0',
+  host: '127.0.0.1',
   json: true,
   port: 3000,
   routine: realtime(),

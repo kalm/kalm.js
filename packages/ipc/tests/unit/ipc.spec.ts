@@ -1,10 +1,10 @@
-import * as ipc from '../../src/ipc';
+import ipc from '../../src/ipc';
 import { EventEmitter } from '../../../kalm/src/utils/events';
 
 describe('IPC transport', () => {
   it('basic setup', () => {
-    expect(typeof ipc.default).toBe('function');
-    const transport = ipc.default();
+    expect(typeof ipc).toBe('function');
+    const transport = ipc();
     expect(typeof transport).toBe('function');
     const socket = transport({}, new EventEmitter());
 
@@ -17,7 +17,7 @@ describe('IPC transport', () => {
   });
 
   describe('Given an empty handle reference and no configs', () => {
-    const transport = ipc.default();
+    const transport = ipc();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {
@@ -28,7 +28,7 @@ describe('IPC transport', () => {
   });
 
   describe('Given a handle reference and no configs', () => {
-    const transport = ipc.default();
+    const transport = ipc();
     const socket = transport({}, new EventEmitter());
 
     describe('when fetching remote', () => {

@@ -1,6 +1,6 @@
 {
   "name": "@kalm/udp",
-  "version": "8.2.0",
+  "version": "9.0.0",
   "description": "UDP transport for Kalm",
   "main": "dist/udp.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "url": "https://opencollective.com/kalm"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "repository": {
     "type": "git",

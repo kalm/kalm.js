@@ -22,7 +22,7 @@ export function setup(resolve) {
     socket.on('data', () => socket.emit('data', JSON.stringify(settings.testPayload)));
   });
   server.on('error', _absorb);
-  server.listen(http.createServer().listen(settings.port, '0.0.0.0'));
+  server.listen(http.createServer().listen(settings.port, '127.0.0.1'));
   setTimeout(resolve, 10);
 }
 
@@ -45,7 +45,7 @@ export function stop(resolve) {
 export function step(resolve) {
   if (handbreak) return;
   if (!client) {
-    client = ioclient(`http://0.0.0.0:${settings.port}`);
+    client = ioclient(`http://127.0.0.1:${settings.port}`);
     client.on('error', _absorb);
     client.on('data', () => count++);
   }

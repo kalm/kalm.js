@@ -17,6 +17,6 @@ export default {
   output: {
     file: 'dist/kalm.js',
     name: 'kalm',
-    format: 'umd',
+    format: 'es',
   },
 };

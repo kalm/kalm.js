@@ -19,9 +19,9 @@ Launch any number of servers first, using process arguments to specify the hosts
 <hostname> <port> <seed_hostname> <seed_port>
 
 ```
-node ./server.js 0.0.0.0 3000 0.0.0.0 3000
-node ./server.js 0.0.0.0 3001 0.0.0.0 3000
-node ./server.js 0.0.0.0 3002 0.0.0.0 3000
+node ./server.js 127.0.0.1 3000 127.0.0.1 3000
+node ./server.js 127.0.0.1 3001 127.0.0.1 3000
+node ./server.js 127.0.0.1 3002 127.0.0.1 3000
 ```
 
 With this example, three servers are launched, listening on 3 different ports, but all connected to the seed host (port 3000).
@@ -32,9 +32,9 @@ In parallel, servers also listen on `port + 10000` for clients to join.
 We will now launch clients connecting to any given server.
 
 ```
-node ./client.js 0.0.0.0 13000
-node ./client.js 0.0.0.0 13001
-node ./client.js 0.0.0.0 13002
+node ./client.js 127.0.0.1 13000
+node ./client.js 127.0.0.1 13001
+node ./client.js 127.0.0.1 13002
 ```
 
 The clients should connect to the server and send an "hello world!" message using the external channel.

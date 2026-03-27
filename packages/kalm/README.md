@@ -46,7 +46,7 @@ const server = kalm.listen({
   port: 8800,
   transport: ws(),
   routine: kalm.routines.tick({ hz: 5 }), // Sends packets at a frequency of 5 Hz (200ms)
-  host: '0.0.0.0',
+  host: '127.0.0.1',
 });
 
 server.on('connection', (client) => {
@@ -68,7 +68,7 @@ const kalm = require('kalm');
 const ws = require('@kalm/ws');
 
 const client = kalm.connect({
-  host: '0.0.0.0',
+  host: '127.0.0.1',
   port: 8800,
   transport: ws(),
   routine: kalm.routines.realtime(),

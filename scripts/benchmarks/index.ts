@@ -7,7 +7,7 @@ import settings from './settings.ts';
 
 const _maxCount = null;
 let _curr = 0;
-const Suite = { ipc, tcp, udp, ws };
+const Suite = { ipc, tcp, udp, ws, webtransport: ws };
 const tests: any[] = [];
 const results = {};
 
