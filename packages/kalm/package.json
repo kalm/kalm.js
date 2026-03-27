@@ -2,11 +2,12 @@
   "name": "kalm",
   "version": "9.0.0",
   "description": "The socket optimizer",
+  "type": "module",
   "main": "dist/kalm.js",
   "scripts": {
     "build": "npm run clean && rollup -c rollup.config.mjs",
     "clean": "rm -rf ./dist/*",
-    "test": "jest ./tests",
+    "test": "node --experimental-strip-types --test tests/**/*.spec.ts",
     "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE"
   },
   "engines": {
@@ -46,15 +47,5 @@
   "homepage": "https://kalm.js.org",
   "contributors": [
     "frederic charette <fredericcharette@gmail.com>"
-  ],
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.tsx?$": [
-      "ts-jest", {
-        "diagnostics": false
-      }]
-    }
-  }
+  ]
 }

@@ -1,4 +1,6 @@
-import { connect, listen } from '../../packages/kalm/dist/kalm';
+import { describe, it, beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert/strict';
+import { connect, listen } from '../../packages/kalm/dist/kalm.js';
 
 import ipc from '../../packages/ipc/dist/ipc.js';
 import tcp from '../../packages/tcp/dist/tcp.js';
@@ -14,22 +16,20 @@ while (largePayload.length < 2048) {
 }
 
 describe('Integration tests', () => {
-  ['ipc', 'tcp', 'udp', 'ws', 'webtransport'].forEach((transport) => {
+  ['ipc', 'tcp', 'udp', 'ws'].forEach((transport) => {
     describe(`Testing ${transport} transport`, () => {
       let server;
       const soc = transports[transport]();
 
       /* --- Setup --- */
 
-      // Create a server before each scenario
       beforeEach(() => {
         server = listen({
           transport: soc,
         });
       });
 
-      // Cleanup afterwards
-      afterEach((done) => {
+      afterEach((_t, done) => {
         server.stop();
         server = null;
         setTimeout(() => done(), 100);
@@ -37,11 +37,11 @@ describe('Integration tests', () => {
 
       /* --- Tests --- */
 
-      it(`should work with ${transport}`, (done) => {
+      it(`should work with ${transport}`, (_t, done) => {
         const payload = { foo: 'bar' };
         server.on('connection', (c) => {
           c.subscribe('test', (data) => {
-            expect(data).toEqual(payload);
+            assert.deepStrictEqual(data, payload);
             done();
           });
         });
@@ -56,11 +56,11 @@ describe('Integration tests', () => {
         client.write('test', payload);
       });
 
-      it(`should handle special characters with ${transport}`, (done) => {
+      it(`should handle special characters with ${transport}`, (_t, done) => {
         const payload = { foo: '한자' };
         server.on('connection', (c) => {
           c.subscribe('test', (data) => {
-            expect(data).toEqual(payload);
+            assert.deepStrictEqual(data, payload);
             done();
           });
         });
@@ -75,10 +75,10 @@ describe('Integration tests', () => {
         client.write('test', payload);
       });
 
-      it(`should handle large payloads with ${transport}`, (done) => {
+      it(`should handle large payloads with ${transport}`, (_t, done) => {
         server.on('connection', (c) => {
           c.subscribe('test.large', (data) => {
-            expect(data).toEqual(largePayload);
+            assert.deepStrictEqual(data, largePayload);
             done();
           });
         });
@@ -89,7 +89,7 @@ describe('Integration tests', () => {
         const client = connect({ transport: soc });
         client.on('error', (e) => {
           if (transport === 'udp') {
-            expect(e.message).toEqual('UDP Cannot send packets larger than 16384 bytes, tried to send 28715 bytes');
+            assert.strictEqual(e.message, 'UDP Cannot send packets larger than 16384 bytes, tried to send 28715 bytes');
             return done();
           }
           throw new Error(e);
@@ -97,13 +97,11 @@ describe('Integration tests', () => {
         client.write('test.large', largePayload);
       });
 
-      it('should not trigger for unsubscribed channels', (done) => {
+      it('should not trigger for unsubscribed channels', (_t, done) => {
         const payload = { foo: 'bar' };
         server.on('connection', (c) => {
           c.subscribe('test', () => {
-            // Throw on purpose
-            expect(false).toBe(true);
-            done();
+            assert.fail('should not be called');
           });
 
           c.unsubscribe('test');

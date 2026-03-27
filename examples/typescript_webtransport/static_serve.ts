@@ -2,14 +2,14 @@ import https from 'node:https';
 import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
-import {readFileSync} from 'node:fs';
+import { readFileSync } from 'node:fs';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const certificate = {
-    private: readFileSync(path.join(__dirname, "./cert/localhost.key")),
-    cert: readFileSync(path.join(__dirname, "./cert/localhost.crt")),
+  private: readFileSync(path.join(__dirname, './cert/localhost.key')),
+  cert: readFileSync(path.join(__dirname, './cert/localhost.crt')),
 };
 
 const PORT = 8000;
@@ -17,12 +17,12 @@ const PORT = 8000;
 // Options for HTTPS server
 const options = {
   key: certificate?.private,
-  cert: certificate?.cert
+  cert: certificate?.cert,
 };
 
 const server = https.createServer(options, (req, res) => {
   // Construct file path
-  let filePath = path.join(__dirname, '../../', req.url ?? '');
+  const filePath = path.join(__dirname, '../../', req.url ?? '');
 
   // Determine content type (a simplified version; you might need a more robust solution for all file types)
   const extname = path.extname(filePath);
@@ -47,7 +47,8 @@ const server = https.createServer(options, (req, res) => {
     if (err) {
       res.writeHead(404);
       res.end('File not found!');
-    } else {
+    }
+    else {
       res.writeHead(200, { 'Content-Type': contentType });
       res.end(content, 'utf-8');
     }

@@ -1,19 +1,21 @@
-import { EventEmitter } from '../../../kalm/src/utils/events';
-import tcp from '../../src/tcp';
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import { EventEmitter } from '../../../kalm/src/utils/events.ts';
+import tcp from '../../src/tcp.ts';
 
 describe('TCP transport', () => {
   it('basic setup', () => {
-    expect(typeof tcp).toBe('function');
+    assert.strictEqual(typeof tcp, 'function');
     const transport = tcp();
-    expect(typeof transport).toBe('function');
+    assert.strictEqual(typeof transport, 'function');
     const socket = transport({}, new EventEmitter());
 
-    expect(socket).toHaveProperty('bind', expect.any(Function));
-    expect(socket).toHaveProperty('connect', expect.any(Function));
-    expect(socket).toHaveProperty('disconnect', expect.any(Function));
-    expect(socket).toHaveProperty('remote', expect.any(Function));
-    expect(socket).toHaveProperty('stop', expect.any(Function));
-    expect(socket).toHaveProperty('send', expect.any(Function));
+    assert.strictEqual(typeof socket.bind, 'function');
+    assert.strictEqual(typeof socket.connect, 'function');
+    assert.strictEqual(typeof socket.disconnect, 'function');
+    assert.strictEqual(typeof socket.remote, 'function');
+    assert.strictEqual(typeof socket.stop, 'function');
+    assert.strictEqual(typeof socket.send, 'function');
   });
 
   describe('Given an empty handle reference and no configs', () => {
@@ -22,7 +24,7 @@ describe('TCP transport', () => {
 
     describe('when fetching remote', () => {
       it('should return null values', () => {
-        expect(socket.remote()).toEqual({ host: null, port: null });
+        assert.deepStrictEqual(socket.remote(), { host: null, port: null });
       });
     });
   });
@@ -33,7 +35,10 @@ describe('TCP transport', () => {
 
     describe('when fetching remote', () => {
       it('should return handle\'s values', () => {
-        expect(socket.remote({ remoteAddress: '127.0.0.1', remotePort: 3000 })).toEqual({ host: '127.0.0.1', port: 3000 });
+        assert.deepStrictEqual(
+          socket.remote({ remoteAddress: '127.0.0.1', remotePort: 3000 }),
+          { host: '127.0.0.1', port: 3000 },
+        );
       });
     });
   });

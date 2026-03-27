@@ -2,11 +2,12 @@
   "name": "@kalm/ws",
   "version": "9.0.0",
   "description": "WebSocket transport for Kalm",
+  "type": "module",
   "main": "dist/ws.js",
   "scripts": {
     "build": "npm run clean && rollup -c rollup.config.mjs",
     "clean": "rm -rf ./dist/*",
-    "test": "jest ./tests",
+    "test": "node --experimental-strip-types --test tests/**/*.spec.ts",
     "prepublishOnly": "npm run build && cp ../../LICENSE ./LICENSE"
   },
   "funding": {
@@ -45,15 +46,5 @@
   "browser": {
     "http": false,
     "https": false
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.tsx?$": [
-      "ts-jest", {
-        "diagnostics": false
-      }]
-    }
   }
 }

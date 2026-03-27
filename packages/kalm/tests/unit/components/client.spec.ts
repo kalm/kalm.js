@@ -1,5 +1,7 @@
-import { Client } from '../../../src/components/client';
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import { Client } from '../../../src/components/client.ts';
 
 describe('Client', () => {
-  it('TODO', () => expect(Client).not.toBeUndefined());
+  it('TODO', () => assert.notEqual(Client, undefined));
 });

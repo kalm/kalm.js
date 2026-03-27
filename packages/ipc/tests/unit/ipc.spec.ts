@@ -1,19 +1,21 @@
-import ipc from '../../src/ipc';
-import { EventEmitter } from '../../../kalm/src/utils/events';
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import ipc from '../../src/ipc.ts';
+import { EventEmitter } from '../../../kalm/src/utils/events.ts';
 
 describe('IPC transport', () => {
   it('basic setup', () => {
-    expect(typeof ipc).toBe('function');
+    assert.strictEqual(typeof ipc, 'function');
     const transport = ipc();
-    expect(typeof transport).toBe('function');
+    assert.strictEqual(typeof transport, 'function');
     const socket = transport({}, new EventEmitter());
 
-    expect(socket).toHaveProperty('bind', expect.any(Function));
-    expect(socket).toHaveProperty('connect', expect.any(Function));
-    expect(socket).toHaveProperty('disconnect', expect.any(Function));
-    expect(socket).toHaveProperty('remote', expect.any(Function));
-    expect(socket).toHaveProperty('stop', expect.any(Function));
-    expect(socket).toHaveProperty('send', expect.any(Function));
+    assert.strictEqual(typeof socket.bind, 'function');
+    assert.strictEqual(typeof socket.connect, 'function');
+    assert.strictEqual(typeof socket.disconnect, 'function');
+    assert.strictEqual(typeof socket.remote, 'function');
+    assert.strictEqual(typeof socket.stop, 'function');
+    assert.strictEqual(typeof socket.send, 'function');
   });
 
   describe('Given an empty handle reference and no configs', () => {
@@ -22,7 +24,7 @@ describe('IPC transport', () => {
 
     describe('when fetching remote', () => {
       it('should return null values', () => {
-        expect(socket.remote()).toEqual({ host: null, port: null });
+        assert.deepStrictEqual(socket.remote(), { host: null, port: null });
       });
     });
   });
@@ -33,7 +35,10 @@ describe('IPC transport', () => {
 
     describe('when fetching remote', () => {
       it('should return handle\'s values', () => {
-        expect(socket.remote({ _server: { _pipeName: '/foo' }, _handle: { fd: 12345 } })).toEqual({ host: '/foo', port: 12345 });
+        assert.deepStrictEqual(
+          socket.remote({ _server: { _pipeName: '/foo' }, _handle: { fd: 12345 } }),
+          { host: '/foo', port: 12345 },
+        );
       });
     });
   });

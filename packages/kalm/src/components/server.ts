@@ -1,6 +1,6 @@
-import { log } from '../utils/logger';
-import { EventEmitter } from '../utils/events';
-import { Client } from './client';
+import { log } from '../utils/logger.ts';
+import { EventEmitter } from '../utils/events.ts';
+import { Client } from './client.ts';
 
 export function Server(params: ClientConfig, emitter: EventEmitter): Server {
   const connections = [];

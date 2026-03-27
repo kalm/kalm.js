@@ -1,11 +1,11 @@
-import { Client } from './components/client';
-import { Server } from './components/server';
+import { Client } from './components/client.ts';
+import { Server } from './components/server.ts';
 
-import { dynamic } from './routines/dynamic';
-import { realtime } from './routines/realtime';
-import { tick } from './routines/tick';
+import { dynamic } from './routines/dynamic.ts';
+import { realtime } from './routines/realtime.ts';
+import { tick } from './routines/tick.ts';
 
-import { EventEmitter } from './utils/events';
+import { EventEmitter } from './utils/events.ts';
 
 const defaults: ServerConfig = {
   host: '127.0.0.1',
@@ -63,4 +63,10 @@ export const routines = {
   dynamic,
   realtime,
   tick,
+};
+
+export default {
+  routines,
+  listen,
+  connect,
 };

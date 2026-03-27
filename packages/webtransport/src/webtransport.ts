@@ -34,7 +34,7 @@ export default function ws({ cert, key, secret, socketTimeout = 30000, serverCer
         secret,
         host: params.host,
         defaultDatagramsReadableMode: 'bytes',
-        
+
       });
       listener.startServer();
 
@@ -145,7 +145,7 @@ export default function ws({ cert, key, secret, socketTimeout = 30000, serverCer
       }
     }
 
-    function remote(/*handle: WSHandle*/): Remote {
+    function remote(/* handle: WSHandle */): Remote {
       return {
         host: null,
         port: null,

@@ -268,7 +268,6 @@ declare module 'kalm' {
     manual: () => { flush: () => void, queue: KalmRoutine }
   };
 
-  
   type _Server = Server;
   export { _Server as Server };
 

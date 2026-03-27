@@ -1,6 +1,6 @@
 import { listen, routines } from 'kalm';
 import webtransport from '@kalm/webtransport';
-import {readFileSync} from 'node:fs';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
 
@@ -8,8 +8,8 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const certificate = {
-    private: readFileSync(path.join(__dirname, "./cert/localhost.key")),
-    cert: readFileSync(path.join(__dirname, "./cert/localhost.crt")),
+  private: readFileSync(path.join(__dirname, './cert/localhost.key')),
+  cert: readFileSync(path.join(__dirname, './cert/localhost.crt')),
 };
 
 /**
@@ -24,7 +24,7 @@ const provider = listen({
   transport: webtransport({
     secret: 'my-secret',
     cert: certificate?.cert,
-    key: certificate?.private
+    key: certificate?.private,
   }),
   port: 3938,
   host: '0.0.0.0',

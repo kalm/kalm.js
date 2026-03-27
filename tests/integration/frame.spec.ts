@@ -1,7 +1,9 @@
 /* Requires ------------------------------------------------------------------ */
 
-import { connect, listen } from '../../packages/kalm/dist/kalm';
-import ipc from '../../packages/ipc/dist/ipc';
+import { describe, it, beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert/strict';
+import { connect, listen } from '../../packages/kalm/dist/kalm.js';
+import ipc from '../../packages/ipc/dist/ipc.js';
 
 /* Suite -------------------------------------------------------------------- */
 
@@ -10,25 +12,23 @@ describe('Frame', () => {
 
   /* --- Setup --- */
 
-  // Create a server before each scenario
   beforeEach(() => {
     server = listen({
       transport: ipc(),
     });
   });
 
-  // Cleanup afterwards
-  afterEach((done) => {
+  afterEach((_t, done) => {
     server.stop();
     server = null;
     setTimeout(() => done(), 100);
   });
 
-  it('Should have a well structured frame reference', (done) => {
+  it('Should have a well structured frame reference', (_t, done) => {
     const payload = { foo: 'bar' };
     server.on('connection', (c) => {
       c.subscribe('test', (data, meta) => {
-        expect(meta).toEqual({
+        assert.deepStrictEqual(meta, {
           client: c,
           frame: {
             channel: 'test',
