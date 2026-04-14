@@ -1,0 +1,30 @@
+# kalm.js
+
+> Kalm is a real-time, multi-transport networking library for Node.js ("The Socket Optimizer"). It improves throughput by batching socket packets before transmission using configurable buffering strategies called routines. It provides a unified API across TCP, UDP, WebSocket, and IPC protocols, works in both Node.js and the browser, has zero dependencies, and bundles to ~5 kb.
+
+## Documentation
+
+- [Getting Started](https://kalm.js.org/docs): Installation, quick-start server and client examples, and an overview of how packet batching works.
+- [Transports](https://kalm.js.org/docs#transports): Guide to the four transport packages — `@kalm/tcp`, `@kalm/udp`, `@kalm/ws`, `@kalm/ipc` — covering installation, configuration options, and browser compatibility.
+- [Routines](https://kalm.js.org/docs#routines): Reference for the four buffering strategies — `realtime`, `tick`, `dynamic`, and `manual` — with guidance on when to use each.
+- [API Reference](https://kalm.js.org/docs#api): Full reference for `listen()`, `connect()`, Server and Client methods, events, and the Context object passed to message handlers.
+- [Events](https://kalm.js.org/docs#events): Server events (`ready`, `connection`, `error`) and client events (`connect`, `disconnect`, `frame`, `error`).
+
+## Examples
+
+- [Basic TypeScript usage with WebSocket](https://github.com/kalm/kalm.js/tree/master/examples/typescript_websocket): TypeScript server and client using `@kalm/ws` and the `tick` routine.
+- [Distributed Pub-Sub](https://github.com/kalm/kalm.js/tree/master/examples/distributed_pub_sub): Multi-node gossip cluster combining TCP (internal) and WebSocket (external) transports.
+- [Binary packet compression](https://github.com/kalm/kalm.js/tree/master/examples/binary_compression): Using `json: false` with snappy compression for binary payloads.
+- [Browser Peer-to-Peer](https://github.com/kalm/kalm.js/tree/master/examples/browser_peer_to_peer): WebRTC data channel integration in the browser.
+- [Manual routine](https://github.com/kalm/kalm.js/tree/master/examples/manual_routine): Controlling flush timing from outside the kalm lifecycle.
+
+## Optional
+
+- [Changelog](https://github.com/kalm/kalm.js/blob/master/CHANGELOG.md): Full version history from v8.0.0 onwards, including breaking changes.
+- [How it works](https://github.com/kalm/kalm.js/wiki/How-it-works): Deep-dive into the Nagle's algorithm-inspired packet batching approach.
+- [Contributing](https://github.com/kalm/kalm.js/blob/master/CONTRIBUTING.md): Guidelines for submitting issues and pull requests.
+- [npm — kalm](https://www.npmjs.com/package/kalm): Core package.
+- [npm — @kalm/tcp](https://www.npmjs.com/package/@kalm/tcp): TCP transport.
+- [npm — @kalm/udp](https://www.npmjs.com/package/@kalm/udp): UDP transport.
+- [npm — @kalm/ws](https://www.npmjs.com/package/@kalm/ws): WebSocket transport.
+- [npm — @kalm/ipc](https://www.npmjs.com/package/@kalm/ipc): IPC transport.
