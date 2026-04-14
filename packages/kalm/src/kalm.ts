@@ -2,6 +2,7 @@ import { Client } from './components/client';
 import { Server } from './components/server';
 
 import { dynamic } from './routines/dynamic';
+import { manual } from './routines/manual';
 import { realtime } from './routines/realtime';
 import { tick } from './routines/tick';
 
@@ -63,4 +64,5 @@ export const routines = {
   dynamic,
   realtime,
   tick,
+  manual,
 };
